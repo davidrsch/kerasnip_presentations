@@ -1,0 +1,222 @@
+---
+format:
+  revealjs:
+    slide-number: true
+    preview-links: auto
+    theme: default
+    footer: "kerasnip v0.1.0.900"
+---
+
+::: {.content-visible when-profile="english"}
+
+# A Bridge Between 'keras' and 'tidymodels' {background-color="#f0f1f2"}
+
+### Madrid R Group
+### February 2026
+
+<br>
+**Package Version: 0.1.0.900**
+
+---
+
+## Introduction
+
+`kerasnip` provides a seamless bridge between:
+
+- 🧱 **keras**: Deep learning framework
+- 🧹 **tidymodels**: Tidy machine learning principles
+
+It allows dynamic creation of model specifications.
+
+---
+
+## Problem Statement
+
+Interacting with Keras often requires a different mindset than the standard `tidymodels` workflow.
+
+`kerasnip` aims to unify this by allowing you to define Keras architectures using a `parsnip`-like syntax.
+
+---
+
+## Key Functions
+
+- `create_keras_sequential_spec()`: For linear stacks of layers.
+- `create_keras_functional_spec()`: For complex graphs (DAGs).
+- `fit()`: Standard tidymodels fit generic.
+
+---
+
+## Example: Regression on Diamonds
+
+Instead of `mtcars`, let's look at predicting diamond prices.
+
+```r
+library(kerasnip)
+library(tidymodels)
+library(keras3)
+
+# 1. Define blocks
+input_block <- function(model, input_shape) {
+  keras_model_sequential(input_shape = input_shape)
+}
+
+dense_block <- function(model, units = 128) {
+  model |> layer_dense(units = units, activation = "relu")
+}
+
+output_block <- function(model) {
+  model |> layer_dense(units = 1)
+}
+
+# 2. Create Spec
+create_keras_sequential_spec(
+  model_name = "diamond_mlp",
+  layer_blocks = list(
+    input = input_block,
+    body = dense_block,
+    output = output_block
+  ),
+  mode = "regression"
+)
+```
+
+---
+
+## Fitting the Model
+
+```r
+# Data Prep
+rec <- recipe(price ~ carat + cut + color, data = diamonds) |>
+  step_dummy(all_nominal_predictors()) |>
+  step_normalize(all_numeric_predictors())
+
+# Model Spec
+spec <- diamond_mlp(
+  num_body = 3, 
+  body_units = 64,
+  fit_epochs = 20
+) |>
+  set_engine("keras")
+
+# Workflow
+wf <- workflow(rec, spec)
+fit(wf, data = diamonds[1:1000,])
+```
+
+---
+
+## Conclusion
+
+`kerasnip` enables:
+1. **Consistency**: Use standard tidymodels verbs.
+2. **Flexibility**: Build complex Keras models dynamically.
+3. **Tuning**: Tune architecture parameters (depth, width) as easily as hyperparameters.
+
+:::
+
+::: {.content-visible when-profile="spanish"}
+
+# Un Puente entre 'keras' y 'tidymodels' {background-color="#f0f1f2"}
+
+### Grupo de Usuarios de R de Madrid
+### Febrero 2026
+
+<br>
+**Versión del Paquete: 0.1.0.900**
+
+---
+
+## Introducción
+
+`kerasnip` proporciona un puente fluido entre:
+
+- 🧱 **keras**: Framework de aprendizaje profundo
+- 🧹 **tidymodels**: Principios de machine learning "tidy"
+
+Permite la creación dinámica de especificaciones de modelos.
+
+---
+
+## Planteamiento del Problema
+
+Interactuar con Keras a menudo requiere una mentalidad diferente al flujo de trabajo estándar de `tidymodels`.
+
+`kerasnip` tiene como objetivo unificar esto permitiéndole definir arquitecturas Keras utilizando una sintaxis similar a `parsnip`.
+
+---
+
+## Funciones Clave
+
+- `create_keras_sequential_spec()`: Para pilas lineales de capas.
+- `create_keras_functional_spec()`: Para grafos complejos (DAGs).
+- `fit()`: Genérico de ajuste estándar de tidymodels.
+
+---
+
+## Ejemplo: Regresión con Diamantes
+
+En lugar de `mtcars`, veamos la predicción de precios de diamantes.
+
+```r
+library(kerasnip)
+library(tidymodels)
+library(keras3)
+
+# 1. Definir bloques
+input_block <- function(model, input_shape) {
+  keras_model_sequential(input_shape = input_shape)
+}
+
+dense_block <- function(model, units = 128) {
+  model |> layer_dense(units = units, activation = "relu")
+}
+
+output_block <- function(model) {
+  model |> layer_dense(units = 1)
+}
+
+# 2. Crear Especificación
+create_keras_sequential_spec(
+  model_name = "diamond_mlp",
+  layer_blocks = list(
+    input = input_block,
+    body = dense_block,
+    output = output_block
+  ),
+  mode = "regression"
+)
+```
+
+---
+
+## Ajuste del Modelo
+
+```r
+# Preparación de Datos
+rec <- recipe(price ~ carat + cut + color, data = diamonds) |>
+  step_dummy(all_nominal_predictors()) |>
+  step_normalize(all_numeric_predictors())
+
+# Especificación del Modelo
+spec <- diamond_mlp(
+  num_body = 3, 
+  body_units = 64,
+  fit_epochs = 20
+) |>
+  set_engine("keras")
+
+# Flujo de Trabajo
+wf <- workflow(rec, spec)
+fit(wf, data = diamonds[1:1000,])
+```
+
+---
+
+## Conclusión
+
+`kerasnip` permite:
+1. **Consistencia**: Usar verbos estándar de tidymodels.
+2. **Flexibilidad**: Construir modelos Keras complejos dinámicamente.
+3. **Ajuste**: Ajustar parámetros de arquitectura (profundidad, ancho) tan fácilmente como hiperparámetros.
+
+:::

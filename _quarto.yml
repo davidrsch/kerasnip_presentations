@@ -1,0 +1,25 @@
+project:
+  type: website
+  output-dir: _site
+
+profile:
+  group: 
+    - [english, spanish]
+
+website:
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+    right:
+      - icon: github
+        href: https://github.com/davidrsch/kerasnip
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+  revealjs: 
+    theme: default
+    logo: images/logo.png
+    footer: "kerasnip v0.1.0.900"

@@ -1,0 +1,30 @@
+---
+title: "kerasnip presentations"
+format: html
+---
+
+::: {.content-visible when-profile="english"}
+
+### Welcome to the kerasnip presentations repository
+
+Here you can find slides from various talks and workshops about the `kerasnip` package.
+
+#### Available Presentations
+
+- [**Madrid R Group (02-2026)**](madrid-2026/index.html)  
+  *A Bridge Between 'keras' and 'tidymodels'*
+
+:::
+
+::: {.content-visible when-profile="spanish"}
+
+### Bienvenidos al repositorio de presentaciones de kerasnip
+
+Aquí encontrará diapositivas de varias charlas y talleres sobre el paquete `kerasnip`.
+
+#### Presentaciones Disponibles
+
+- [**Grupo de Usuarios de R de Madrid (02-2026)**](madrid-2026/index.html)  
+  *Un Puente entre 'keras' y 'tidymodels'*
+
+:::
