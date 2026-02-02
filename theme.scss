@@ -1,0 +1,74 @@
+/*-- scss:defaults --*/
+$link-color: #BF281B;
+$selection-bg: #BF281B;
+$menu-color: #BF281B;
+$presentation-heading-color: #BF281B;
+$presentation-title-slide-background-color: #f0f1f2;
+
+/*-- scss:rules --*/
+
+.reveal .slide-number {
+    color: #BF281B;
+    font-size: 0.6em;
+}
+
+.reveal .footer {
+    color: #888;
+    font-size: 0.4em;
+}
+
+/* Reduce standard slide padding */
+.reveal .slides>section {
+    padding: 0px !important;
+    margin-top: 20px !important;
+}
+
+/* Compact headers */
+.reveal h1,
+.reveal h2,
+.reveal h3,
+.reveal h4 {
+    margin-bottom: 0.2em;
+}
+
+/* Compact paragraphs and lists */
+.reveal p {
+    margin-bottom: 0.5em;
+}
+
+.reveal ul {
+    display: block;
+}
+
+.reveal ol {
+    display: block;
+}
+
+.reveal li {
+    margin-bottom: 0.2em;
+}
+
+/* Code block spacing */
+.reveal pre {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    width: 100%;
+}
+
+.reveal blockquote {
+    border-left: 4px solid #BF281B;
+    background: #f9f9f9;
+    padding: 0.2em 0.5em;
+    font-size: 0.9em;
+    width: 95%;
+}
+
+/* Title slide adjustments */
+.title-slide h1 {
+    font-size: 2.5em;
+}
+
+.title-slide h3 {
+    font-size: 1.5em;
+    color: #666;
+}
