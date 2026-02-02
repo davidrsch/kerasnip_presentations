@@ -1,0 +1,51 @@
+[
+  {
+    "objectID": "madrid-2026/index.html#introduction",
+    "href": "madrid-2026/index.html#introduction",
+    "title": "kerasnip presentations",
+    "section": "Introduction",
+    "text": "Introduction\nkerasnip provides a seamless bridge between:\n\n🧱 keras: Deep learning framework\n🧹 tidymodels: Tidy machine learning principles\n\nIt allows dynamic creation of model specifications."
+  },
+  {
+    "objectID": "madrid-2026/index.html#problem-statement",
+    "href": "madrid-2026/index.html#problem-statement",
+    "title": "kerasnip presentations",
+    "section": "Problem Statement",
+    "text": "Problem Statement\nInteracting with Keras often requires a different mindset than the standard tidymodels workflow.\nkerasnip aims to unify this by allowing you to define Keras architectures using a parsnip-like syntax."
+  },
+  {
+    "objectID": "madrid-2026/index.html#key-functions",
+    "href": "madrid-2026/index.html#key-functions",
+    "title": "kerasnip presentations",
+    "section": "Key Functions",
+    "text": "Key Functions\n\ncreate_keras_sequential_spec(): For linear stacks of layers.\ncreate_keras_functional_spec(): For complex graphs (DAGs).\nfit(): Standard tidymodels fit generic."
+  },
+  {
+    "objectID": "madrid-2026/index.html#example-regression-on-diamonds",
+    "href": "madrid-2026/index.html#example-regression-on-diamonds",
+    "title": "kerasnip presentations",
+    "section": "Example: Regression on Diamonds",
+    "text": "Example: Regression on Diamonds\nInstead of mtcars, let’s look at predicting diamond prices.\nlibrary(kerasnip)\nlibrary(tidymodels)\nlibrary(keras3)\n\n# 1. Define blocks\ninput_block &lt;- function(model, input_shape) {\n  keras_model_sequential(input_shape = input_shape)\n}\n\ndense_block &lt;- function(model, units = 128) {\n  model |&gt; layer_dense(units = units, activation = \"relu\")\n}\n\noutput_block &lt;- function(model) {\n  model |&gt; layer_dense(units = 1)\n}\n\n# 2. Create Spec\ncreate_keras_sequential_spec(\n  model_name = \"diamond_mlp\",\n  layer_blocks = list(\n    input = input_block,\n    body = dense_block,\n    output = output_block\n  ),\n  mode = \"regression\"\n)"
+  },
+  {
+    "objectID": "madrid-2026/index.html#fitting-the-model",
+    "href": "madrid-2026/index.html#fitting-the-model",
+    "title": "kerasnip presentations",
+    "section": "Fitting the Model",
+    "text": "Fitting the Model\n# Data Prep\nrec &lt;- recipe(price ~ carat + cut + color, data = diamonds) |&gt;\n  step_dummy(all_nominal_predictors()) |&gt;\n  step_normalize(all_numeric_predictors())\n\n# Model Spec\nspec &lt;- diamond_mlp(\n  num_body = 3, \n  body_units = 64,\n  fit_epochs = 20\n) |&gt;\n  set_engine(\"keras\")\n\n# Workflow\nwf &lt;- workflow(rec, spec)\nfit(wf, data = diamonds[1:1000,])"
+  },
+  {
+    "objectID": "madrid-2026/index.html#conclusion",
+    "href": "madrid-2026/index.html#conclusion",
+    "title": "kerasnip presentations",
+    "section": "Conclusion",
+    "text": "Conclusion\nkerasnip enables: 1. Consistency: Use standard tidymodels verbs. 2. Flexibility: Build complex Keras models dynamically. 3. Tuning: Tune architecture parameters (depth, width) as easily as hyperparameters."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "kerasnip presentations",
+    "section": "",
+    "text": "Welcome to the kerasnip presentations repository\nHere you can find slides from various talks and workshops about the kerasnip package.\n\nAvailable Presentations\n\nMadrid R Group (02-2026)\nA Bridge Between ‘keras’ and ‘tidymodels’"
+  }
+]

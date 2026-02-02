@@ -1,0 +1,51 @@
+[
+  {
+    "objectID": "madrid-2026/index.html#introducción",
+    "href": "madrid-2026/index.html#introducción",
+    "title": "Presentaciones de kerasnip",
+    "section": "Introducción",
+    "text": "Introducción\nkerasnip proporciona un puente fluido entre:\n\n🧱 keras: Framework de aprendizaje profundo\n🧹 tidymodels: Principios de machine learning “tidy”\n\nPermite la creación dinámica de especificaciones de modelos."
+  },
+  {
+    "objectID": "madrid-2026/index.html#planteamiento-del-problema",
+    "href": "madrid-2026/index.html#planteamiento-del-problema",
+    "title": "Presentaciones de kerasnip",
+    "section": "Planteamiento del Problema",
+    "text": "Planteamiento del Problema\nInteractuar con Keras a menudo requiere una mentalidad diferente al flujo de trabajo estándar de tidymodels.\nkerasnip tiene como objetivo unificar esto permitiéndole definir arquitecturas Keras utilizando una sintaxis similar a parsnip."
+  },
+  {
+    "objectID": "madrid-2026/index.html#funciones-clave",
+    "href": "madrid-2026/index.html#funciones-clave",
+    "title": "Presentaciones de kerasnip",
+    "section": "Funciones Clave",
+    "text": "Funciones Clave\n\ncreate_keras_sequential_spec(): Para pilas lineales de capas.\ncreate_keras_functional_spec(): Para grafos complejos (DAGs).\nfit(): Genérico de ajuste estándar de tidymodels."
+  },
+  {
+    "objectID": "madrid-2026/index.html#ejemplo-regresión-con-diamantes",
+    "href": "madrid-2026/index.html#ejemplo-regresión-con-diamantes",
+    "title": "Presentaciones de kerasnip",
+    "section": "Ejemplo: Regresión con Diamantes",
+    "text": "Ejemplo: Regresión con Diamantes\nEn lugar de mtcars, veamos la predicción de precios de diamantes.\nlibrary(kerasnip)\nlibrary(tidymodels)\nlibrary(keras3)\n\n# 1. Definir bloques\ninput_block &lt;- function(model, input_shape) {\n  keras_model_sequential(input_shape = input_shape)\n}\n\ndense_block &lt;- function(model, units = 128) {\n  model |&gt; layer_dense(units = units, activation = \"relu\")\n}\n\noutput_block &lt;- function(model) {\n  model |&gt; layer_dense(units = 1)\n}\n\n# 2. Crear Especificación\ncreate_keras_sequential_spec(\n  model_name = \"diamond_mlp\",\n  layer_blocks = list(\n    input = input_block,\n    body = dense_block,\n    output = output_block\n  ),\n  mode = \"regression\"\n)"
+  },
+  {
+    "objectID": "madrid-2026/index.html#ajuste-del-modelo",
+    "href": "madrid-2026/index.html#ajuste-del-modelo",
+    "title": "Presentaciones de kerasnip",
+    "section": "Ajuste del Modelo",
+    "text": "Ajuste del Modelo\n# Preparación de Datos\nrec &lt;- recipe(price ~ carat + cut + color, data = diamonds) |&gt;\n  step_dummy(all_nominal_predictors()) |&gt;\n  step_normalize(all_numeric_predictors())\n\n# Especificación del Modelo\nspec &lt;- diamond_mlp(\n  num_body = 3, \n  body_units = 64,\n  fit_epochs = 20\n) |&gt;\n  set_engine(\"keras\")\n\n# Flujo de Trabajo\nwf &lt;- workflow(rec, spec)\nfit(wf, data = diamonds[1:1000,])"
+  },
+  {
+    "objectID": "madrid-2026/index.html#conclusión",
+    "href": "madrid-2026/index.html#conclusión",
+    "title": "Presentaciones de kerasnip",
+    "section": "Conclusión",
+    "text": "Conclusión\nkerasnip permite: 1. Consistencia: Usar verbos estándar de tidymodels. 2. Flexibilidad: Construir modelos Keras complejos dinámicamente. 3. Ajuste: Ajustar parámetros de arquitectura (profundidad, ancho) tan fácilmente como hiperparámetros."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "kerasnip presentations",
+    "section": "",
+    "text": "Bienvenidos al repositorio de presentaciones de kerasnip\nAquí encontrará diapositivas de varias charlas y talleres sobre el paquete kerasnip.\n\nPresentaciones Disponibles\n\nGrupo de Usuarios de R de Madrid (02-2026)\nUn Puente entre ‘keras’ y ‘tidymodels’"
+  }
+]
