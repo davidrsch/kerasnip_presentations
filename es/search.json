@@ -1,45 +1,59 @@
 [
   {
-    "objectID": "madrid-2026/index.html#introducción",
-    "href": "madrid-2026/index.html#introducción",
+    "objectID": "madrid-2026/index.html#el-panorama",
+    "href": "madrid-2026/index.html#el-panorama",
     "title": "Presentaciones de kerasnip",
-    "section": "Introducción",
-    "text": "Introducción\nkerasnip proporciona un puente fluido entre:\n\n🧱 keras: Framework de aprendizaje profundo\n🧹 tidymodels: Principios de machine learning “tidy”\n\nPermite la creación dinámica de especificaciones de modelos."
+    "section": "El Panorama",
+    "text": "El Panorama\n\n\n🧱 Keras (vía keras3)\n\nDeep Learning\nCentrado en Tensores\nAgnóstico del Backend\nGrafos arbitrarios de capas\n\n\n🧹 Tidymodels\n\nMachine Learning\nCentrado en Dataframe\nInterfaz unificada (fit, predict)\nTuning estandarizado\n\n\nLa Brecha: Usar tune_grid() para optimizar la topología (profundidad/ancho) es difícil porque parsnip espera argumentos fijos, mientra que Keras son grafos flexibles."
   },
   {
-    "objectID": "madrid-2026/index.html#planteamiento-del-problema",
-    "href": "madrid-2026/index.html#planteamiento-del-problema",
+    "objectID": "madrid-2026/index.html#contexto-del-ecosistema",
+    "href": "madrid-2026/index.html#contexto-del-ecosistema",
     "title": "Presentaciones de kerasnip",
-    "section": "Planteamiento del Problema",
-    "text": "Planteamiento del Problema\nInteractuar con Keras a menudo requiere una mentalidad diferente al flujo de trabajo estándar de tidymodels.\nkerasnip tiene como objetivo unificar esto permitiéndole definir arquitecturas Keras utilizando una sintaxis similar a parsnip."
+    "section": "Contexto del Ecosistema",
+    "text": "Contexto del Ecosistema\n\n\n\n\n\n\n\n\nPaquete\nRol\nLimitación\n\n\n\n\nreticulate\nPuente Python\nBajo nivel, sin flujo ML\n\n\nkeras3\nInterfaz R\nSin integración nativa tune()\n\n\nluz/brulee\nTorch + Tidymodels\nSolo backend Torch\n\n\nkerasnip\nKeras + Tidymodels\nUne flexibilidad Keras con flujo Tidymodels"
   },
   {
-    "objectID": "madrid-2026/index.html#funciones-clave",
-    "href": "madrid-2026/index.html#funciones-clave",
+    "objectID": "madrid-2026/index.html#la-solución-specs-dinámicos",
+    "href": "madrid-2026/index.html#la-solución-specs-dinámicos",
     "title": "Presentaciones de kerasnip",
-    "section": "Funciones Clave",
-    "text": "Funciones Clave\n\ncreate_keras_sequential_spec(): Para pilas lineales de capas.\ncreate_keras_functional_spec(): Para grafos complejos (DAGs).\nfit(): Genérico de ajuste estándar de tidymodels."
+    "section": "La Solución: Specs Dinámicos",
+    "text": "La Solución: Specs Dinámicos\nkerasnip es un Constructor de Modelos, no un Zoo.\n\nDefinir Bloques: Funciones que devuelven capas Keras.\nMeta-programar Spec: create_keras_*_spec() genera un modelo parsnip.\nAjustar Estructura: Argumentos (y conteo) de bloques son hiperparámetros."
   },
   {
-    "objectID": "madrid-2026/index.html#ejemplo-regresión-con-diamantes",
-    "href": "madrid-2026/index.html#ejemplo-regresión-con-diamantes",
+    "objectID": "madrid-2026/index.html#flujo-1-api-secuencial-regresión",
+    "href": "madrid-2026/index.html#flujo-1-api-secuencial-regresión",
     "title": "Presentaciones de kerasnip",
-    "section": "Ejemplo: Regresión con Diamantes",
-    "text": "Ejemplo: Regresión con Diamantes\nEn lugar de mtcars, veamos la predicción de precios de diamantes.\nlibrary(kerasnip)\nlibrary(tidymodels)\nlibrary(keras3)\n\n# 1. Definir bloques\ninput_block &lt;- function(model, input_shape) {\n  keras_model_sequential(input_shape = input_shape)\n}\n\ndense_block &lt;- function(model, units = 128) {\n  model |&gt; layer_dense(units = units, activation = \"relu\")\n}\n\noutput_block &lt;- function(model) {\n  model |&gt; layer_dense(units = 1)\n}\n\n# 2. Crear Especificación\ncreate_keras_sequential_spec(\n  model_name = \"diamond_mlp\",\n  layer_blocks = list(\n    input = input_block,\n    body = dense_block,\n    output = output_block\n  ),\n  mode = \"regression\"\n)"
+    "section": "Flujo 1: API Secuencial (Regresión)",
+    "text": "Flujo 1: API Secuencial (Regresión)\nMeta: Predecir precios de Diamantes. Ajustar profundidad y ancho.\n# 1. Definir \"Bloque Cuerpo\" repetible\ndense_block &lt;- function(model, units = 128) {\n  model |&gt; layer_dense(units = units, activation = \"relu\")\n}\n\n# 2. Generar función parsnip 'diamond_mlp'\ncreate_keras_sequential_spec(\n  model_name = \"diamond_mlp\",\n  layer_blocks = list(\n    input = input_block,\n    body = dense_block,  # &lt;--- Bloque repetible\n    output = output_block\n  ),\n  mode = \"regression\"\n)"
   },
   {
-    "objectID": "madrid-2026/index.html#ajuste-del-modelo",
-    "href": "madrid-2026/index.html#ajuste-del-modelo",
+    "objectID": "madrid-2026/index.html#ajuste-estructural",
+    "href": "madrid-2026/index.html#ajuste-estructural",
     "title": "Presentaciones de kerasnip",
-    "section": "Ajuste del Modelo",
-    "text": "Ajuste del Modelo\n# Preparación de Datos\nrec &lt;- recipe(price ~ carat + cut + color, data = diamonds) |&gt;\n  step_dummy(all_nominal_predictors()) |&gt;\n  step_normalize(all_numeric_predictors())\n\n# Especificación del Modelo\nspec &lt;- diamond_mlp(\n  num_body = 3, \n  body_units = 64,\n  fit_epochs = 20\n) |&gt;\n  set_engine(\"keras\")\n\n# Flujo de Trabajo\nwf &lt;- workflow(rec, spec)\nfit(wf, data = diamonds[1:1000,])"
+    "section": "Ajuste Estructural",
+    "text": "Ajuste Estructural\nTratamos la topología como hiperparámetro.\n# 3. Definir especificación ajustable\nspec &lt;- diamond_mlp(\n  num_body = tune(),       # &lt;--- Ajusta Profundidad (ej. 1, 2, o 3 capas)\n  body_units = tune(),     # &lt;--- Ajusta Ancho (ej. 64 vs 128 unidades)\n  fit_epochs = 20\n) |&gt;\n  set_engine(\"keras\")\nLos argumentos num_{block} son generados automáticamente por kerasnip.\n\nValor clave: num_body permite buscar topología dentro de un grid_search estándar."
   },
   {
-    "objectID": "madrid-2026/index.html#conclusión",
-    "href": "madrid-2026/index.html#conclusión",
+    "objectID": "madrid-2026/index.html#flujo-2-api-funcional-multi-input",
+    "href": "madrid-2026/index.html#flujo-2-api-funcional-multi-input",
     "title": "Presentaciones de kerasnip",
-    "section": "Conclusión",
-    "text": "Conclusión\nkerasnip permite: 1. Consistencia: Usar verbos estándar de tidymodels. 2. Flexibilidad: Construir modelos Keras complejos dinámicamente. 3. Ajuste: Ajustar parámetros de arquitectura (profundidad, ancho) tan fácilmente como hiperparámetros."
+    "section": "Flujo 2: API Funcional (Multi-Input)",
+    "text": "Flujo 2: API Funcional (Multi-Input)\nMeta: Atrición de Empleados (Clasificación). - Rama A: Personal (Edad, Distancia, Educación). - Rama B: Trabajo (Rol, Horas Extra, Depto).\ncreate_keras_functional_spec(\n  model_name = \"attrition_net\",\n  layer_blocks = list(\n    # Entradas y Ramas\n    personal_input = input_pers_block,\n    work_input = input_work_block,\n    \n    proc_personal = inp_spec(dense_block, \"personal_input\"),\n    proc_work     = inp_spec(dense_block, \"work_input\"),\n    \n    # Unión y Salida\n    joined = inp_spec(omit_concat, c(a=\"proc_personal\", b=\"proc_work\")),\n    output = inp_spec(out_block, \"joined\")\n  ),\n  mode = \"classification\"\n)\ninp_spec(func, inputs) mapea explícitamente salidas de un bloque a argumentos de otro.\n\nUsamos datos de Atrición aquí (diferente al paper - Ames). Procesar info personal vs laboral por separado permite aprender representaciones distintas antes de unir."
+  },
+  {
+    "objectID": "madrid-2026/index.html#ventajas-y-limitaciones",
+    "href": "madrid-2026/index.html#ventajas-y-limitaciones",
+    "title": "Presentaciones de kerasnip",
+    "section": "Ventajas y Limitaciones",
+    "text": "Ventajas y Limitaciones\nVentajas\n\nParidad: Usa recipes, workflows, y tune igual que con glmnet.\nReproducibilidad: La topología es código. Control de versiones total.\nExtensibilidad: Envuelve cualquier capa Keras (Transformers, RNNs) en un bloque.\n\nLimitaciones\n\nBloques Manuales: Sin bloques “ResNet50” pre-hechos (debes definirlos).\nLoss Functions: Integración profunda de losses custom requiere “boilerplate”."
+  },
+  {
+    "objectID": "madrid-2026/index.html#hoja-de-ruta",
+    "href": "madrid-2026/index.html#hoja-de-ruta",
+    "title": "Presentaciones de kerasnip",
+    "section": "Hoja de Ruta",
+    "text": "Hoja de Ruta\n\n📦 Plantillas: Helpers de alto nivel para CNN/Transformers.\n💾 tfdatasets: Integración nativa para carga eficiente de datos.\n🔧 Fine-tuning: Flujos para adaptar modelos pre-entrenados.\n\nRecursos\n\n📦 Paquete: davidrsch/kerasnip\n📑 Docs: davidrsch.github.io/kerasnip\n🐦 Twitter: @davidrsch"
   },
   {
     "objectID": "index.html",

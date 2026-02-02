@@ -94,7 +94,8 @@
     code span.vs { color: #20794d; } /* VerbatimString */
     code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
-  <link rel="stylesheet" href="../site_libs/revealjs/dist/theme/quarto-534cd8e3a96973385dffff3f4709048d.css">
+  <link rel="stylesheet" href="../site_libs/revealjs/dist/theme/quarto-ef6dc3a80e862878b59a78c043842f47.css">
+  <link rel="stylesheet" href="../styles.css">
   <link href="../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -197,84 +198,209 @@
 <h1>A Bridge Between ‘keras’ and ‘tidymodels’</h1>
 
 </section>
-<h3 id="madrid-r-group">Madrid R Group</h3>
-<h3 id="february-2026">February 2026</h3>
-<p><br> <strong>Package Version: 0.1.0.900</strong></p>
-<section id="introduction" class="slide level2">
-<h2>Introduction</h2>
-<p><code>kerasnip</code> provides a seamless bridge between:</p>
+<h3 id="madrid-r-group-february-2026">Madrid R Group | February 2026</h3>
+<p><strong>Package Version: 0.1.0.900</strong></p>
+<aside class="notes">
+<p><strong>Topic: Introduction</strong> - Welcome. David Díaz. - <code>kerasnip</code>: bridging deep learning (Keras) and tidy machine learning (Tidymodels).</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+<section id="the-landscape" class="slide level2">
+<h2>The Landscape</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<h3 id="keras-via-keras3">🧱 Keras (via <code>keras3</code>)</h3>
 <ul>
-<li>🧱 <strong>keras</strong>: Deep learning framework</li>
-<li>🧹 <strong>tidymodels</strong>: Tidy machine learning principles</li>
+<li><strong>Deep Learning</strong></li>
+<li>Tensor-centric &amp; Imperative</li>
+<li>Backend agnostic (TF, JAX, Torch)</li>
+<li>Arbitrary graphs of layers</li>
 </ul>
-<p>It allows dynamic creation of model specifications.</p>
-</section>
-<section id="problem-statement" class="slide level2">
-<h2>Problem Statement</h2>
-<p>Interacting with Keras often requires a different mindset than the standard <code>tidymodels</code> workflow.</p>
-<p><code>kerasnip</code> aims to unify this by allowing you to define Keras architectures using a <code>parsnip</code>-like syntax.</p>
-</section>
-<section id="key-functions" class="slide level2">
-<h2>Key Functions</h2>
+</div><div class="column" style="width:50%;">
+<h3 id="tidymodels">🧹 Tidymodels</h3>
 <ul>
-<li><code>create_keras_sequential_spec()</code>: For linear stacks of layers.</li>
-<li><code>create_keras_functional_spec()</code>: For complex graphs (DAGs).</li>
-<li><code>fit()</code>: Standard tidymodels fit generic.</li>
+<li><strong>Machine Learning</strong></li>
+<li>Dataframe-centric &amp; Declarative</li>
+<li>Unified interface (<code>fit</code>, <code>predict</code>)</li>
+<li>Standardized tuning</li>
+</ul>
+</div></div>
+<p><strong>The Gap</strong>: Using <code>tune_grid()</code> to optimize Neural Network topology (depth/width) is difficult because <code>parsnip</code> expects fixed arguments, while Keras models are arbitrary graphs.</p>
+<aside class="notes">
+<p>Keras is great for building; Tidymodels is great for workflow. The gap is in <strong>architectural tuning</strong>.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="ecosystem-context" class="slide level2">
+<h2>Ecosystem Context</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 22%">
+<col style="width: 44%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Package</th>
+<th>Role</th>
+<th>Limitation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>reticulate</code></td>
+<td>Python Bridge</td>
+<td>Low-level, no ML workflow</td>
+</tr>
+<tr class="even">
+<td><code>keras3</code></td>
+<td>R Interface</td>
+<td>No native <code>tune()</code> integration</td>
+</tr>
+<tr class="odd">
+<td><code>luz</code>/<code>brulee</code></td>
+<td>Torch + Tidymodels</td>
+<td>Torch-only backend</td>
+</tr>
+<tr class="even">
+<td><strong><code>kerasnip</code></strong></td>
+<td><strong>Keras + Tidymodels</strong></td>
+<td><strong>Bridges Keras flexibility with Tidymodels workflows</strong></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="the-solution-dynamic-specs" class="slide level2">
+<h2>The Solution: Dynamic Specs</h2>
+<p><code>kerasnip</code> is a <strong>Model Builder</strong>, not a Model Zoo.</p>
+<ol type="1">
+<li><strong>Define Blocks</strong>: Functions returning Keras layers.</li>
+<li><strong>Meta-program Spec</strong>: <code>create_keras_*_spec()</code> generates a new <code>parsnip</code> model.</li>
+<li><strong>Tune Structure</strong>: Block arguments (and repetition count) can be tuned.</li>
+</ol>
+</section>
+<section id="workflow-1-sequential-api-regression" class="slide level2">
+<h2>Workflow 1: Sequential API (Regression)</h2>
+<p><strong>Goal</strong>: Predict Diamond Prices. Tune architecture depth and width.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="co"># 1. Define a "Body Block" that can be repeated</span></span>
+<span id="cb1-2"><a></a>dense_block <span class="ot">&lt;-</span> <span class="cf">function</span>(model, <span class="at">units =</span> <span class="dv">128</span>) {</span>
+<span id="cb1-3"><a></a>  model <span class="sc">|&gt;</span> <span class="fu">layer_dense</span>(<span class="at">units =</span> units, <span class="at">activation =</span> <span class="st">"relu"</span>)</span>
+<span id="cb1-4"><a></a>}</span>
+<span id="cb1-5"><a></a></span>
+<span id="cb1-6"><a></a><span class="co"># 2. Generate the parsnip model function 'diamond_mlp'</span></span>
+<span id="cb1-7"><a></a><span class="fu">create_keras_sequential_spec</span>(</span>
+<span id="cb1-8"><a></a>  <span class="at">model_name =</span> <span class="st">"diamond_mlp"</span>,</span>
+<span id="cb1-9"><a></a>  <span class="at">layer_blocks =</span> <span class="fu">list</span>(</span>
+<span id="cb1-10"><a></a>    <span class="at">input =</span> input_block,</span>
+<span id="cb1-11"><a></a>    <span class="at">body =</span> dense_block,  <span class="co"># &lt;--- This block will be repeatable</span></span>
+<span id="cb1-12"><a></a>    <span class="at">output =</span> output_block</span>
+<span id="cb1-13"><a></a>  ),</span>
+<span id="cb1-14"><a></a>  <span class="at">mode =</span> <span class="st">"regression"</span></span>
+<span id="cb1-15"><a></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="structural-tuning" class="slide level2">
+<h2>Structural Tuning</h2>
+<p>We treat <strong>topology</strong> as a hyperparameter.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a><span class="co"># 3. Define the tunable specification</span></span>
+<span id="cb2-2"><a></a>spec <span class="ot">&lt;-</span> <span class="fu">diamond_mlp</span>(</span>
+<span id="cb2-3"><a></a>  <span class="at">num_body =</span> <span class="fu">tune</span>(),       <span class="co"># &lt;--- Tunes Depth (e.g., 1, 2, or 3 layers)</span></span>
+<span id="cb2-4"><a></a>  <span class="at">body_units =</span> <span class="fu">tune</span>(),     <span class="co"># &lt;--- Tunes Width (e.g., 64 vs 128 units)</span></span>
+<span id="cb2-5"><a></a>  <span class="at">fit_epochs =</span> <span class="dv">20</span></span>
+<span id="cb2-6"><a></a>) <span class="sc">|&gt;</span></span>
+<span id="cb2-7"><a></a>  <span class="fu">set_engine</span>(<span class="st">"keras"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The arguments <code>num_{block}</code> are automatically generated by <code>kerasnip</code> for any block in the sequential spec.</p>
+<aside class="notes">
+<p>Key value prop: <code>num_body</code> allows searching topology inside a standard <code>grid_search</code>.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="workflow-2-functional-api-multi-input" class="slide level2">
+<h2>Workflow 2: Functional API (Multi-Input)</h2>
+<p><strong>Goal</strong>: Employee Attrition (Classification). - <strong>Branch A</strong>: Personal (Age, Distance, Education). - <strong>Branch B</strong>: Work (JobRole, OverTime, Dept).</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a><span class="fu">create_keras_functional_spec</span>(</span>
+<span id="cb3-2"><a></a>  <span class="at">model_name =</span> <span class="st">"attrition_net"</span>,</span>
+<span id="cb3-3"><a></a>  <span class="at">layer_blocks =</span> <span class="fu">list</span>(</span>
+<span id="cb3-4"><a></a>    <span class="co"># Inputs &amp; Branches</span></span>
+<span id="cb3-5"><a></a>    <span class="at">personal_input =</span> input_pers_block,</span>
+<span id="cb3-6"><a></a>    <span class="at">work_input =</span> input_work_block,</span>
+<span id="cb3-7"><a></a>    </span>
+<span id="cb3-8"><a></a>    <span class="at">proc_personal =</span> <span class="fu">inp_spec</span>(dense_block, <span class="st">"personal_input"</span>),</span>
+<span id="cb3-9"><a></a>    <span class="at">proc_work     =</span> <span class="fu">inp_spec</span>(dense_block, <span class="st">"work_input"</span>),</span>
+<span id="cb3-10"><a></a>    </span>
+<span id="cb3-11"><a></a>    <span class="co"># Join &amp; Output</span></span>
+<span id="cb3-12"><a></a>    <span class="at">joined =</span> <span class="fu">inp_spec</span>(omit_concat, <span class="fu">c</span>(<span class="at">a=</span><span class="st">"proc_personal"</span>, <span class="at">b=</span><span class="st">"proc_work"</span>)),</span>
+<span id="cb3-13"><a></a>    <span class="at">output =</span> <span class="fu">inp_spec</span>(out_block, <span class="st">"joined"</span>)</span>
+<span id="cb3-14"><a></a>  ),</span>
+<span id="cb3-15"><a></a>  <span class="at">mode =</span> <span class="st">"classification"</span></span>
+<span id="cb3-16"><a></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>inp_spec(func, inputs)</code> explicitly maps outputs of one block to arguments of another.</p>
+<aside class="notes">
+<p>We use <code>Attrition</code> dataset here (different from paper’s Ames). Processing personal vs work info separately lets the network learn distinct representations before merging.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="advantages-limitations" class="slide level2">
+<h2>Advantages &amp; Limitations</h2>
+<h3 id="advantages">Advantages</h3>
+<ol type="1">
+<li><strong>Workflow Parity</strong>: Use <code>recipes</code>, <code>workflows</code>, and <code>tune</code> exactly like <code>glmnet</code>.</li>
+<li><strong>Reproducibility</strong>: Topology is code. Version control your architecture.</li>
+<li><strong>Extensibility</strong>: Wrap <em>any</em> Keras layer (Transformers, RNNs) into a block.</li>
+</ol>
+<h3 id="limitations">Limitations</h3>
+<ul>
+<li><strong>Manual Blocking</strong>: No pre-shipped “ResNet50” blocks yet (you must define them).</li>
+<li><strong>Custom Losses</strong>: Integration requires some boilerplate for custom objects.</li>
 </ul>
 </section>
-<section id="example-regression-on-diamonds" class="slide level2">
-<h2>Example: Regression on Diamonds</h2>
-<p>Instead of <code>mtcars</code>, let’s look at predicting diamond prices.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">library</span>(kerasnip)</span>
-<span id="cb1-2"><a></a><span class="fu">library</span>(tidymodels)</span>
-<span id="cb1-3"><a></a><span class="fu">library</span>(keras3)</span>
-<span id="cb1-4"><a></a></span>
-<span id="cb1-5"><a></a><span class="co"># 1. Define blocks</span></span>
-<span id="cb1-6"><a></a>input_block <span class="ot">&lt;-</span> <span class="cf">function</span>(model, input_shape) {</span>
-<span id="cb1-7"><a></a>  <span class="fu">keras_model_sequential</span>(<span class="at">input_shape =</span> input_shape)</span>
-<span id="cb1-8"><a></a>}</span>
-<span id="cb1-9"><a></a></span>
-<span id="cb1-10"><a></a>dense_block <span class="ot">&lt;-</span> <span class="cf">function</span>(model, <span class="at">units =</span> <span class="dv">128</span>) {</span>
-<span id="cb1-11"><a></a>  model <span class="sc">|&gt;</span> <span class="fu">layer_dense</span>(<span class="at">units =</span> units, <span class="at">activation =</span> <span class="st">"relu"</span>)</span>
-<span id="cb1-12"><a></a>}</span>
-<span id="cb1-13"><a></a></span>
-<span id="cb1-14"><a></a>output_block <span class="ot">&lt;-</span> <span class="cf">function</span>(model) {</span>
-<span id="cb1-15"><a></a>  model <span class="sc">|&gt;</span> <span class="fu">layer_dense</span>(<span class="at">units =</span> <span class="dv">1</span>)</span>
-<span id="cb1-16"><a></a>}</span>
-<span id="cb1-17"><a></a></span>
-<span id="cb1-18"><a></a><span class="co"># 2. Create Spec</span></span>
-<span id="cb1-19"><a></a><span class="fu">create_keras_sequential_spec</span>(</span>
-<span id="cb1-20"><a></a>  <span class="at">model_name =</span> <span class="st">"diamond_mlp"</span>,</span>
-<span id="cb1-21"><a></a>  <span class="at">layer_blocks =</span> <span class="fu">list</span>(</span>
-<span id="cb1-22"><a></a>    <span class="at">input =</span> input_block,</span>
-<span id="cb1-23"><a></a>    <span class="at">body =</span> dense_block,</span>
-<span id="cb1-24"><a></a>    <span class="at">output =</span> output_block</span>
-<span id="cb1-25"><a></a>  ),</span>
-<span id="cb1-26"><a></a>  <span class="at">mode =</span> <span class="st">"regression"</span></span>
-<span id="cb1-27"><a></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="fitting-the-model" class="slide level2">
-<h2>Fitting the Model</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a><span class="co"># Data Prep</span></span>
-<span id="cb2-2"><a></a>rec <span class="ot">&lt;-</span> <span class="fu">recipe</span>(price <span class="sc">~</span> carat <span class="sc">+</span> cut <span class="sc">+</span> color, <span class="at">data =</span> diamonds) <span class="sc">|&gt;</span></span>
-<span id="cb2-3"><a></a>  <span class="fu">step_dummy</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">|&gt;</span></span>
-<span id="cb2-4"><a></a>  <span class="fu">step_normalize</span>(<span class="fu">all_numeric_predictors</span>())</span>
-<span id="cb2-5"><a></a></span>
-<span id="cb2-6"><a></a><span class="co"># Model Spec</span></span>
-<span id="cb2-7"><a></a>spec <span class="ot">&lt;-</span> <span class="fu">diamond_mlp</span>(</span>
-<span id="cb2-8"><a></a>  <span class="at">num_body =</span> <span class="dv">3</span>, </span>
-<span id="cb2-9"><a></a>  <span class="at">body_units =</span> <span class="dv">64</span>,</span>
-<span id="cb2-10"><a></a>  <span class="at">fit_epochs =</span> <span class="dv">20</span></span>
-<span id="cb2-11"><a></a>) <span class="sc">|&gt;</span></span>
-<span id="cb2-12"><a></a>  <span class="fu">set_engine</span>(<span class="st">"keras"</span>)</span>
-<span id="cb2-13"><a></a></span>
-<span id="cb2-14"><a></a><span class="co"># Workflow</span></span>
-<span id="cb2-15"><a></a>wf <span class="ot">&lt;-</span> <span class="fu">workflow</span>(rec, spec)</span>
-<span id="cb2-16"><a></a><span class="fu">fit</span>(wf, <span class="at">data =</span> diamonds[<span class="dv">1</span><span class="sc">:</span><span class="dv">1000</span>,])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="conclusion" class="slide level2">
-<h2>Conclusion</h2>
-<p><code>kerasnip</code> enables: 1. <strong>Consistency</strong>: Use standard tidymodels verbs. 2. <strong>Flexibility</strong>: Build complex Keras models dynamically. 3. <strong>Tuning</strong>: Tune architecture parameters (depth, width) as easily as hyperparameters.</p>
+<section id="roadmap" class="slide level2">
+<h2>Roadmap</h2>
+<ul>
+<li>📦 <strong>Templates</strong>: High-level helpers for common architectures (CNN/Transformers).</li>
+<li>💾 <strong>tfdatasets</strong>: Native integration for out-of-memory data loading.</li>
+<li>🔧 <strong>Fine-tuning</strong>: Workflows for adapting pre-trained models.</li>
+</ul>
+<h3 id="resources">Resources</h3>
+<ul>
+<li>📦 <strong>Package</strong>: <code>davidrsch/kerasnip</code></li>
+<li>📑 <strong>Docs</strong>: davidrsch.github.io/kerasnip</li>
+<li>🐦 <strong>Twitter</strong>: <code>@davidrsch</code></li>
+</ul>
 
 
 </section></section>
@@ -460,12 +586,17 @@
         // The "normal" size of the presentation, aspect ratio will be preserved
         // when the presentation is scaled to fit different resolutions. Can be
         // specified using percentage units.
-        width: 1050,
+        width: 1280,
 
-        height: 700,
+        height: 720,
 
         // Factor of the display size that should remain empty around the content
-        margin: 0.1,
+        margin: 5.0e-2,
+
+        // Bounds for smallest/largest possible scale to apply to content
+        minScale: 0.2,
+
+        maxScale: 2,
 
         math: {
           mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
