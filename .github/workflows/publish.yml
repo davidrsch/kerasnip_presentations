@@ -36,6 +36,9 @@ jobs:
       - name: Render Spanish Profile
         run: quarto render . --profile spanish
 
+      - name: Create .nojekyll
+        run: touch _site/.nojekyll
+
       - name: Publish to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
