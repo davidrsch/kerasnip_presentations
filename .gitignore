@@ -1,5 +1,6 @@
 /.quarto/
 /_site/
+/_freeze/
 .DS_Store
 .Rproj.user
 .Rhistory
@@ -7,3 +8,10 @@
 *.Ruserdata
 
 **/*.quarto_ipynb
+
+# madrid-2026 rendered/cached artifacts (keep repo clean)
+/madrid-2026/index_cache/
+/madrid-2026/index_files/
+/madrid-2026/results/
+/madrid-2026/madrid-2026/
+/madrid-2026/index.qmd.bak

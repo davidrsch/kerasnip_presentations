@@ -17,10 +17,10 @@ $presentation-title-slide-background-color: #f0f1f2;
     font-size: 0.4em;
 }
 
-/* Reduce standard slide padding */
+/* Aggressively reduce slide padding */
 .reveal .slides>section {
     padding: 0px !important;
-    margin-top: 20px !important;
+    margin-top: 0px !important;
 }
 
 /* Compact headers */
@@ -28,19 +28,18 @@ $presentation-title-slide-background-color: #f0f1f2;
 .reveal h2,
 .reveal h3,
 .reveal h4 {
+    margin-top: 0px;
     margin-bottom: 0.2em;
 }
 
 /* Compact paragraphs and lists */
 .reveal p {
-    margin-bottom: 0.5em;
+    margin: 0 0 0.3em 0;
 }
 
-.reveal ul {
-    display: block;
-}
-
+.reveal ul,
 .reveal ol {
+    margin: 0 0 0.3em 1em;
     display: block;
 }
 
@@ -50,8 +49,8 @@ $presentation-title-slide-background-color: #f0f1f2;
 
 /* Code block spacing */
 .reveal pre {
-    margin-top: 0.5em;
-    margin-bottom: 0.5em;
+    margin-top: 0.2em;
+    margin-bottom: 0.2em;
     width: 100%;
 }
 
@@ -61,14 +60,27 @@ $presentation-title-slide-background-color: #f0f1f2;
     padding: 0.2em 0.5em;
     font-size: 0.9em;
     width: 95%;
+    margin: 0.2em 0;
 }
 
 /* Title slide adjustments */
-.title-slide h1 {
-    font-size: 2.5em;
+.reveal .slides>section.title-slide {
+    padding: 30px 40px !important;
+}
+
+.reveal section.title-slide h1,
+.reveal section.title-slide h2 {
+    font-size: 2.2em;
+    margin-bottom: 0.5em;
+    color: #BF281B !important;
+}
+
+.reveal section.title-slide.center {
+    text-align: left;
 }
 
 .title-slide h3 {
-    font-size: 1.5em;
+    font-size: 1.3em;
     color: #666;
+    margin-bottom: 0.5em;
 }

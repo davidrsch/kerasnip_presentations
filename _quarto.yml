@@ -23,3 +23,4 @@ format:
     theme: [default, theme.scss]
     logo: images/logo.png
     footer: "kerasnip v0.1.0.900"
+    center: false
