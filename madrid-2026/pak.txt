@@ -8,4 +8,4 @@ cran::rmarkdown
 cran::tidymodels
 cran::keras3
 
-github::davidrsch/kerasnip@main
+github::davidrsch/kerasnip@763f689beddf50c47376efb8ee12cb68969bfe29
