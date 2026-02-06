@@ -1,0 +1,11 @@
+# R package dependencies for the madrid-2026 talk
+# One spec per line. Supported formats include:
+# - cran::pkg
+# - github::owner/repo@ref
+
+cran::knitr
+cran::rmarkdown
+cran::tidymodels
+cran::keras3
+
+github::davidrsch/kerasnip@main
