@@ -50,7 +50,13 @@ if (requireNamespace("renv", quietly = TRUE)) {
   }
 
   if (!nzchar(project_dir)) {
-    project_dir <- normalizePath(getwd(), winslash = "/", mustWork = FALSE)
+    # CI can render from the repo root; in that case, explicitly fall back to
+    # this presentation's folder so we don't silently load the wrong project.
+    if (!file.exists("renv.lock") && file.exists(file.path("presentations", "madrid-2-2026", "renv.lock"))) {
+      project_dir <- normalizePath(file.path("presentations", "madrid-2-2026"), winslash = "/", mustWork = FALSE)
+    } else {
+      project_dir <- normalizePath(getwd(), winslash = "/", mustWork = FALSE)
+    }
   }
 
   renv::load(project = project_dir)
