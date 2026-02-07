@@ -37,8 +37,16 @@ jobs:
           packages: |
             any::renv
 
-      - name: Restore renv (madrid-2026)
-        run: Rscript -e "renv::restore(project = 'madrid-2026', prompt = FALSE)"
+      - name: Restore renv (all presentations)
+        shell: bash
+        run: |
+          set -euo pipefail
+          while IFS= read -r -d '' lock; do
+            proj_dir="$(dirname "$lock")"
+            proj_dir="${proj_dir#./}"
+            echo "Restoring renv for: ${proj_dir}"
+            Rscript -e "renv::restore(project = '${proj_dir}', prompt = FALSE)"
+          done < <(find . -name renv.lock -print0)
 
       - name: Render English Profile
         run: quarto render . --profile english

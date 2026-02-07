@@ -9,9 +9,9 @@
 
 **/*.quarto_ipynb
 
-# madrid-2026 rendered/cached artifacts (keep repo clean)
-/madrid-2026/index_cache/
-/madrid-2026/index_files/
-/madrid-2026/results/
-/madrid-2026/madrid-2026/
-/madrid-2026/index.qmd.bak
+# presentations/madrid-2-2026 rendered/cached artifacts (keep repo clean)
+/presentations/madrid-2-2026/index_cache/
+/presentations/madrid-2-2026/index_files/
+/presentations/madrid-2-2026/results/
+/presentations/madrid-2-2026/madrid-2-2026/
+/presentations/madrid-2-2026/index.qmd.bak

@@ -1,13 +1,13 @@
-# madrid-2026/make_results.R
+# presentations/madrid-2-2026/make_results.R
 #
 # Purpose:
 # - Run tuning once
-# - Save cached results to madrid-2026/results/*.rds
+# - Save cached results to presentations/madrid-2-2026/results/*.rds
 # - Produce deterministic artifacts shared by EN/ES renders
 #
 # Usage:
-# - From kerasnip_presentations/: Rscript madrid-2026/make_results.R
-# - From madrid-2026/:           Rscript make_results.R
+# - From kerasnip_presentations/:        Rscript presentations/madrid-2-2026/make_results.R
+# - From presentations/madrid-2-2026/:   Rscript make_results.R
 
 script_path <- grep("^--file=", commandArgs(trailingOnly = FALSE), value = TRUE)
 script_path <- sub("^--file=", "", script_path)

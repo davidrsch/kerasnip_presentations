@@ -11,7 +11,7 @@ Here you can find slides from various talks and workshops about the `kerasnip` p
 
 #### Available Presentations
 
-- [**Madrid R Group (02-2026)**](madrid-2026/index.html)  
+- [**Madrid R Group (02-2026)**](presentations/madrid-2-2026/index.html)  
   *A Bridge Between 'keras' and 'tidymodels'*
 
 :::
@@ -24,7 +24,7 @@ Aquí encontrará diapositivas de varias charlas y talleres sobre el paquete `ke
 
 #### Presentaciones Disponibles
 
-- [**Grupo de Usuarios de R de Madrid (02-2026)**](madrid-2026/index.html)  
+- [**Grupo de Usuarios de R de Madrid (02-2026)**](presentations/madrid-2-2026/index.html)  
   *Un Puente entre 'keras' y 'tidymodels'*
 
 :::

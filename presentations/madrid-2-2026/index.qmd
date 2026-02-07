@@ -4,9 +4,9 @@ format:
     slide-level: 2
     slide-number: true
     preview-links: auto
-    logo: ../images/logo.png
+    logo: ../../images/logo.png
     footer: "kerasnip v0.1.0.900"
-    css: ../styles.css
+    css: ../../styles.css
     mermaid:
       theme: neutral
     width: 1280
@@ -20,21 +20,35 @@ execute:
 ---
 
 ```{r}
-#| label: madrid-2026-cache-results
+#| label: madrid-2-2026-cache-results
 #| include: false
 #| message: false
 #| warning: false
 
+# Ensure Quarto uses this presentation's pinned dependencies (project-local renv library).
+if (file.exists("renv/activate.R")) {
+  source("renv/activate.R")
+}
+
 # Compute results once, cache them on disk, and reuse across EN/ES renders.
 #
-# Quarto executes this document with working directory = `madrid-2026/`,
-# so cache files should live in `madrid-2026/results/` (i.e. `results/` here).
+# Quarto executes this document with working directory = `presentations/madrid-2-2026/`,
+# so cache files should live in `presentations/madrid-2-2026/results/` (i.e. `results/` here).
 results_dir <- "results"
-old_results_dir <- file.path("madrid-2026", "results")
+old_results_dirs <- c(
+  file.path("..", "..", "madrid-2026", "results"),
+  file.path("madrid-2026", "results")
+)
 dir.create(results_dir, showWarnings = FALSE, recursive = TRUE)
 
-# Migration: earlier versions wrote to `madrid-2026/results` (nested).
-if (dir.exists(old_results_dir)) {
+# Migration:
+# - Before the folder move, cached results lived at `madrid-2026/results/`.
+# - Older versions could also write nested `madrid-2026/results/` inside the project dir.
+for (old_results_dir in old_results_dirs) {
+  if (!dir.exists(old_results_dir)) {
+    next
+  }
+
   old_rds <- list.files(old_results_dir, pattern = "\\.rds$", full.names = TRUE)
   if (length(old_rds) > 0) {
     file.copy(old_rds, results_dir, overwrite = FALSE)
@@ -868,7 +882,7 @@ Say:
 Reproducibility workflow:
 
 - Quarto `freeze: auto` runs once and reuses cached results.
-- Manual: `Rscript madrid-2026/make_results.R` creates the same `.rds` artifacts.
+- Manual: `Rscript presentations/madrid-2-2026/make_results.R` creates the same `.rds` artifacts.
 
 Typical inspection steps:
 
@@ -1155,8 +1169,8 @@ Goal: explain caching/repro quickly.
 Say:
 - Cache once, show consistently.
 
-- Render once (with `freeze: auto`) or run `Rscript madrid-2026/make_results.R`
-- It saves `madrid-2026/results/attrition_res.rds`
+- Render once (with `freeze: auto`) or run `Rscript presentations/madrid-2-2026/make_results.R`
+- It saves `presentations/madrid-2-2026/results/attrition_res.rds`
 
 Typical inspection:
 
@@ -2011,7 +2025,7 @@ Objetivo: interpretar el modelo final sin llenar la diapositiva.
 
 Qué decir:
 - Mantén la diapositiva limpia: muestra solo resultados y comenta encima.
-- Reproducibilidad: Quarto `freeze: auto` ejecuta una vez y reutiliza la caché; manualmente, `Rscript madrid-2026/make_results.R` crea los mismos `.rds`.
+- Reproducibilidad: Quarto `freeze: auto` ejecuta una vez y reutiliza la caché; manualmente, `Rscript presentations/madrid-2-2026/make_results.R` crea los mismos `.rds`.
 - Inspección típica: `collect_metrics(res)` → `show_best()` → `select_best()` → `finalize_workflow()` → `last_fit()`.
 - Nota práctica: para inspeccionar el objeto final, usa `extract_keras_model()` y `extract_keras_history()`.
 
@@ -2269,7 +2283,7 @@ Objetivo: elegir 1–2 candidatos (sin leer toda la tabla).
 Qué decir:
 - Son estimaciones de validación cruzada (media + error estándar). Se selecciona con CV, no con el test.
 - Busca una zona “estable”: buena AUC y poca sensibilidad al tamaño de las torres.
-- Repro: renderiza una vez (con `freeze: auto`) o ejecuta `Rscript madrid-2026/make_results.R`; se guarda `madrid-2026/results/attrition_res.rds`.
+- Repro: renderiza una vez (con `freeze: auto`) o ejecuta `Rscript presentations/madrid-2-2026/make_results.R`; se guarda `presentations/madrid-2-2026/results/attrition_res.rds`.
 - Inspección típica: `collect_metrics()` → `show_best()` → `select_best()` → `finalize_workflow()` → `last_fit()`.
 
 Transición: Ahora el mapa de calor para ver sensibilidad/interacciones.
