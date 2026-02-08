@@ -77,7 +77,16 @@ for (dir in pres_dirs) {
     profiles <- c("english", "spanish")
     for (prof in profiles) {
         message(sprintf("Rendering profile: %s", prof))
-        run_in_dir("quarto", c("render", ".", "--profile", prof), dir)
+        # Use bash to export R_LIBS_USER before running quarto
+        # This ensures the environment variable is inherited by quarto's R process
+        shell_cmd <- sprintf("export R_LIBS_USER='%s' && quarto render . --profile %s", lib_path, prof)
+        old_wd <- setwd(dir)
+        on.exit(setwd(old_wd), add = TRUE)
+        code <- system2("bash", c("-c", shQuote(shell_cmd)), stdout = "", stderr = "")
+        setwd(old_wd)
+        if (code != 0) {
+            stop(sprintf("Quarto render failed with exit code %d in %s for profile %s", code, dir, prof))
+        }
     }
 }
 
