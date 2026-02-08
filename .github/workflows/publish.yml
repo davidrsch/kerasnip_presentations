@@ -9,10 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    defaults:
-      run:
-        shell: bash
-        working-directory: kerasnip_presentations
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
     steps:
@@ -29,6 +25,7 @@ jobs:
           use-public-rspm: true
 
       - name: System dependencies
+        shell: bash
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
@@ -42,11 +39,11 @@ jobs:
       - name: Restore renv (madrid-2-2026)
         uses: r-lib/actions/setup-renv@v2
         with:
-          working-directory: kerasnip_presentations/presentations/madrid-2-2026
+          working-directory: presentations/madrid-2-2026
           cache-version: 1
 
       - name: Use renv library for rendering
-        working-directory: kerasnip_presentations/presentations/madrid-2-2026
+        working-directory: presentations/madrid-2-2026
         shell: Rscript {0}
         run: |
           lib <- renv::paths$library()
@@ -55,16 +52,19 @@ jobs:
           cat(sprintf("R_LIBS_USER=%s\n", value), file = Sys.getenv("GITHUB_ENV"), append = TRUE)
 
       - name: Render English Profile
+        shell: bash
         run: quarto render . --profile english
 
       - name: Render Spanish Profile
+        shell: bash
         run: quarto render . --profile spanish
 
       - name: Create .nojekyll
+        shell: bash
         run: touch _site/.nojekyll
 
       - name: Publish to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./kerasnip_presentations/_site
+          publish_dir: ./_site
