@@ -50,7 +50,23 @@ for (dir in pres_dirs) {
         warning(sprintf("No renv/activate.R in %s, skipping explicit restore (assuming environment is okay or handled elsewhere).", dir))
     }
 
-    # 2. Render profiles
+    # 2. Set R_LIBS_USER to the renv library path so quarto's spawned R finds packages
+    message("Configuring R_LIBS_USER for quarto...")
+    # Get the library path from renv (using --vanilla to avoid .Rprofile issues)
+    lib_path_cmd <- system2(
+        "Rscript",
+        c("--vanilla", "-e", "'cat(renv::paths$library())'"),
+        stdout = TRUE, stderr = FALSE
+    )
+    lib_path <- paste(lib_path_cmd, collapse = "")
+    if (nzchar(lib_path)) {
+        message(sprintf("Setting R_LIBS_USER=%s", lib_path))
+        Sys.setenv(R_LIBS_USER = lib_path)
+    } else {
+        warning("Could not determine renv library path, quarto may fail to find packages.")
+    }
+
+    # 3. Render profiles
     # We render both english and spanish.
     # If the presentation doesn't support profiles, this might just render twice (overwriting).
     # That's acceptable for now, or we could check for _quarto-*.yml or index.qmd content.
