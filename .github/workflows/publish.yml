@@ -41,6 +41,15 @@ jobs:
         with:
           working-directory: presentations/madrid-2-2026
 
+      - name: Use renv library for rendering
+        working-directory: presentations/madrid-2-2026
+        shell: Rscript {0}
+        run: |
+          lib <- renv::paths$library()
+          existing <- Sys.getenv("R_LIBS_USER")
+          value <- if (nzchar(existing)) paste(lib, existing, sep = .Platform$path.sep) else lib
+          cat(sprintf("R_LIBS_USER=%s\n", value), file = Sys.getenv("GITHUB_ENV"), append = TRUE)
+
       - name: Render English Profile
         shell: bash
         run: quarto render . --profile english
