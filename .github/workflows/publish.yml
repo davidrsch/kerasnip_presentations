@@ -41,14 +41,18 @@ jobs:
         with:
           working-directory: presentations/madrid-2-2026
 
-      - name: Use renv library for rendering
-        working-directory: presentations/madrid-2-2026
-        shell: Rscript --vanilla {0}
+      - name: Register renv library
+        shell: bash
         run: |
-          lib <- renv::paths$library()
-          existing <- Sys.getenv("R_LIBS_USER")
-          value <- if (nzchar(existing)) paste(lib, existing, sep = .Platform$path.sep) else lib
-          cat(sprintf("R_LIBS_USER=%s\n", value), file = Sys.getenv("GITHUB_ENV"), append = TRUE)
+          # Find the directory containing knitr (e.g., .../renv/library/R-4.5/x86_64-pc-linux-gnu)
+          # We search for the 'knitr' directory and take its parent.
+          RENV_LIB=$(find presentations/madrid-2-2026/renv/library -name "knitr" -type d | head -n 1 | xargs dirname)
+          if [ -z "$RENV_LIB" ]; then
+            echo "::error::Could not find renv library path containing knitr"
+            exit 1
+          fi
+          echo "Found renv library: $RENV_LIB"
+          echo "R_LIBS_USER=$RENV_LIB:${R_LIBS_USER}" >> $GITHUB_ENV
 
       - name: Render English Profile
         shell: bash
