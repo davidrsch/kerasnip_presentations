@@ -5,10 +5,15 @@ on:
 name: Render and Publish
 
 jobs:
-  build-deploy:
+  # Job 1: Render each presentation independently
+  render-presentations:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        presentation:
+          - madrid-2-2026
     permissions:
-      contents: write
+      contents: read
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
     steps:
@@ -36,15 +41,76 @@ jobs:
             libpng-dev \
             pandoc
 
-      - name: Render Presentations (independently)
-        shell: bash
-        run: Rscript scripts/render_presentations.R
+      - name: Restore renv for ${{ matrix.presentation }}
+        uses: r-lib/actions/setup-renv@v2
+        with:
+          working-directory: presentations/${{ matrix.presentation }}
 
-      - name: Render English Profile
+      - name: Register renv library path
+        shell: bash
+        run: |
+          RENV_LIB=$(find -L presentations/${{ matrix.presentation }}/renv/library -name "knitr" -type d | head -n 1 | xargs dirname)
+          if [ -z "$RENV_LIB" ]; then
+            echo "::error::Could not find renv library path containing knitr"
+            find presentations/${{ matrix.presentation }}/renv -maxdepth 5
+            exit 1
+          fi
+          echo "Found renv library: $RENV_LIB"
+          echo "R_LIBS_USER=$RENV_LIB:${R_LIBS_USER}" >> $GITHUB_ENV
+
+      - name: Render ${{ matrix.presentation }} - English
+        shell: bash
+        working-directory: presentations/${{ matrix.presentation }}
+        run: quarto render . --profile english
+
+      - name: Render ${{ matrix.presentation }} - Spanish
+        shell: bash
+        working-directory: presentations/${{ matrix.presentation }}
+        run: quarto render . --profile spanish
+
+      - name: Upload rendered presentation
+        uses: actions/upload-artifact@v4
+        with:
+          name: presentation-${{ matrix.presentation }}
+          path: presentations/${{ matrix.presentation }}/_site/
+
+  # Job 2: Build and publish the main site
+  build-publish:
+    needs: render-presentations
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+
+      - name: Download rendered presentations
+        uses: actions/download-artifact@v4
+        with:
+          pattern: presentation-*
+          path: _site/presentations/
+          merge-multiple: false
+
+      - name: Rename downloaded artifacts
+        shell: bash
+        run: |
+          # The download creates directories like presentation-madrid-2-2026
+          # We want them as just madrid-2-2026
+          cd _site/presentations
+          for dir in presentation-*; do
+            [ -d "$dir" ] && mv "$dir" "${dir#presentation-}"
+          done
+
+      - name: Render main site - English
         shell: bash
         run: quarto render . --profile english
 
-      - name: Render Spanish Profile
+      - name: Render main site - Spanish
         shell: bash
         run: quarto render . --profile spanish
 
