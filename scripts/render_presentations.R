@@ -53,9 +53,11 @@ for (dir in pres_dirs) {
     # 2. Set R_LIBS_USER to the renv library path so quarto's spawned R finds packages
     message("Configuring R_LIBS_USER for quarto...")
     # Get the library path from renv (using --vanilla to avoid .Rprofile issues)
+    # We pass the absolute project path to ensure renv knows where the project is
+    abs_dir <- normalizePath(dir, winslash = "/")
     lib_path_cmd <- system2(
         "Rscript",
-        c("--vanilla", "-e", "'cat(renv::paths$library())'"),
+        c("--vanilla", "-e", sprintf("'cat(renv::paths$library(project = \"%s\"))'", abs_dir)),
         stdout = TRUE, stderr = FALSE
     )
     lib_path <- paste(lib_path_cmd, collapse = "")
