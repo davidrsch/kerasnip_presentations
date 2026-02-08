@@ -1,0 +1,12 @@
+project:
+  type: website
+  output-dir: _site
+
+profile:
+  group:
+    - [english, spanish]
+
+format:
+  revealjs:
+    theme: [default]
+    center: false
