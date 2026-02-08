@@ -45,7 +45,7 @@ for (dir in pres_dirs) {
     if (file.exists(file.path(dir, "renv", "activate.R"))) {
         # Run restore. We use 'make' style logic: restore if needed.
         # But for CI, just restore.
-        run_in_dir("Rscript", c("-e", "'if (!requireNamespace(\"renv\", quietly=TRUE)) install.packages(\"renv\"); renv::restore(prompt = FALSE)'"), dir)
+        run_in_dir("Rscript", c("--vanilla", "-e", "'if (!requireNamespace(\"renv\", quietly=TRUE)) install.packages(\"renv\", repos=\"https://cloud.r-project.org\"); renv::restore(prompt = FALSE)'"), dir)
     } else {
         warning(sprintf("No renv/activate.R in %s, skipping explicit restore (assuming environment is okay or handled elsewhere).", dir))
     }
