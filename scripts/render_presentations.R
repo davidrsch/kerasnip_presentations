@@ -20,9 +20,9 @@ message("Found presentations: ", paste(pres_dirs, collapse = ", "))
 # Function to run command in a directory
 run_in_dir <- function(cmd, args, dir) {
     message(sprintf("--> Running in %s: %s %s", dir, cmd, paste(args, collapse = " ")))
-    # system2 uses 'wd' argument to set working directory, not 'cwd'
-    # Also args should be a character vector
-    code <- system2(cmd, args, stdout = "", stderr = "", wd = dir)
+    old_wd <- setwd(dir)
+    on.exit(setwd(old_wd))
+    code <- system2(cmd, args, stdout = "", stderr = "")
     if (code != 0) {
         stop(sprintf("Command failed with exit code %d in %s", code, dir))
     }
