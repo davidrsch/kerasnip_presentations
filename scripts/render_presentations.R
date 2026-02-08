@@ -1,0 +1,66 @@
+#!/usr/bin/env Rscript
+
+# Identify presentation directories
+# We look for folders under 'presentations/' that contain 'renv.lock'
+pres_root <- "presentations"
+if (!dir.exists(pres_root)) {
+    stop("Directory 'presentations' not found.")
+}
+
+dirs <- list.dirs(pres_root, recursive = FALSE)
+pres_dirs <- dirs[file.exists(file.path(dirs, "renv.lock"))]
+
+if (length(pres_dirs) == 0) {
+    message("No presentations with renv.lock found.")
+    quit(save = "no")
+}
+
+message("Found presentations: ", paste(pres_dirs, collapse = ", "))
+
+# Function to run command in a directory
+run_in_dir <- function(cmd, args, dir) {
+    message(sprintf("--> Running in %s: %s %s", dir, cmd, paste(args, collapse = " ")))
+    # system2 uses 'wd' argument to set working directory, not 'cwd'
+    # Also args should be a character vector
+    code <- system2(cmd, args, stdout = "", stderr = "", wd = dir)
+    if (code != 0) {
+        stop(sprintf("Command failed with exit code %d in %s", code, dir))
+    }
+}
+
+for (dir in pres_dirs) {
+    message(sprintf("\n=== Processing Presentation: %s ===", dir))
+
+    # 1. Restore renv
+    # We use Rscript -e "renv::restore()" inside the dir.
+    # This relies on .Rprofile or default lib paths.
+    # Note: In CI, we want to force restore.
+    message("Restoring renv environment...")
+    # We assume renv is bootstrapped by .Rprofile or available.
+    # Using --vanilla might skip .Rprofile, so we don't use it here if we depend on renv/activate.R.
+    # However, if .Rprofile fails (like the ..md5.. issue), we might need care.
+    # But we fixed ..md5.. by installing system deps.
+
+    # Check if renv/activate.R exists
+    if (file.exists(file.path(dir, "renv", "activate.R"))) {
+        # Run restore. We use 'make' style logic: restore if needed.
+        # But for CI, just restore.
+        run_in_dir("Rscript", c("-e", "'if (!requireNamespace(\"renv\", quietly=TRUE)) install.packages(\"renv\"); renv::restore(prompt = FALSE)'"), dir)
+    } else {
+        warning(sprintf("No renv/activate.R in %s, skipping explicit restore (assuming environment is okay or handled elsewhere).", dir))
+    }
+
+    # 2. Render profiles
+    # We render both english and spanish.
+    # If the presentation doesn't support profiles, this might just render twice (overwriting).
+    # That's acceptable for now, or we could check for _quarto-*.yml or index.qmd content.
+    # Assuming all presentations follow the repo structure.
+
+    profiles <- c("english", "spanish")
+    for (prof in profiles) {
+        message(sprintf("Rendering profile: %s", prof))
+        run_in_dir("quarto", c("render", ".", "--profile", prof), dir)
+    }
+}
+
+message("\nAll presentations processed.")
