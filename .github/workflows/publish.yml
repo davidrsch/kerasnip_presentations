@@ -24,32 +24,22 @@ jobs:
           r-version: "4.5.2"
           use-public-rspm: true
 
-      - name: System dependencies
+      - name: Install System Dependencies
         shell: bash
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
-            pandoc \
             libcurl4-openssl-dev \
             libssl-dev \
             libxml2-dev \
             libgit2-dev \
-            libpng-dev
+            libpng-dev \
+            pandoc
 
-      - name: Restore renv (madrid-2-2026)
+      - name: Restore renv
         uses: r-lib/actions/setup-renv@v2
         with:
           working-directory: presentations/madrid-2-2026
-          cache-version: 1
-
-      - name: Use renv library for rendering
-        working-directory: presentations/madrid-2-2026
-        shell: Rscript {0}
-        run: |
-          lib <- renv::paths$library()
-          existing <- Sys.getenv("R_LIBS_USER")
-          value <- if (nzchar(existing)) paste(lib, existing, sep = .Platform$path.sep) else lib
-          cat(sprintf("R_LIBS_USER=%s\n", value), file = Sys.getenv("GITHUB_ENV"), append = TRUE)
 
       - name: Render English Profile
         shell: bash
