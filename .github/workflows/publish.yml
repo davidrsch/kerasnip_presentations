@@ -46,9 +46,10 @@ jobs:
         run: |
           # Find the directory containing knitr (e.g., .../renv/library/R-4.5/x86_64-pc-linux-gnu)
           # We search for the 'knitr' directory and take its parent.
-          RENV_LIB=$(find presentations/madrid-2-2026/renv/library -name "knitr" -type d | head -n 1 | xargs dirname)
+          RENV_LIB=$(find -L presentations/madrid-2-2026/renv/library -name "knitr" -type d | head -n 1 | xargs dirname)
           if [ -z "$RENV_LIB" ]; then
             echo "::error::Could not find renv library path containing knitr"
+            find presentations/madrid-2-2026/renv -maxdepth 5
             exit 1
           fi
           echo "Found renv library: $RENV_LIB"
