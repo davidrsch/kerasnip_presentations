@@ -43,6 +43,15 @@ jobs:
             libpng-dev \
             pandoc
 
+
+      - name: Disable .Rprofile for renv restore
+        shell: bash
+        run: |
+          # Temporarily rename .Rprofile to prevent renv/activate.R from running during restore
+          if [ -f "presentations/${{ matrix.presentation }}/.Rprofile" ]; then
+            mv "presentations/${{ matrix.presentation }}/.Rprofile" "presentations/${{ matrix.presentation }}/.Rprofile.bak"
+          fi
+
       - name: Restore renv for ${{ matrix.presentation }}
         uses: r-lib/actions/setup-renv@v2
         with:
