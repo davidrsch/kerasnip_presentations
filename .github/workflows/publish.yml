@@ -16,6 +16,8 @@ jobs:
       contents: read
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      RSPM: https://packagemanager.posit.co/cran/__linux__/noble/latest
+      RENV_CONFIG_REPOS_OVERRIDE: https://packagemanager.posit.co/cran/__linux__/noble/latest
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
