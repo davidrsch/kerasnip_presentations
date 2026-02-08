@@ -43,7 +43,7 @@ jobs:
 
       - name: Use renv library for rendering
         working-directory: presentations/madrid-2-2026
-        shell: Rscript {0}
+        shell: Rscript --vanilla {0}
         run: |
           lib <- renv::paths$library()
           existing <- Sys.getenv("R_LIBS_USER")
