@@ -29,7 +29,9 @@ jobs:
             libcurl4-openssl-dev \
             libssl-dev \
             libxml2-dev \
-            libgit2-dev
+            libgit2-dev \
+            libpng-dev \
+            pandoc
 
       - name: Install R Dependencies
         uses: r-lib/actions/setup-r-dependencies@v2
