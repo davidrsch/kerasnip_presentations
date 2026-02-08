@@ -1,6 +1,6 @@
 on:
   push:
-    branches: main
+    branches: [main]
 
 name: Render and Publish
 
@@ -9,6 +9,12 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    defaults:
+      run:
+        shell: bash
+        working-directory: kerasnip_presentations
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -26,49 +32,27 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
+            pandoc \
             libcurl4-openssl-dev \
             libssl-dev \
             libxml2-dev \
             libgit2-dev \
-            libpng-dev \
-            pandoc
+            libpng-dev
 
-      - name: Install R Dependencies
-        uses: r-lib/actions/setup-r-dependencies@v2
+      - name: Restore renv (madrid-2-2026)
+        uses: r-lib/actions/setup-renv@v2
         with:
-          packages: |
-            any::renv
+          working-directory: kerasnip_presentations/presentations/madrid-2-2026
+          cache-version: 1
 
-      - name: Restore renv (all presentations)
-        shell: bash
+      - name: Use renv library for rendering
+        working-directory: kerasnip_presentations/presentations/madrid-2-2026
+        shell: Rscript {0}
         run: |
-          set -euo pipefail
-          project_libs=""
-          while IFS= read -r -d '' lock; do
-            proj_dir="$(dirname "$lock")"
-            proj_dir="${proj_dir#./}"
-            echo "Restoring renv for: ${proj_dir}"
-            Rscript -e "renv::restore(project = '${proj_dir}', prompt = FALSE)"
-
-            # Validate restore worked (catches issues before Quarto render).
-            export RENV_PROJ="${proj_dir}"
-            Rscript -e "renv::load(project = Sys.getenv('RENV_PROJ')); if (!requireNamespace('dplyr', quietly = TRUE)) stop('Missing package after renv::restore(): dplyr')"
-
-            # Collect the project library path so Quarto can always find restored packages.
-            lib_path=$(Rscript -e "cat(renv::paths\$library(project = Sys.getenv('RENV_PROJ')))")
-            echo "Project library: ${lib_path}"
-            project_libs="${lib_path}:${project_libs}"
-          done < <(find . -name renv.lock -print0)
-
-          # Prepend all restored project libraries to R_LIBS_USER for subsequent steps.
-          # This provides a safety net if a document's renv activation doesn't run.
-          if [ -n "${project_libs}" ]; then
-            if [ -n "${R_LIBS_USER:-}" ]; then
-              echo "R_LIBS_USER=${project_libs}${R_LIBS_USER}" >> "$GITHUB_ENV"
-            else
-              echo "R_LIBS_USER=${project_libs%:}" >> "$GITHUB_ENV"
-            fi
-          fi
+          lib <- renv::paths$library()
+          existing <- Sys.getenv("R_LIBS_USER")
+          value <- if (nzchar(existing)) paste(lib, existing, sep = .Platform$path.sep) else lib
+          cat(sprintf("R_LIBS_USER=%s\n", value), file = Sys.getenv("GITHUB_ENV"), append = TRUE)
 
       - name: Render English Profile
         run: quarto render . --profile english
@@ -83,4 +67,4 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./_site
+          publish_dir: ./kerasnip_presentations/_site
