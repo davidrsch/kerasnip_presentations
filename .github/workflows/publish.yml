@@ -106,7 +106,10 @@ jobs:
 
       - name: Render main site - Spanish
         shell: bash
-        run: quarto render . --profile spanish
+        run: |
+          quarto render . --profile spanish --output-dir _site_es
+          mkdir -p _site/es
+          cp -r _site_es/* _site/es/
 
       - name: Download rendered presentations
         uses: actions/download-artifact@v4
