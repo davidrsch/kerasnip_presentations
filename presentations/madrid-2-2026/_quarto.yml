@@ -8,5 +8,5 @@ profile:
 
 format:
   revealjs:
-    theme: [default]
+    theme: [default, ../../theme.scss]
     center: false

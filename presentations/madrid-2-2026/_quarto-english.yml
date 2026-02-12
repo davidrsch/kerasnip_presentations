@@ -1,1 +1,5 @@
 lang: en
+format:
+  revealjs:
+    logo: ../../images/logo.png
+    css: ../../styles.css

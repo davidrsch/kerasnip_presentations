@@ -1,3 +1,7 @@
 lang: es
 project:
   output-dir: _site/es
+format:
+  revealjs:
+    logo: ../../../images/logo.png
+    css: ../../../styles.css
