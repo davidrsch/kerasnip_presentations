@@ -2,7 +2,7 @@ project:
   type: website
   output-dir: _site
   render:
-    - "!presentations/"
+    - index.qmd
 
 profile:
   group: 
