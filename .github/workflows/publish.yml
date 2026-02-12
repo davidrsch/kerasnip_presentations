@@ -87,8 +87,6 @@ jobs:
           cp -ra _site_en/. final_site/
           # Spanish content
           cp -ra _site/es/. final_site/es/
-          # Profile-specific libraries to avoid path breakage
-          cp -ra _site/site_libs final_site/es/
           # Cleanup and set as final _site
           mv final_site _site
 
@@ -129,8 +127,6 @@ jobs:
           cp -ra _site_en/. final_site/
           # Spanish content
           cp -ra _site/es/. final_site/es/
-          # Profile-specific libraries
-          cp -ra _site/site_libs final_site/es/
           # Ensure global assets are preserved
           cp -ra images final_site/ || true
           mv final_site _site
