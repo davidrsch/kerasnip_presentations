@@ -24,7 +24,7 @@ Aquí encontrará diapositivas de varias charlas y talleres sobre el paquete `ke
 
 #### Presentaciones Disponibles
 
-- [**Grupo de Usuarios de R de Madrid (02-2026)**](presentations/madrid-2-2026/index.html)  
+- [**Grupo de Usuarios de R de Madrid (02-2026)**](../presentations/madrid-2-2026/es/index.html)  
   *Un Puente entre 'keras' y 'tidymodels'*
 
 :::
