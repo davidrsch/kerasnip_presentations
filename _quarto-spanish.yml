@@ -11,6 +11,6 @@ website:
         text: Inicio
     right:
       - text: "English"
-        href: /index.html
+        href: ../index.html
       - icon: github
         href: https://github.com/davidrsch/kerasnip
