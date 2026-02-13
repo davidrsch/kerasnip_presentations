@@ -48,3 +48,24 @@ Usage in Quarto headings:
 	font-size: 22px;
 }
 
+/* Landing Page Brand Colors */
+:root {
+  --brand-red: #BF281B;
+}
+
+h1, h2, h3, h4, .navbar-brand {
+  color: var(--brand-red) !important;
+}
+
+a {
+  color: var(--brand-red);
+}
+
+a:hover {
+  color: #a02217;
+}
+
+.navbar {
+  border-bottom: 2px solid var(--brand-red);
+}
+

@@ -5,8 +5,11 @@ project:
     - index.qmd
 
 profile:
-  group: 
+  group:
     - [english, spanish]
+
+website:
+  favicon: images/logo.png
 
 # Global configuration (no navbar here to avoid merging/duplication)
 
@@ -14,7 +17,7 @@ format:
   html:
     theme: cosmo
     css: styles.css
-  revealjs: 
+  revealjs:
     theme: [default, theme.scss]
     logo: images/logo.png
     footer: "kerasnip v0.1.0.900"
