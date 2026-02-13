@@ -8,14 +8,7 @@ profile:
   group: 
     - [english, spanish]
 
-website:
-  navbar:
-    left:
-      - href: index.qmd
-        text: Home
-    right:
-      - icon: github
-        href: https://github.com/davidrsch/kerasnip
+# Global configuration (no navbar here to avoid merging/duplication)
 
 format:
   html:
