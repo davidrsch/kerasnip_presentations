@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es"><head>
+<html lang="en"><head>
 <script src="site_libs/clipboard/clipboard.min.js"></script>
 <script src="site_libs/quarto-html/tabby.min.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -95,7 +95,7 @@
     code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-462b56c4b6d3ce1a3c79c15cc7771a5e.css">
-  <link rel="stylesheet" href="../../../styles.css">
+  <link rel="stylesheet" href="../../styles.css">
   <link href="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -197,16 +197,16 @@
     <div class="slides">
 
 
-<section id="kerasnip-un-puente-entre-keras-y-tidymodels" class="slide level2 title-slide center" data-background-color="#f0f1f2">
-<h2>kerasnip: Un Puente entre ‘keras’ y ‘tidymodels’</h2>
-<h3 id="grupo-de-usuarios-de-r-de-madrid-febrero-2026">Grupo de Usuarios de R de Madrid | Febrero 2026</h3>
+<section id="kerasnip-a-bridge-between-keras-and-tidymodels" class="slide level2 title-slide center" data-background-color="#f0f1f2">
+<h2>kerasnip: A Bridge Between ‘keras’ and ‘tidymodels’</h2>
+<h3 id="madrid-r-group-february-2026">Madrid R Group | February 2026</h3>
 <p><strong>kerasnip v0.1.0.900</strong></p>
 <p>Docs: <a href="https://davidrsch.github.io/kerasnip/">davidrsch.github.io/kerasnip</a> · Repo: <a href="https://github.com/davidrsch/kerasnip">github.com/davidrsch/kerasnip</a></p>
 <aside class="notes">
-<p>Objetivo: marcar expectativas y encuadrar el problema.</p>
-<p>Qué decir: - Bienvenidos. David Díaz. - <code>kerasnip</code> une Keras (deep learning) con workflows de tidymodels. - Hoy va de <strong>ajuste arquitectónico</strong> dentro de tidymodels; no es un curso de Keras.</p>
-<p>Capacidades extra (mencionar rápido; detalles luego o en preguntas): - <code>step_collapse()</code>. - Registro de objetos Keras: <code>register_keras_optimizer()</code>, <code>register_keras_loss()</code>, <code>register_keras_metric()</code>. - Post-entrenamiento: <code>extract_keras_model()</code>, <code>extract_keras_history()</code>, <code>keras_evaluate()</code>.</p>
-<p>Transición: Vemos agenda y enseguida situamos la brecha Keras ↔︎ tidymodels.</p>
+<p>Goal: set expectations and frame the problem.</p>
+<p>Say: - Welcome. David Díaz. - <code>kerasnip</code> bridges deep learning (Keras) with tidymodels workflows. - Today is about <strong>architectural tuning</strong> inside tidymodels, not a Keras tutorial.</p>
+<p>Extra capabilities (mention briefly, details later/Q&amp;A): - <code>step_collapse()</code>. - Register custom Keras objects: <code>register_keras_optimizer()</code>, <code>register_keras_loss()</code>, <code>register_keras_metric()</code>. - Post-fit tools: <code>extract_keras_model()</code>, <code>extract_keras_history()</code>, <code>keras_evaluate()</code>.</p>
+<p>Transition: Quick agenda, then the core gap.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -219,20 +219,20 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="hoy" class="slide level2">
-<h2>Hoy</h2>
+<section id="today" class="slide level2">
+<h2>Today</h2>
 <ul>
-<li>Por qué es difícil ajustar modelos Keras dentro de tidymodels</li>
-<li>Qué genera <code>kerasnip</code> (y por qué importa)</li>
-<li>Flujo secuencial: ajuste estructural con <code>num_{block}</code></li>
-<li>Flujo funcional: grafos con ramas y uniones con <code>inp_spec()</code></li>
-<li>Depuración y consejos prácticos</li>
+<li>Why tuning Keras inside tidymodels is hard</li>
+<li>What <code>kerasnip</code> generates (and why it matters)</li>
+<li>Sequential workflow: structural tuning with <code>num_{block}</code></li>
+<li>Functional workflow: branch/merge graphs with <code>inp_spec()</code></li>
+<li>Debugging + practical tips</li>
 </ul>
 <aside class="notes">
-<p>Objetivo: orientar para que nadie se pierda.</p>
-<p>Qué decir: - Ritmo flexible; primero claridad. - Primera parte: secuencial + ajuste estructural (<code>num_{block}</code>) + depuración. - Segunda parte: grafos funcionales con <code>inp_spec()</code> con el mismo flujo de ajuste.</p>
-<p>También mencionar (muy rápido): - Depuración: <code>extract_valid_grid()</code>, <code>inform_errors()</code>. - Objetos Keras: <code>keras_optimizers</code>, <code>keras_losses</code>, <code>keras_metrics</code>, <code>optimizer_function()</code>, <code>loss_function_keras()</code>. - Ciclo de vida del spec: <code>model_exists()</code>, <code>remove_keras_spec()</code>, <code>get_model_env()</code>.</p>
-<p>Transición: Situamos Keras y tidymodels y nombramos la brecha.</p>
+<p>Goal: orient people so they don’t get lost later.</p>
+<p>Say: - Timing is flexible; clarity first. - First half: sequential workflow + structural tuning (<code>num_{block}</code>) + debugging. - Second half: functional graphs via <code>inp_spec()</code> with the same tuning workflow.</p>
+<p>Also mention (fast): - Debug helpers: <code>extract_valid_grid()</code>, <code>inform_errors()</code>. - Keras object helpers: <code>keras_optimizers</code>, <code>keras_losses</code>, <code>keras_metrics</code>, <code>optimizer_function()</code>, <code>loss_function_keras()</code>. - Spec lifecycle: <code>model_exists()</code>, <code>remove_keras_spec()</code>, <code>get_model_env()</code>.</p>
+<p>Transition: Let’s situate Keras vs tidymodels and name the gap.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -245,33 +245,33 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="el-panorama" class="slide level2">
-<h2>El Panorama</h2>
+<section id="the-landscape" class="slide level2">
+<h2>The Landscape</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
-<h3 id="keras-vía-keras3">🧱 Keras (vía <code>keras3</code>)</h3>
+<h3 id="keras-via-keras3">🧱 Keras (via <code>keras3</code>)</h3>
 <ul>
-<li><strong>Aprendizaje profundo</strong></li>
-<li>Pensado para tensores</li>
-<li>Agnóstico al backend (TF, JAX, Torch)</li>
-<li>Grafos arbitrarios de capas</li>
+<li><strong>Deep Learning</strong></li>
+<li>Tensor-centric &amp; Imperative</li>
+<li>Backend agnostic (TF, JAX, Torch)</li>
+<li>Arbitrary graphs of layers</li>
 </ul>
 </div><div class="column" style="width:50%;">
-<h3 id="tidymodels-1">🧹 tidymodels</h3>
+<h3 id="tidymodels">🧹 Tidymodels</h3>
 <ul>
-<li><strong>Aprendizaje automático</strong></li>
-<li>Pensado para data frames</li>
-<li>Interfaz unificada (<code>fit</code>, <code>predict</code>)</li>
-<li>Ajuste de hiperparámetros, de forma estandarizada</li>
+<li><strong>Machine Learning</strong></li>
+<li>Dataframe-centric &amp; Declarative</li>
+<li>Unified interface (<code>fit</code>, <code>predict</code>)</li>
+<li>Standardized tuning</li>
 </ul>
 </div></div>
-<p><strong>La brecha</strong>: optimizar la topología (profundidad/ancho) con <code>tune_grid()</code> es difícil: <code>parsnip</code> espera un conjunto fijo de argumentos, mientras que Keras permite grafos arbitrarios.</p>
+<p><strong>The Gap</strong>: Using <code>tune_grid()</code> to optimize Neural Network topology (depth/width) is difficult because <code>parsnip</code> expects fixed arguments, while Keras models are arbitrary graphs.</p>
 <aside class="notes">
-<p>Objetivo: contrastar “código” vs “workflow”.</p>
-<p>Qué decir: - Keras es excelente para construir; tidymodels, para el flujo. - La brecha está en el <strong>ajuste arquitectónico</strong>.</p>
-<p>En sencillo: - En tidymodels, un “spec” es básicamente una llamada a función con argumentos. - En Keras, la arquitectura es un grafo que se construye con código. - Por eso se ajusta bien lo que ya es argumento (learning rate), pero cambiar topología suele implicar reescribir el modelo.</p>
-<p>Puente que buscamos: - Convertir decisiones de arquitectura en <em>argumentos ajustables</em> para que <code>tune_grid()</code> los controle.</p>
-<p>Transición: Siguiente: el enfoque de specs dinámicos.</p>
+<p>Goal: contrast the two mental models (code vs workflow).</p>
+<p>Say: - Keras is great for building; tidymodels is great for workflow. - The gap is in <strong>architectural tuning</strong>.</p>
+<p>Plain-language framing: - In tidymodels, a “model spec” is basically a function call with named arguments. - In Keras, the architecture is a graph you build with code. - So you can tune things that already exist as arguments (learning rate), but changing topology usually means rewriting the model code.</p>
+<p>Bridge we want: - Make architecture decisions <em>look like spec arguments</em> so <code>tune_grid()</code> can control them.</p>
+<p>Transition: Next: the dynamic-spec approach.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -284,14 +284,14 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="el-problema-en-una-frase" class="slide level2">
-<h2>El Problema (en una frase)</h2>
-<p>Los modelos Keras son <strong>grafos arbitrarios</strong>, pero los specs de <code>parsnip</code> son <strong>conjuntos fijos de argumentos</strong>.</p>
-<p>El learning rate se ajusta fácilmente, pero ajustar la <em>estructura</em> (profundidad/ancho/ramas) suele ser incómodo.</p>
+<section id="the-pain-point-in-one-sentence" class="slide level2">
+<h2>The Pain Point (in one sentence)</h2>
+<p>Keras models are <strong>arbitrary graphs</strong>, but <code>parsnip</code> specs are <strong>fixed argument sets</strong>.</p>
+<p>So you can tune learning rate easily, but tuning <em>model structure</em> (depth / width / branches) is awkward.</p>
 <aside class="notes">
-<p>Objetivo: que el problema se entienda en 10 segundos.</p>
-<p>Qué decir: - Esta charla no es “deep learning 101”. Es: cómo mantener Keras <em>dentro</em> del flujo de tidymodels. - La fricción está en que la arquitectura vive en código Keras, pero el ajuste en tidymodels espera argumentos con nombre.</p>
-<p>Transición: Entonces: ¿cómo convertimos decisiones de topología en argumentos ajustables?</p>
+<p>Goal: make the problem feel concrete and familiar.</p>
+<p>Say: - This is not “deep learning 101”. It’s: how to keep Keras <em>inside</em> the tidymodels workflow. - The friction is that architecture changes live in Keras code, but tidymodels tuning expects named arguments.</p>
+<p>Transition: So the question becomes: how do we turn topology decisions into tunable spec args?</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -304,54 +304,54 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="contexto-del-ecosistema" class="slide level2">
-<h2>Contexto del Ecosistema</h2>
+<section id="ecosystem-context" class="slide level2">
+<h2>Ecosystem Context</h2>
 <table class="caption-top">
 <colgroup>
-<col style="width: 34%">
-<col style="width: 19%">
-<col style="width: 46%">
+<col style="width: 33%">
+<col style="width: 22%">
+<col style="width: 44%">
 </colgroup>
 <thead>
 <tr class="header">
-<th>Paquete</th>
-<th>Rol</th>
-<th>Limitación</th>
+<th>Package</th>
+<th>Role</th>
+<th>Limitation</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td><code>parsnip::mlp()</code></td>
-<td>MLP en tidymodels</td>
-<td>Topología casi fija; poca flexibilidad para arquitectura o ingeniería de variables</td>
+<td>Tidymodels MLP</td>
+<td>Mostly fixed topology; little architecture/feature engineering</td>
 </tr>
 <tr class="even">
 <td><code>reticulate</code></td>
-<td>Puente Python</td>
-<td>Bajo nivel; sin integración con workflows/tune</td>
+<td>Python Bridge</td>
+<td>Low-level, no ML workflow</td>
 </tr>
 <tr class="odd">
 <td><code>keras3</code></td>
-<td>Interfaz R</td>
-<td>Sin integración nativa <code>tune()</code></td>
+<td>R Interface</td>
+<td>No native <code>tune()</code> integration</td>
 </tr>
 <tr class="even">
 <td><code>luz</code>/<code>brulee</code></td>
-<td>Torch + tidymodels</td>
-<td>Solo backend Torch</td>
+<td>Torch + Tidymodels</td>
+<td>Torch-only backend</td>
 </tr>
 <tr class="odd">
 <td><strong><code>kerasnip</code></strong></td>
-<td><strong>Keras + tidymodels</strong></td>
-<td><strong>Integra flexibilidad de Keras con workflows de tidymodels</strong></td>
+<td><strong>Keras + Tidymodels</strong></td>
+<td><strong>Bridges Keras flexibility with Tidymodels workflows</strong></td>
 </tr>
 </tbody>
 </table>
 <aside class="notes">
-<p>Objetivo: posicionar kerasnip con precisión (sin malentendidos).</p>
-<p>Qué decir: - No sustituye a <code>keras3</code>. - No es un engine nuevo. - Genera <em>nuevos specs de parsnip</em> que usan el engine <code>keras</code> existente.</p>
-<p>Y conviene decirlo claro: - <code>parsnip::mlp()</code> va genial para MLPs “estándar”, pero es limitado para búsqueda arquitectónica. - kerasnip está pensado para ajustar <em>estructura</em> (profundidad/ancho/ramas) sin salir de tidymodels.</p>
-<p>Transición: Ahora: qué significa “spec dinámico” en la práctica.</p>
+<p>Goal: position kerasnip precisely (avoid confusion).</p>
+<p>Say: - Not replacing <code>keras3</code>. - Not a new engine. - It generates <em>new parsnip model specs</em> that still use the existing <code>keras</code> engine.</p>
+<p>Also say explicitly: - <code>parsnip::mlp()</code> is great for standard MLPs, but limited for architecture search. - kerasnip focuses on tuning <em>structure</em> (depth/width/branches) without leaving tidymodels.</p>
+<p>Transition: Now: what “dynamic specs” means in practice.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -364,18 +364,18 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="la-solución-specs-dinámicos" class="slide level2">
-<h2>La Solución: Specs Dinámicos</h2>
-<p><code>kerasnip</code> es un <strong>constructor de modelos</strong>, no un “model zoo”.</p>
+<section id="the-solution-dynamic-specs" class="slide level2">
+<h2>The Solution: Dynamic Specs</h2>
+<p><code>kerasnip</code> is a <strong>Model Builder</strong>, not a Model Zoo.</p>
 <ol type="1">
-<li><strong>Definir bloques</strong>: funciones que devuelven capas Keras.</li>
-<li><strong>Generar el spec</strong>: <code>create_keras_*_spec()</code> crea un modelo de <code>parsnip</code>.</li>
-<li><strong>Ajustar la estructura</strong>: los argumentos (y el número de repeticiones) pasan a ser hiperparámetros.</li>
+<li><strong>Define Blocks</strong>: Functions returning Keras layers.</li>
+<li><strong>Meta-program Spec</strong>: <code>create_keras_*_spec()</code> generates a new <code>parsnip</code> model.</li>
+<li><strong>Tune Structure</strong>: Block arguments (and repetition count) can be tuned.</li>
 </ol>
 <aside class="notes">
-<p>Objetivo: explicar “specs dinámicos” sin jerga.</p>
-<p>Qué decir: - Es un enfoque de generación de código: defines bloques y <code>kerasnip</code> genera un spec de parsnip. - A partir de ahí, todo vuelve a ser estándar: recipes → workflows → <code>tune_grid()</code>.</p>
-<p>Transición: Mantén el modelo mental en mente: lo reutilizaremos en los ejemplos.</p>
+<p>Goal: explain the “dynamic spec” idea in one breath.</p>
+<p>Say: - This is a code-generation approach: you define blocks, then <code>kerasnip</code> generates a parsnip spec function. - Once it’s a parsnip spec, the rest is standard: recipes → workflows → <code>tune_grid()</code>.</p>
+<p>Transition: Keep the mental model in mind; we’ll come back to it on every example.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -388,8 +388,8 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="modelo-mental" class="slide level2 mermaid-wide">
-<h2>Modelo Mental</h2>
+<section id="mental-model" class="slide level2 mermaid-wide">
+<h2>Mental Model</h2>
 <p><br> <br> <br></p>
 <div class="cell" data-reveal="true" data-layout-align="center">
 <div class="cell-output-display">
@@ -400,10 +400,10 @@
   classDef step fill:#f5f7fa,stroke:#5c6b7a,color:#1b3a57,stroke-width:2px;
   classDef tune fill:#BF281B,stroke:#BF281B,color:#ffffff,stroke-width:2px;
 
-  A["Bloques&lt;br/&gt;(layer blocks)"] --&gt; B["Función spec&lt;br/&gt;create_keras_*_spec()"]
+  A["Blocks&lt;br/&gt;(layer blocks)"] --&gt; B["Spec function&lt;br/&gt;create_keras_*_spec()"]
   B --&gt; C["Workflow&lt;br/&gt;recipe() + workflow()"]
-  C --&gt; D["Ajuste&lt;br/&gt;tune_grid()"]
-  A -. "args → ajustables&lt;br/&gt;num_{block} repite" .-&gt; B
+  C --&gt; D["Tuning&lt;br/&gt;tune_grid()"]
+  A -. "args → tunables&lt;br/&gt;num_{block} repeats" .-&gt; B
 
   class A,B,C step;
   class D tune;
@@ -414,10 +414,10 @@
 </div>
 </div>
 <aside class="notes">
-<p>Objetivo: anclar toda la charla a un modelo mental repetible.</p>
-<p>Qué decir: - Si alguien se pierde: bloques → spec → workflow → ajuste.</p>
-<p>Por dentro (si sale en preguntas): - Los specs se registran en un entorno interno. - Por eso existen helpers de ciclo de vida: <code>model_exists()</code>, <code>get_model_env()</code>, <code>remove_keras_spec()</code>.</p>
-<p>Transición: Siguiente: funciones mínimas que verás en los ejemplos.</p>
+<p>Goal: anchor the whole talk to one repeatable mental model.</p>
+<p>Say: - If someone gets lost: blocks → spec → workflow → tuning.</p>
+<p>Under the hood (if asked): - Specs are registered in an internal environment. - That’s why there are lifecycle helpers: <code>model_exists()</code>, <code>get_model_env()</code>, <code>remove_keras_spec()</code>.</p>
+<p>Transition: Next: the minimal set of functions you’ll see in the examples.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -430,20 +430,20 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="funciones-clave" class="slide level2">
-<h2>Funciones Clave</h2>
+<section id="key-functions-youll-see" class="slide level2">
+<h2>Key Functions You’ll See</h2>
 <ul>
 <li><code>create_keras_sequential_spec()</code></li>
 <li><code>create_keras_functional_spec()</code></li>
-<li><code>inp_spec()</code> (conexiones funcionales)</li>
-<li><code>compile_keras_grid()</code> (inspección/depuración)</li>
-<li><code>extract_parameter_set_dials()</code> (¿qué se puede ajustar?)</li>
+<li><code>inp_spec()</code> (functional wiring)</li>
+<li><code>compile_keras_grid()</code> (debug/inspect generated graphs)</li>
+<li><code>extract_parameter_set_dials()</code> (what can be tuned?)</li>
 </ul>
 <aside class="notes">
-<p>Objetivo: bajar la ansiedad por “demasiadas funciones”.</p>
-<p>Qué decir: - No hay que memorizar; solo entender el rol de cada función.</p>
-<p>Bonus: otras funciones útiles (no todas salen en el demo): - Depuración/compilación: <code>extract_valid_grid()</code> (filtra builds correctos), <code>inform_errors()</code> (resume errores típicos). - Evaluación e inspección: <code>extract_keras_model()</code>, <code>extract_keras_history()</code>, <code>keras_evaluate()</code>. - Descubrimiento de objetos Keras: <code>keras_optimizers</code>, <code>keras_losses</code>, <code>keras_metrics</code>. - Tuning seguro de nombres Keras: <code>optimizer_function()</code>, <code>loss_function_keras()</code>. - Limpieza: <code>model_exists()</code>, <code>remove_keras_spec()</code>, <code>get_model_env()</code>.</p>
-<p>Transición: Siguiente: convenciones de nombres, para que el código se lea solo.</p>
+<p>Goal: de-risk the API surface area.</p>
+<p>Say: - No need to memorize; just map each function to its role.</p>
+<p>Bonus: other kerasnip functions you may want later (not all shown in code today): - Debugging the compilation stage: <code>extract_valid_grid()</code> (keep only successful builds), <code>inform_errors()</code> (summarize common compile failures). - Evaluation + introspection: <code>extract_keras_model()</code>, <code>extract_keras_history()</code>, <code>keras_evaluate()</code>. - Keras object discovery + tuning: <code>keras_optimizers</code>, <code>keras_losses</code>, <code>keras_metrics</code>, <code>optimizer_function()</code>, <code>loss_function_keras()</code>. - Housekeeping: <code>model_exists()</code>, <code>remove_keras_spec()</code>, <code>get_model_env()</code>.</p>
+<p>Transition: Next: naming conventions, so the code reads naturally.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -456,19 +456,19 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="convenciones-de-nombres-args-autogenerados" class="slide level2">
-<h2>Convenciones de nombres (args autogenerados)</h2>
+<section id="naming-conventions-auto-generated-args" class="slide level2">
+<h2>Naming Conventions (auto-generated args)</h2>
 <ul>
-<li>Los argumentos se <strong>prefijan</strong> con el nombre del bloque (p.&nbsp;ej., <code>body_units</code>)</li>
-<li>Los bloques repetibles exponen <code>num_{block}</code> (p.&nbsp;ej., <code>num_body</code>)</li>
-<li>Las repeticiones <strong>comparten</strong> hiperparámetros (a propósito)</li>
+<li>Arguments get <strong>prefixed</strong> by block name (e.g.&nbsp;<code>body_units</code>)</li>
+<li>Repeatable blocks expose <code>num_{block}</code> (e.g.&nbsp;<code>num_body</code>)</li>
+<li>Repetitions <strong>share</strong> the same hyperparameters (by design)</li>
 </ul>
-<p>Ejemplo de mapeo:</p>
+<p>Example mapping:</p>
 <p><code>dense_block(model, units = 128, dropout = 0.1)</code> → <code>body_units</code>, <code>body_dropout</code></p>
 <aside class="notes">
-<p>Objetivo: eliminar confusión de nombres antes del código.</p>
-<p>Qué decir: - Los args del bloque pasan a ser args del spec con prefijo (p.&nbsp;ej. <code>body_units</code>). - La repetición se controla con <code>num_{block}</code>. - Las repeticiones comparten hiperparámetros a propósito.</p>
-<p>Transición: Con ese mapeo, el ejemplo secuencial se ve “normal”.</p>
+<p>Goal: remove naming confusion before we touch code.</p>
+<p>Say: - Block args become spec args with prefixes (e.g.&nbsp;<code>body_units</code>). - Repetition is controlled by <code>num_{block}</code>. - Repeated blocks share hyperparameters by design.</p>
+<p>Transition: With that mapping, the sequential example will look “normal”.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -481,16 +481,16 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="secuencial-vs-funcional-regla-práctica" class="slide level2">
-<h2>Secuencial vs Funcional (regla práctica)</h2>
+<section id="sequential-vs-functional-rule-of-thumb" class="slide level2">
+<h2>Sequential vs Functional (rule of thumb)</h2>
 <ul>
-<li><strong>Secuencial</strong>: un flujo de variables, apilados sencillos</li>
-<li><strong>Funcional</strong>: multi-entrada, ramas/uniones, conexiones de salto (skip connections), grafos explícitos</li>
+<li><strong>Sequential</strong>: one stream of features, simple stacks</li>
+<li><strong>Functional</strong>: multi-input, branch/merge, skip connections, explicit graphs</li>
 </ul>
 <aside class="notes">
-<p>Objetivo: dar una regla práctica fácil de recordar.</p>
-<p>Qué decir: - Secuencial para “una cadena de capas”. - Funcional cuando necesitas un grafo explícito: ramas/uniones, skip connections, multi-entrada.</p>
-<p>Transición: Empezamos con secuencial (más simple) y luego volvemos a funcional.</p>
+<p>Goal: give a decision rule people can remember.</p>
+<p>Say: - Use sequential for “a chain of layers”. - Use functional when you need an explicit graph: branches/merges, skips, multi-input.</p>
+<p>Transition: We’ll start sequential (easier), then come back to functional.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -503,17 +503,18 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="errores-comunes" class="slide level2">
-<h2>Errores Comunes</h2>
+<section id="common-gotchas" class="slide level2">
+<h2>Common Gotchas</h2>
 <ul>
-<li>Asegúrate de que la receta produzca matrices numéricas (dummy + normalize)</li>
-<li>Empieza con un grid pequeño y confirma la estructura con <code>compile_keras_grid()</code></li>
-<li>Mantén el espacio de ajuste razonable (profundidad × ancho explota)</li>
+<li>Ensure the recipe outputs numeric matrices (dummy + normalize)</li>
+<li>Start with a small grid, confirm structure via <code>compile_keras_grid()</code></li>
+<li>Keep tuning spaces reasonable (depth × width can explode)</li>
 </ul>
 <aside class="notes">
-<p>Objetivo: prevenir los fallos más comunes.</p>
-<p>Qué decir: - Esta diapositiva está aquí para ahorrarte dolores en el turno de preguntas. - Clasificación: asegúrate de que el outcome sea factor (convención tidymodels) y que la última capa/loss encaje en binaria vs multiclase. - Cada punto del grid es <em>construir + entrenar</em> un modelo nuevo; fija seeds si quieres comparaciones estables.</p>
-<p>Transición: Con estos guardarraíles, vamos al ejemplo secuencial.</p>
+<p>Goal: preempt the top failure modes.</p>
+<p>Say: - This slide is here to save pain during Q&amp;A.</p>
+<p>Extra gotchas to mention out loud: - Classification: make sure the outcome is a factor (tidymodels convention) and the final layer/loss matches binary vs multiclass. - Every grid point is a <em>fresh model build + fresh training</em>; set seeds if you want stable comparisons. - Training controls (epochs/callbacks) should be held constant during architecture search unless you intentionally tune them.</p>
+<p>Transition: With those guardrails, let’s run a simple sequential example.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -526,14 +527,14 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="flujo-1-api-secuencial-regresión" class="slide level2">
-<h2>Flujo 1: API Secuencial (Regresión)</h2>
-<p><strong>Objetivo</strong>: Predecir precios de diamantes y ajustar <strong>profundidad + ancho</strong>.</p>
+<section id="workflow-1-sequential-api-regression" class="slide level2">
+<h2>Workflow 1: Sequential API (Regression)</h2>
+<p><strong>Goal</strong>: Predict diamond prices and tune <strong>depth + width</strong>.</p>
 <p>Dataset: <code>ggplot2::diamonds</code>.</p>
 <aside class="notes">
-<p>Objetivo: un demo simple pero creíble.</p>
-<p>Qué decir: - MLP tabular con diamonds. Simple a propósito: el foco es ajustar profundidad/ancho, no exprimir el feature engineering.</p>
-<p>Transición: Primero definimos bloques (funciones), luego generamos el spec.</p>
+<p>Goal: set up a simple, credible demo.</p>
+<p>Say: - This is a tabular MLP on diamonds. Simple on purpose: the point is tuning depth/width, not feature engineering.</p>
+<p>Transition: First we define blocks (just functions), then generate the spec.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -546,8 +547,8 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="bloques-secuenciales-mínimos" class="slide level2">
-<h2>Bloques Secuenciales (mínimos)</h2>
+<section id="sequential-blocks-minimal" class="slide level2">
+<h2>Sequential Blocks (minimal)</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>input_block <span class="ot">&lt;-</span> <span class="cf">function</span>(model, input_shape) {</span>
 <span id="cb1-2"><a></a>  <span class="fu">keras_model_sequential</span>(<span class="at">input_shape =</span> input_shape)</span>
 <span id="cb1-3"><a></a>}</span>
@@ -560,13 +561,13 @@
 <span id="cb1-10"><a></a></span>
 <span id="cb1-11"><a></a>output_block <span class="ot">&lt;-</span> <span class="cf">function</span>(model) {</span>
 <span id="cb1-12"><a></a>  model <span class="sc">|&gt;</span> <span class="fu">layer_dense</span>(<span class="at">units =</span> <span class="dv">1</span>)</span>
-<span id="cb1-13"><a></a>}</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-13"><a></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <aside class="notes">
-<p>Objetivo: que se vea que los bloques son simples y reutilizables.</p>
-<p>Qué decir: - Los bloques son funciones normales; la firma importa porque se transforma en argumentos del spec.</p>
-<p>Buenas prácticas: - Mantén los bloques deterministas. - Usa valores por defecto razonables para que el modelo base funcione sin ajuste.</p>
-<p>Si preguntan “¿puedo tener parámetros distintos por capa?” - Las repeticiones comparten hiperparámetros a propósito. - Si quieres diferencias por capa, define varios bloques (<code>body1</code>, <code>body2</code>, …) en vez de repetir uno.</p>
-<p>Transición: Siguiente: generar el spec a partir de estos bloques.</p>
+<p>Goal: show that blocks are simple and reusable.</p>
+<p>Say: - Blocks are just functions. - The signature matters: args become spec args (prefixed by block name).</p>
+<p>Good practice: - Keep blocks deterministic. - Use sensible defaults so the base model runs without tuning.</p>
+<p>If asked “can I make each repeated layer different?” - Repetitions share hyperparameters by design. - If you want different parameters per layer, define multiple blocks (e.g.&nbsp;<code>body1</code>, <code>body2</code>) instead of repeating one.</p>
+<p>Transition: Next: generate the spec from these blocks.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -579,21 +580,21 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="generar-el-spec-parsnip" class="slide level2">
-<h2>Generar el spec <code>parsnip</code></h2>
+<section id="generate-the-parsnip-spec" class="slide level2">
+<h2>Generate the <code>parsnip</code> spec</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a><span class="fu">create_keras_sequential_spec</span>(</span>
 <span id="cb2-2"><a></a>  <span class="at">model_name =</span> <span class="st">"diamond_mlp"</span>,</span>
 <span id="cb2-3"><a></a>  <span class="at">layer_blocks =</span> <span class="fu">list</span>(</span>
 <span id="cb2-4"><a></a>    <span class="at">input =</span> input_block,</span>
-<span id="cb2-5"><a></a>    <span class="at">body =</span> dense_block,  <span class="co"># &lt;--- Bloque repetible</span></span>
+<span id="cb2-5"><a></a>    <span class="at">body =</span> dense_block,  <span class="co"># &lt;--- This block will be repeatable</span></span>
 <span id="cb2-6"><a></a>    <span class="at">output =</span> output_block</span>
 <span id="cb2-7"><a></a>  ),</span>
 <span id="cb2-8"><a></a>  <span class="at">mode =</span> <span class="st">"regression"</span></span>
-<span id="cb2-9"><a></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-9"><a></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <aside class="notes">
-<p>Objetivo: que el “momento generación de spec” se entienda.</p>
-<p>Qué decir: - Esto crea una nueva función spec de parsnip: <code>diamond_mlp()</code>. - A partir de aquí se comporta como cualquier modelo de tidymodels: engine, workflow y tuning.</p>
-<p>Transición: Siguiente: ajustar topología con <code>num_body</code>.</p>
+<p>Goal: make the “spec generation” moment land.</p>
+<p>Say: - This creates a new parsnip spec function: <code>diamond_mlp()</code>. - From this point on, it behaves like any other tidymodels model: you can set engine, add to workflows, and tune args.</p>
+<p>Transition: Next we’ll tune topology via <code>num_body</code>.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -606,21 +607,23 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="ajuste-estructural" class="slide level2">
-<h2>Ajuste Estructural</h2>
-<p>Tratamos la <strong>topología</strong> como hiperparámetro.</p>
+<section id="structural-tuning" class="slide level2">
+<h2>Structural Tuning</h2>
+<p>We treat <strong>topology</strong> as a hyperparameter.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>spec <span class="ot">&lt;-</span> <span class="fu">diamond_mlp</span>(</span>
-<span id="cb3-2"><a></a>  <span class="at">num_body =</span> <span class="fu">tune</span>(),       <span class="co"># &lt;--- Profundidad (ej. 1, 2, o 3 capas)</span></span>
-<span id="cb3-3"><a></a>  <span class="at">body_units =</span> <span class="fu">tune</span>(),     <span class="co"># &lt;--- Ancho (ej. 64 vs 128 unidades)</span></span>
+<span id="cb3-2"><a></a>  <span class="at">num_body =</span> <span class="fu">tune</span>(),       <span class="co"># &lt;--- Depth (e.g., 1, 2, or 3 layers)</span></span>
+<span id="cb3-3"><a></a>  <span class="at">body_units =</span> <span class="fu">tune</span>(),     <span class="co"># &lt;--- Width (e.g., 64 vs 128 units)</span></span>
 <span id="cb3-4"><a></a>  <span class="at">body_dropout =</span> <span class="fu">tune</span>(),</span>
 <span id="cb3-5"><a></a>  <span class="at">fit_epochs =</span> <span class="dv">20</span></span>
 <span id="cb3-6"><a></a>) <span class="sc">|&gt;</span></span>
-<span id="cb3-7"><a></a>  <span class="fu">set_engine</span>(<span class="st">"keras"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Los argumentos <code>num_{block}</code> son generados automáticamente por <code>kerasnip</code> para cualquier bloque repetible.</p>
+<span id="cb3-7"><a></a>  <span class="fu">set_engine</span>(<span class="st">"keras"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The arguments <code>num_{block}</code> are automatically generated by <code>kerasnip</code> for any repeatable block.</p>
 <aside class="notes">
-<p>Objetivo: que <code>num_body</code> se entienda como hiperparámetro de topología.</p>
-<p>Qué decir: - Valor clave: <code>num_body</code> permite buscar topología dentro de un <code>tune_grid()</code> estándar. - La profundidad pasa a ser un hiperparámetro más. - Durante la búsqueda arquitectónica, conviene mantener el entrenamiento bastante fijo. - Primero estructura (profundidad/ancho), luego (si hace falta) hiperparámetros de entrenamiento.</p>
-<p>Transición: Siguiente: meterlo en un workflow normal.</p>
+<p>Goal: make “depth is tunable” feel obvious.</p>
+<p>Say: - <code>num_body</code> allows searching topology inside a standard <code>tune_grid()</code>.</p>
+<p>What to emphasize: - Depth becomes a first-class parameter. - Keep training controls mostly fixed during architecture search.</p>
+<p>Practical tip: - Tune structure first (depth/width), then optionally tune optimizer/training hyperparameters.</p>
+<p>Transition: Next: put it into a normal workflow.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -633,8 +636,8 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="diamonds-workflow-tidymodels" class="slide level2">
-<h2>Diamonds + Workflow Tidymodels</h2>
+<section id="diamonds-tidymodels-workflow" class="slide level2">
+<h2>Diamonds + Tidymodels Workflow</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a><span class="fu">library</span>(tidymodels)</span>
 <span id="cb4-2"><a></a><span class="fu">library</span>(kerasnip)</span>
 <span id="cb4-3"><a></a></span>
@@ -650,12 +653,12 @@
 <span id="cb4-13"><a></a></span>
 <span id="cb4-14"><a></a>wf <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">|&gt;</span></span>
 <span id="cb4-15"><a></a>  <span class="fu">add_recipe</span>(diamonds_rec) <span class="sc">|&gt;</span></span>
-<span id="cb4-16"><a></a>  <span class="fu">add_model</span>(spec)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb4-16"><a></a>  <span class="fu">add_model</span>(spec)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <aside class="notes">
-<p>Objetivo: reforzar la “paridad” con tidymodels.</p>
-<p>Qué decir: - El workflow se ve “normal”. - La complejidad Keras queda detrás del spec parsnip.</p>
-<p>Si hace falta una frase de “integración real”: - kerasnip gestiona la conversión receta → Keras mediante helpers internos como <code>process_x_sequential()</code> / <code>process_y_sequential()</code> y <code>generic_sequential_fit()</code>.</p>
-<p>Transición: Siguiente: definir rangos y lanzar <code>tune_grid()</code>.</p>
+<p>Goal: show the tidymodels parity story.</p>
+<p>Say: - The workflow looks normal. - The Keras complexity is “behind” the parsnip spec.</p>
+<p>If you want one extra credibility sentence: - kerasnip handles the recipe → Keras conversions via internal helpers like <code>process_x_sequential()</code> / <code>process_y_sequential()</code> and <code>generic_sequential_fit()</code>.</p>
+<p>Transition: Next: define the tuning ranges and run <code>tune_grid()</code>.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -668,8 +671,8 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="grid-de-ajuste-incluye-profundidad" class="slide level2 compact code-compact">
-<h2>Grid de ajuste (incluye profundidad)</h2>
+<section id="tuning-grid-including-depth" class="slide level2 compact code-compact">
+<h2>Tuning Grid (including depth)</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a>params <span class="ot">&lt;-</span> <span class="fu">extract_parameter_set_dials</span>(wf) <span class="sc">|&gt;</span></span>
 <span id="cb5-2"><a></a>  <span class="fu">update</span>(</span>
 <span id="cb5-3"><a></a>    <span class="at">num_body     =</span> dials<span class="sc">::</span><span class="fu">num_terms</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">4</span>)),</span>
@@ -679,11 +682,11 @@
 <span id="cb5-7"><a></a></span>
 <span id="cb5-8"><a></a>grid  <span class="ot">&lt;-</span> <span class="fu">grid_latin_hypercube</span>(params, <span class="at">size =</span> <span class="dv">20</span>)</span>
 <span id="cb5-9"><a></a>folds <span class="ot">&lt;-</span> <span class="fu">vfold_cv</span>(diamonds_train, <span class="at">v =</span> <span class="dv">5</span>, <span class="at">strata =</span> price)</span>
-<span id="cb5-10"><a></a>res   <span class="ot">&lt;-</span> <span class="fu">tune_grid</span>(wf, <span class="at">resamples =</span> folds, <span class="at">grid =</span> grid)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb5-10"><a></a>res   <span class="ot">&lt;-</span> <span class="fu">tune_grid</span>(wf, <span class="at">resamples =</span> folds, <span class="at">grid =</span> grid)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <aside class="notes">
-<p>Objetivo: mostrar que el ajuste es tidymodels estándar.</p>
-<p>Qué decir: - <code>extract_parameter_set_dials()</code> detecta qué se puede ajustar; luego definimos rangos y construimos un grid. - Lo importante: <code>num_body</code> ya es un hiperparámetro de primera clase.</p>
-<p>Transición: Ahora vemos resultados en CV y elegimos candidato antes de mirar el test.</p>
+<p>Goal: show this is just standard tidymodels tuning.</p>
+<p>Say: - <code>extract_parameter_set_dials()</code> discovers tunables, then we define ranges and build a grid. - The key is that <code>num_body</code> is now a first-class tuning parameter.</p>
+<p>Transition: Now let’s look at CV results and pick a candidate before touching the test set.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -696,8 +699,8 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="resultados-diamantes-cv-tabla" class="slide level2">
-<h2>Resultados (Diamantes): CV — Tabla</h2>
+<section id="results-diamonds-cv-table" class="slide level2">
+<h2>Results (Diamonds): CV — Table</h2>
 <table>
 <thead>
 <tr>
@@ -807,8 +810,9 @@ std_err
 </tbody>
 </table>
 <aside class="notes">
-<p>Objetivo: elegir 1–2 candidatos (no leer toda la tabla).</p>
-<p>Qué decir: - Son estimaciones de validación cruzada (media + error estándar). Se selecciona con CV, no con el test. - Busca una zona “estable”: buen RMSE medio y poca sensibilidad a profundidad/dropout. Transición: Veamos el gráfico para entender interacciones.</p>
+<p>Goal: pick 1–2 strong candidates (don’t read the whole table).</p>
+<p>Say: - These are cross-validation estimates (mean + std_err). We’re selecting on CV, not the test set. - I usually look for a “stable region”: low mean RMSE and not wildly sensitive to depth/dropout.</p>
+<p>Transition: Let’s look at the CV plot to see interactions.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -821,12 +825,13 @@ std_err
           display:block!important;
       }</style></aside>
 </section>
-<section id="resultados-diamantes-cv-gráfico" class="slide level2">
-<h2>Resultados (Diamantes): CV — Gráfico</h2>
+<section id="results-diamonds-cv-plot" class="slide level2">
+<h2>Results (Diamonds): CV — Plot</h2>
 
-<img data-src="index_files/figure-revealjs/diamonds-results-cv-plot-es-1.png" width="960" class="r-stretch"><aside class="notes">
-<p>Objetivo: ver interacciones (profundidad × ancho × dropout) de un vistazo.</p>
-<p>Qué decir: - Si la tendencia se aplana, más profundidad no aporta. - Si las diferencias son pequeñas, elige lo más simple. Transición: Ahora confirmamos una sola vez en el conjunto de test.</p>
+<img data-src="index_files/figure-revealjs/diamonds-results-cv-plot-1.png" width="960" class="r-stretch"><aside class="notes">
+<p>Goal: see interactions (depth × width × dropout) at a glance.</p>
+<p>Say: - If the trend flattens, deeper models aren’t buying much. - When differences are tiny relative to noise, pick simpler.</p>
+<p>Transition: Now we do a one-time test-set confirmation.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -839,8 +844,8 @@ std_err
           display:block!important;
       }</style></aside>
 </section>
-<section id="resultados-diamantes-test-tabla" class="slide level2">
-<h2>Resultados (Diamantes): Test — Tabla</h2>
+<section id="results-diamonds-test-table" class="slide level2">
+<h2>Results (Diamonds): Test — Table</h2>
 <table>
 <thead>
 <tr>
@@ -880,8 +885,9 @@ rsq
 </tbody>
 </table>
 <aside class="notes">
-<p>Objetivo: confirmación final una sola vez.</p>
-<p>Qué decir: - El test es para reportar, no para decidir hiperparámetros. - Si el test empeora mucho respecto a CV, sospecha inestabilidad o leakage. Transición: Siguiente: una comprobación visual rápida en las predicciones de test.</p>
+<p>Goal: one-time confirmation.</p>
+<p>Say: - Test metrics are for final reporting; avoid using them to decide hyperparameters. - If test is worse than CV by a lot, it’s a sign of instability or leakage.</p>
+<p>Transition: I’ll show a quick visual sanity check on test predictions.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -894,13 +900,21 @@ rsq
           display:block!important;
       }</style></aside>
 </section>
-<section id="resultados-diamantes-test-gráfico" class="slide level2">
-<h2>Resultados (Diamantes): Test — Gráfico</h2>
+<section id="results-diamonds-test-plot" class="slide level2">
+<h2>Results (Diamonds): Test — Plot</h2>
 
-<img data-src="index_files/figure-revealjs/diamonds-results-test-plot-es-1.png" width="960" class="r-stretch"><aside class="notes">
-<p>Objetivo: interpretar el modelo final sin llenar la diapositiva.</p>
-<p>Qué decir: - Mantén la diapositiva limpia: muestra solo resultados y comenta encima. - Reproducibilidad: Quarto <code>freeze: auto</code> ejecuta una vez y reutiliza la caché; manualmente, <code>Rscript presentations/madrid-2-2026/make_results.R</code> crea los mismos <code>.rds</code>. - Inspección típica: <code>collect_metrics(res)</code> → <code>show_best()</code> → <code>select_best()</code> → <code>finalize_workflow()</code> → <code>last_fit()</code>. - Nota práctica: para inspeccionar el objeto final, usa <code>extract_keras_model()</code> y <code>extract_keras_history()</code>.</p>
-<p>Transición: Siguiente: cómo depurar/inspeccionar la arquitectura generada.</p>
+<img data-src="index_files/figure-revealjs/diamonds-results-test-plot-1.png" width="960" class="r-stretch"><aside class="notes">
+<p>Goal: keep slides uncluttered and interpret the final model.</p>
+<p>Say: - Show results only; talk over them.</p>
+<p>Reproducibility workflow:</p>
+<ul>
+<li>Quarto <code>freeze: auto</code> runs once and reuses cached results.</li>
+<li>Manual: <code>Rscript presentations/madrid-2-2026/make_results.R</code> creates the same <code>.rds</code> artifacts.</li>
+</ul>
+<p>Typical inspection steps:</p>
+<p><code>collect_metrics(res)</code> → <code>show_best()</code> → <code>select_best()</code> → <code>finalize_workflow()</code> → <code>last_fit()</code></p>
+<p>One more practical note: - If you want to inspect the final Keras model, use <code>extract_keras_model()</code> and <code>extract_keras_history()</code> on the fitted workflow/fit object.</p>
+<p>Transition: Next: how to debug/inspect the generated architecture.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -913,9 +927,9 @@ rsq
           display:block!important;
       }</style></aside>
 </section>
-<section id="depuración-qué-modelo-se-generó" class="slide level2 compact table-compact">
-<h2>Depuración: “¿qué modelo se generó?”</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a><span class="co"># compile_keras_grid(spec, grid, x, y)</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="debugging-what-model-did-we-just-create" class="slide level2 compact table-compact">
+<h2>Debugging: “What model did we just create?”</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a><span class="co"># compile_keras_grid(spec, grid, x, y)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 4
@@ -927,19 +941,21 @@ rsq
 <pre><code># A tibble: 7 × 2
   layer       class                                          
   &lt;chr&gt;       &lt;chr&gt;                                          
-1 dense_154   keras.src.layers.core.dense.Dense              
-2 dropout_103 keras.src.layers.regularization.dropout.Dropout
-3 dense_155   keras.src.layers.core.dense.Dense              
-4 dropout_104 keras.src.layers.regularization.dropout.Dropout
-5 dense_156   keras.src.layers.core.dense.Dense              
-6 dropout_105 keras.src.layers.regularization.dropout.Dropout
-7 dense_157   keras.src.layers.core.dense.Dense              </code></pre>
+1 dense_150   keras.src.layers.core.dense.Dense              
+2 dropout_100 keras.src.layers.regularization.dropout.Dropout
+3 dense_151   keras.src.layers.core.dense.Dense              
+4 dropout_101 keras.src.layers.regularization.dropout.Dropout
+5 dense_152   keras.src.layers.core.dense.Dense              
+6 dropout_102 keras.src.layers.regularization.dropout.Dropout
+7 dense_153   keras.src.layers.core.dense.Dense              </code></pre>
 </div>
 </div>
 <aside class="notes">
-<p>Objetivo: mantener la cordura durante la búsqueda estructural.</p>
-<p>Qué decir: - Esto confirma que la estructura cambia como esperamos. - <code>extract_valid_grid(dbg)</code> se queda solo con los puntos del grid que compilaron bien. - <code>inform_errors(dbg)</code> resume los errores de compilación más comunes. - En sesiones interactivas: <code>remove_keras_spec("diamond_mlp")</code> para no acumular specs generados.</p>
-<p>Transición: Siguiente: pasamos a un ejemplo funcional (grafo).</p>
+<p>Goal: keep sanity during structural search.</p>
+<p>Say: - Confirm depth/width changes are really happening.</p>
+<p>Two extra helpers worth calling out: - <code>extract_valid_grid(dbg)</code> filters to the grid points that compiled successfully. - <code>inform_errors(dbg)</code> summarizes the most common compilation errors.</p>
+<p>Cleanup tip: - Use <code>remove_keras_spec("diamond_mlp")</code> when iterating interactively so you don’t leave lots of generated specs around.</p>
+<p>Transition: Next: switch to a functional (graph) example.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -952,15 +968,16 @@ rsq
           display:block!important;
       }</style></aside>
 </section>
-<section id="flujo-2-api-funcional-ramificarunir" class="slide level2">
-<h2>Flujo 2: API Funcional (Ramificar/Unir)</h2>
-<p><strong>Meta</strong>: Predecir rotación de personal (attrition) — clasificación.</p>
+<section id="workflow-2-functional-api-branchmerge" class="slide level2">
+<h2>Workflow 2: Functional API (Branch/Merge)</h2>
+<p><strong>Goal</strong>: Employee Attrition (Classification).</p>
 <p>Dataset: <code>modeldata::attrition</code>.</p>
-<p>Construimos un grafo sencillo de <strong>ramas y unión</strong>: - una entrada - dos “torres” en paralelo - concat + salida</p>
+<p>We’ll build a small <strong>branch/merge</strong> graph: - one input tensor - two parallel “towers” - concat + output</p>
 <aside class="notes">
-<p>Objetivo: motivar por qué el API funcional importa.</p>
-<p>Qué decir: - El valor del API funcional es que dejas de estar limitado a una cadena lineal. - Decisión práctica para que sea reproducible: usamos UNA entrada desde una receta estándar y creamos dos ramas desde el mismo tensor.</p>
-<p>Transición: <code>inp_spec()</code> es el mecanismo de cableado.</p>
+<p>Goal: motivate why functional Keras matters.</p>
+<p>Say: - Functional is the sweet spot when the architecture is not a straight line.</p>
+<p>Important practical choice for a live talk: keep preprocessing simple. We use ONE input produced by a standard recipe, then create two parallel branches from the same input.</p>
+<p>Transition: <code>inp_spec()</code> is the wiring mechanism.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -973,14 +990,16 @@ rsq
           display:block!important;
       }</style></aside>
 </section>
-<section id="conexiones-con-inp_spec" class="slide level2">
-<h2>Conexiones con <code>inp_spec()</code></h2>
-<p><code>inp_spec(func, inputs)</code> mapea explícitamente <strong>salidas de bloques</strong> a <strong>argumentos</strong>.</p>
-<p>Útil para: - modelos multi-entrada - skip connections - arquitecturas con ramas y uniones</p>
+<section id="functional-wiring-with-inp_spec" class="slide level2">
+<h2>Functional Wiring with <code>inp_spec()</code></h2>
+<p><code>inp_spec(func, inputs)</code> explicitly maps <strong>upstream block outputs</strong> to <strong>function arguments</strong>.</p>
+<p>That’s the key to: - multi-input models - skip connections - branch/merge architectures</p>
 <aside class="notes">
-<p>Objetivo: explicar <code>inp_spec()</code> como cableado legible.</p>
-<p>Qué decir: - La mayoría entiende el API funcional, pero necesita una forma clara de expresarlo en R. - Regla práctica: si tu modelo es una cadena simple, secuencial; si necesitas tensores con nombre (ramas/uniones, torres compartidas, conexiones de salto, multi-entrada), funcional. - <code>inp_spec()</code> es la capa de cableado: hace el grafo explícito y legible.</p>
-<p>Transición: Siguiente: bloques funcionales mínimos.</p>
+<p>Goal: explain <code>inp_spec()</code> as readable wiring.</p>
+<p>Say: - Most people get functional Keras, but the missing piece is: expressing the graph cleanly in R.</p>
+<p>Rule of thumb: - If you can describe your model as a simple chain, use sequential. - Use functional when you need named tensors: branches/merges, shared towers, skip connections, or multiple inputs.</p>
+<p>Also worth saying: - <code>inp_spec()</code> is the wiring layer: it makes the graph explicit and readable.</p>
+<p>Transition: Next: minimal functional blocks.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -993,9 +1012,9 @@ rsq
           display:block!important;
       }</style></aside>
 </section>
-<section id="bloques-funcionales-mínimos" class="slide level2 compact code-compact">
-<h2>Bloques Funcionales (mínimos)</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a><span class="co"># En Keras funcional, los tensores van “pasando” por bloques.</span></span>
+<section id="functional-blocks-minimal" class="slide level2 compact code-compact">
+<h2>Functional Blocks (minimal)</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a><span class="co"># In functional Keras, tensors flow through your blocks.</span></span>
 <span id="cb9-2"><a></a>input_block <span class="ot">&lt;-</span> <span class="cf">function</span>(input_shape) {</span>
 <span id="cb9-3"><a></a>  <span class="fu">layer_input</span>(<span class="at">shape =</span> input_shape, <span class="at">name =</span> <span class="st">"features"</span>)</span>
 <span id="cb9-4"><a></a>}</span>
@@ -1012,11 +1031,17 @@ rsq
 <span id="cb9-15"><a></a></span>
 <span id="cb9-16"><a></a>output_block <span class="ot">&lt;-</span> <span class="cf">function</span>(tensor, num_classes) {</span>
 <span id="cb9-17"><a></a>  tensor <span class="sc">|&gt;</span> <span class="fu">layer_dense</span>(<span class="at">units =</span> num_classes, <span class="at">activation =</span> <span class="st">"softmax"</span>)</span>
-<span id="cb9-18"><a></a>}</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb9-18"><a></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <aside class="notes">
-<p>Objetivo: evitar errores típicos de cableado.</p>
-<p>Qué decir: - Dos puntos de corrección (según la documentación de <code>kerasnip</code>): el bloque de entrada es <code>function(input_shape)</code> (sin argumento <code>model</code>) y los bloques posteriores reciben el tensor upstream como primer argumento. - <code>inp_spec()</code> es lo que nos permite cablear salidas a argumentos con nombre. - Error típico: los nombres usados en <code>inp_spec(..., "main_input")</code> tienen que coincidir exactamente con los nombres de bloque.</p>
-<p>Transición: Siguiente: generar el spec funcional.</p>
+<p>Goal: show block conventions and avoid wiring mistakes.</p>
+<p>Say: - Two key correctness points (from the <code>kerasnip</code> docs):</p>
+<ul>
+<li>The input block is <code>function(input_shape)</code> (no <code>model</code> argument).</li>
+<li>Downstream blocks take the upstream tensor as the first argument.</li>
+</ul>
+<p><code>inp_spec()</code> is how we wire outputs into named arguments.</p>
+<p>Common pitfall: - The names you reference in <code>inp_spec(..., "main_input")</code> must match block names exactly.</p>
+<p>Transition: Next: generate the functional spec.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1029,8 +1054,8 @@ rsq
           display:block!important;
       }</style></aside>
 </section>
-<section id="construir-el-grafo-spec" class="slide level2 compact code-compact">
-<h2>Construir el grafo (spec)</h2>
+<section id="build-the-graph-spec" class="slide level2 compact code-compact">
+<h2>Build the graph (spec)</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a><span class="fu">create_keras_functional_spec</span>(</span>
 <span id="cb10-2"><a></a>  <span class="at">model_name =</span> <span class="st">"attrition_towers"</span>,</span>
 <span id="cb10-3"><a></a>  <span class="at">layer_blocks =</span> <span class="fu">list</span>(</span>
@@ -1041,11 +1066,13 @@ rsq
 <span id="cb10-8"><a></a>    <span class="at">output =</span> <span class="fu">inp_spec</span>(output_block, <span class="st">"joined"</span>)</span>
 <span id="cb10-9"><a></a>  ),</span>
 <span id="cb10-10"><a></a>  <span class="at">mode =</span> <span class="st">"classification"</span></span>
-<span id="cb10-11"><a></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb10-11"><a></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <aside class="notes">
-<p>Objetivo: mostrar que un grafo sigue encajando en tidymodels.</p>
-<p>Qué decir: - Con esto tenemos un grafo no lineal sin complicarnos con múltiples entradas desde la receta. - Si tu arquitectura es una cadena, el API secuencial suele ser más simple; funcional es para “grafos”: ramas, uniones, skip connections. - Si preguntan por multi-entrada: define varios bloques <code>layer_input()</code> y conéctalos por nombre con <code>inp_spec()</code>.</p>
-<p>Transición: Siguiente: construir el workflow y ajustar con <code>tune_grid()</code>.</p>
+<p>Goal: show functional graphs still fit a standard workflow.</p>
+<p>Say: - This gives us a non-linear graph while still using a standard tidymodels recipe.</p>
+<p>If your architecture is a straight line, sequential is simpler. Functional is for “graphs”: branches, merges, skips.</p>
+<p>If asked about multi-input: - Define multiple <code>layer_input()</code> blocks and wire them into downstream blocks by name using <code>inp_spec()</code>.</p>
+<p>Transition: Next: build the workflow and tune.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1058,8 +1085,8 @@ rsq
           display:block!important;
       }</style></aside>
 </section>
-<section id="workflow-de-rotación-alto-nivel" class="slide level2">
-<h2>Workflow de Rotación (alto nivel)</h2>
+<section id="attrition-workflow-high-level" class="slide level2">
+<h2>Attrition Workflow (high level)</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a><span class="fu">library</span>(tidymodels)</span>
 <span id="cb11-2"><a></a><span class="fu">library</span>(modeldata)</span>
 <span id="cb11-3"><a></a></span>
@@ -1082,11 +1109,12 @@ rsq
 <span id="cb11-20"><a></a></span>
 <span id="cb11-21"><a></a>attr_wf <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">|&gt;</span></span>
 <span id="cb11-22"><a></a>  <span class="fu">add_recipe</span>(attr_rec) <span class="sc">|&gt;</span></span>
-<span id="cb11-23"><a></a>  <span class="fu">add_model</span>(attr_spec)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb11-23"><a></a>  <span class="fu">add_model</span>(attr_spec)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <aside class="notes">
-<p>Objetivo: re-anclar a tidymodels.</p>
-<p>Qué decir: - Workflow primero: al final, sigue siendo <code>tune_grid()</code>. - Asegúrate de que el outcome sea factor y de mantener niveles estables para que no “cambien” las columnas dummy. - Para ROC AUC, necesitas probabilidades de clase; comprueba que el flujo las produce.</p>
-<p>Transición: Ahora: resultados en CV y selección.</p>
+<p>Goal: re-anchor to tidymodels.</p>
+<p>Say: - This slide is intentionally “workflow first”. - If people only remember one thing: you still tune with <code>tune_grid()</code>.</p>
+<p>Classification-specific reminders: - Ensure the outcome is a factor and keep levels stable so dummy columns don’t drift. - Metrics like ROC AUC use class probabilities; confirm the workflow produces them.</p>
+<p>Transition: Now: CV results and selection.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1099,12 +1127,18 @@ rsq
           display:block!important;
       }</style></aside>
 </section>
-<section id="resultados-rotación-cv-tabla" class="slide level2">
-<h2>Resultados (Rotación): CV — Tabla</h2>
+<section id="results-attrition-cv-table" class="slide level2">
+<h2>Results (Attrition): CV — Table</h2>
 <aside class="notes">
-<p>Objetivo: elegir 1–2 candidatos (sin leer toda la tabla).</p>
-<p>Qué decir: - Son estimaciones de validación cruzada (media + error estándar). Se selecciona con CV, no con el test. - Busca una zona “estable”: buena AUC y poca sensibilidad al tamaño de las torres. - Repro: renderiza una vez (con <code>freeze: auto</code>) o ejecuta <code>Rscript presentations/madrid-2-2026/make_results.R</code>; se guarda <code>presentations/madrid-2-2026/results/attrition_res.rds</code>. - Inspección típica: <code>collect_metrics()</code> → <code>show_best()</code> → <code>select_best()</code> → <code>finalize_workflow()</code> → <code>last_fit()</code>.</p>
-<p>Transición: Ahora el mapa de calor para ver sensibilidad/interacciones.</p>
+<p>Goal: explain caching/repro quickly.</p>
+<p>Say: - Cache once, show consistently.</p>
+<ul>
+<li>Render once (with <code>freeze: auto</code>) or run <code>Rscript presentations/madrid-2-2026/make_results.R</code></li>
+<li>It saves <code>presentations/madrid-2-2026/results/attrition_res.rds</code></li>
+</ul>
+<p>Typical inspection:</p>
+<p><code>collect_metrics()</code> → <code>show_best()</code> → <code>select_best()</code> → <code>finalize_workflow()</code> → <code>last_fit()</code></p>
+<p>Transition: Now the table: pick a configuration.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1206,13 +1240,10 @@ std_err
 </tr>
 </tbody>
 </table>
-</section>
-<section id="resultados-rotación-cv-gráfico" class="slide level2">
-<h2>Resultados (Rotación): CV — Gráfico</h2>
-
-<img data-src="index_files/figure-revealjs/attrition-results-cv-plot-es-1.png" width="960" class="r-stretch"><aside class="notes">
-<p>Objetivo: ver si una torre importa más que la otra.</p>
-<p>Qué decir: - Un mapa “plano” sugiere poca sensibilidad: elige simple. - Un pico claro sugiere que merece la pena acotar la búsqueda alrededor de esa zona. Transición: Siguiente: reportamos una sola vez en test.</p>
+<aside class="notes">
+<p>Goal: pick a sensible (often simple) configuration.</p>
+<p>Say: - We’re selecting on CV ROC AUC; AUC uses predicted probabilities. - If many configs are similar, prefer smaller towers (simpler = easier to maintain).</p>
+<p>Transition: Next: check sensitivity in a heatmap.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1225,8 +1256,27 @@ std_err
           display:block!important;
       }</style></aside>
 </section>
-<section id="resultados-rotación-test-tabla" class="slide level2">
-<h2>Resultados (Rotación): Test — Tabla</h2>
+<section id="results-attrition-cv-plot" class="slide level2">
+<h2>Results (Attrition): CV — Plot</h2>
+
+<img data-src="index_files/figure-revealjs/attrition-results-cv-plot-1.png" width="960" class="r-stretch"><aside class="notes">
+<p>Goal: see whether one tower matters more than the other.</p>
+<p>Say: - A flat heatmap means tuning isn’t very sensitive. - A sharp peak means you should narrow the search around that region.</p>
+<p>Transition: Now: one-time test reporting.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="results-attrition-test-table" class="slide level2">
+<h2>Results (Attrition): Test — Table</h2>
 <table>
 <thead>
 <tr>
@@ -1258,8 +1308,9 @@ roc_auc
 </tbody>
 </table>
 <aside class="notes">
-<p>Objetivo: reportar el rendimiento final una sola vez.</p>
-<p>Qué decir: - La selección se hizo con CV; el test es confirmación final. - En conjuntos desbalanceados, ROC AUC suele ser más informativa que accuracy. Transición: Siguiente: una curva ROC como resumen visual.</p>
+<p>Goal: report final test performance once.</p>
+<p>Say: - CV chose the architecture; test is for final confirmation. - If the dataset is imbalanced, ROC AUC is often more informative than accuracy.</p>
+<p>Transition: Show ROC curve as a visual summary.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1272,13 +1323,13 @@ roc_auc
           display:block!important;
       }</style></aside>
 </section>
-<section id="resultados-rotación-test-gráfico" class="slide level2">
-<h2>Resultados (Rotación): Test — Gráfico</h2>
+<section id="results-attrition-test-plot" class="slide level2">
+<h2>Results (Attrition): Test — Plot</h2>
 
-<img data-src="index_files/figure-revealjs/attrition-results-test-plot-es-1.png" width="960" class="r-stretch"><aside class="notes">
-<p>Objetivo: una intuición visual de “qué tan bien separa” el modelo.</p>
-<p>Interpretación rápida: - Piensa en “capacidad vs generalización”: modelos más grandes pueden ganar en entrenamiento, pero no necesariamente en CV/test. - Si los resultados son parecidos, elige la arquitectura más simple dentro de la incertidumbre.</p>
-<p>Y recordatorio de reproducibilidad: - Al guardar resultados en caché, ambas versiones (EN/ES) muestran las mismas tablas y gráficos. Transición: Cerramos con consejos prácticos para no sufrir.</p>
+<img data-src="index_files/figure-revealjs/attrition-results-test-plot-1.png" width="960" class="r-stretch"><aside class="notes">
+<p>Goal: interpret the ROC curve in one sentence.</p>
+<p>Say: - Think “capacity vs generalization”: bigger models may win on training but not on CV/test. - When results are close, pick the simplest architecture within uncertainty. - Cache results so both language decks show the same tables/plots.</p>
+<p>Transition: Close with practical tips and failure modes.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1291,17 +1342,18 @@ roc_auc
           display:block!important;
       }</style></aside>
 </section>
-<section id="consejos-prácticos" class="slide level2">
-<h2>Consejos Prácticos</h2>
+<section id="practical-tips-so-you-dont-suffer" class="slide level2">
+<h2>Practical Tips (so you don’t suffer)</h2>
 <ul>
-<li>Empieza con <code>compile_keras_grid()</code> antes de ajustar</li>
-<li>Mantén bloques pequeños y testeables</li>
-<li>Pocos hiperparámetros importantes &gt; muchos microajustes</li>
+<li>Start with <code>compile_keras_grid()</code> before tuning</li>
+<li>Keep blocks small and testable</li>
+<li>Prefer a few meaningful tunables over 30 tiny ones</li>
 </ul>
 <aside class="notes">
-<p>Objetivo: dar consejos que eviten sufrimiento mañana.</p>
-<p>Qué decir: - Si algo falla en el grafo funcional, reduce a 2–3 bloques para aislar el error. - Si necesitas un formato distinto de predictores, considera <code>step_collapse()</code> para agrupar predictores en una única columna tipo lista. - Para optimizadores/losses/métricas custom: <code>register_keras_optimizer()</code>, <code>register_keras_loss()</code>, <code>register_keras_metric()</code>. - Para evitar nombres inválidos según tu versión de Keras: usa <code>keras_optimizers</code>, <code>keras_losses</code>, <code>keras_metrics</code>.</p>
-<p>Transición: Cierro con ventajas/limitaciones y hoja de ruta.</p>
+<p>Goal: give survival advice people can apply tomorrow.</p>
+<p>Say: - If something breaks in the functional graph, the error messages can be deep in Keras. - Reducing the graph to 2–3 blocks is the fastest debugging strategy.</p>
+<p>More “power user” tips to mention verbally: - If you need a different predictor format, consider <code>step_collapse()</code> to bundle predictors into a single list-column (useful for custom model interfaces). - For custom optimizers/losses/metrics, register them: <code>register_keras_optimizer()</code>, <code>register_keras_loss()</code>, <code>register_keras_metric()</code>. - Use the discovered Keras object lists (<code>keras_optimizers</code>, <code>keras_losses</code>, <code>keras_metrics</code>) to keep names valid across Keras versions.</p>
+<p>Transition: I’ll close with trade-offs and the roadmap.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1314,25 +1366,25 @@ roc_auc
           display:block!important;
       }</style></aside>
 </section>
-<section id="ventajas-y-limitaciones" class="slide level2">
-<h2>Ventajas y Limitaciones</h2>
-<h3 id="ventajas">Ventajas</h3>
+<section id="advantages-limitations" class="slide level2">
+<h2>Advantages &amp; Limitations</h2>
+<h3 id="advantages">Advantages</h3>
 <ol type="1">
-<li><strong>Paridad</strong>: Usa <code>recipes</code>, <code>workflows</code> y <code>tune</code> igual que con <code>glmnet</code>.</li>
-<li><strong>Reproducibilidad</strong>: La topología es código. Control de versiones total.</li>
-<li><strong>Extensibilidad</strong>: Envuelve <em>cualquier</em> capa Keras (Transformers, RNNs) en un bloque.</li>
+<li><strong>Workflow Parity</strong>: Use <code>recipes</code>, <code>workflows</code>, and <code>tune</code> exactly like <code>glmnet</code>.</li>
+<li><strong>Reproducibility</strong>: Topology is code. Version control your architecture.</li>
+<li><strong>Extensibility</strong>: Wrap <em>any</em> Keras layer (Transformers, RNNs) into a block.</li>
 </ol>
-<h3 id="limitaciones">Limitaciones</h3>
+<h3 id="limitations">Limitations</h3>
 <ul>
-<li><strong>Bloques manuales</strong>: no hay bloques tipo “ResNet50” prehechos (hay que definirlos).</li>
-<li><strong>Funciones de pérdida</strong>: una integración profunda de pérdidas personalizadas requiere algo de código repetitivo.</li>
+<li><strong>Manual Blocking</strong>: No pre-shipped “ResNet50” blocks yet (you must define them).</li>
+<li><strong>Custom Losses</strong>: Integration requires some boilerplate for custom objects.</li>
 </ul>
 <aside class="notes">
-<p>Objetivo: ser honesto con los límites sin “pinchar” la propuesta.</p>
-<p>Qué decir: - El trabajo está en definir buenos bloques. - Después, el flujo vuelve a ser familiar.</p>
-<p>Si alguien pregunta por evaluación/inspección del modelo: - <code>extract_keras_model()</code> devuelve el modelo Keras subyacente. - <code>extract_keras_history()</code> devuelve el historial de entrenamiento. - <code>keras_evaluate()</code> permite evaluar con <code>x</code>/<code>y</code>.</p>
-<p>Sobre plantillas: la idea es añadir helpers sin convertir el paquete en un “model zoo”.</p>
-<p>Transición: Terminamos con hoja de ruta y abrimos preguntas.</p>
+<p>Goal: be honest about trade-offs while keeping the pitch credible.</p>
+<p>Say: - The learning curve is “how to write good blocks”. - Once blocks exist, the workflow becomes familiar again.</p>
+<p>If someone asks “how do I evaluate / inspect the Keras object?” - <code>extract_keras_model()</code> returns the underlying Keras model. - <code>extract_keras_history()</code> returns training history. - <code>keras_evaluate()</code> can run evaluation on provided <code>x</code>/<code>y</code>.</p>
+<p>If asked about templates: the goal is to add helpers without turning the package into a model zoo.</p>
+<p>Transition: Close with a short roadmap and invite questions.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1345,21 +1397,21 @@ roc_auc
           display:block!important;
       }</style></aside>
 </section>
-<section id="hoja-de-ruta" class="slide level2">
-<h2>Hoja de Ruta</h2>
+<section id="roadmap" class="slide level2">
+<h2>Roadmap</h2>
 <ul>
-<li>📦 <strong>Plantillas</strong>: Plantillas para arquitecturas de alto nivel de uso común.</li>
-<li>🔧 <strong>Ajuste fino (fine-tuning)</strong>: Flujos para adaptar modelos preentrenados.</li>
+<li>📦 <strong>Templates</strong>: High-level helpers for common architectures.</li>
+<li>🔧 <strong>Fine-tuning</strong>: Workflows for adapting pre-trained models.</li>
 </ul>
-<h3 id="recursos">Recursos</h3>
+<h3 id="resources">Resources</h3>
 <ul>
-<li>📦 <strong>Paquete</strong>: <a href="https://github.com/davidrsch/kerasnip">github.com/davidrsch/kerasnip</a></li>
+<li>📦 <strong>Package</strong>: <a href="https://github.com/davidrsch/kerasnip">github.com/davidrsch/kerasnip</a></li>
 <li>📑 <strong>Docs</strong>: <a href="https://davidrsch.github.io/kerasnip/">davidrsch.github.io/kerasnip</a></li>
 </ul>
 <aside class="notes">
-<p>Objetivo: cerrar limpio y abrir turno de preguntas.</p>
-<p>Qué decir: - Resumen: bloques → spec → workflow → ajuste. - Invita a feedback y contribuciones. - Deja tiempo para preguntas.</p>
-<p>Transición: Deja de compartir y pasa a Q&amp;A.</p>
+<p>Goal: land the talk and create a clean Q&amp;A opening.</p>
+<p>Say: - Recap: blocks → spec → workflow → tuning. - Invite feedback and contributions. - Leave time for Q&amp;A.</p>
+<p>Transition: Stop sharing, take questions.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1376,7 +1428,7 @@ roc_auc
 </section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
-<p><img src="../../../images/logo.png" class="slide-logo"></p>
+<p><img src="../../images/logo.png" class="slide-logo"></p>
 <div class="footer footer-default">
 <p>kerasnip v0.1.0.900</p>
 </div>
@@ -1655,12 +1707,12 @@ roc_auc
           // flash "checked"
           button.classList.add('code-copy-button-checked');
           var currentTitle = button.getAttribute("title");
-          button.setAttribute("title", "Copiado");
+          button.setAttribute("title", "Copied!");
           let tooltip;
           if (window.bootstrap) {
             button.setAttribute("data-bs-toggle", "tooltip");
             button.setAttribute("data-bs-placement", "left");
-            button.setAttribute("data-bs-title", "Copiado");
+            button.setAttribute("data-bs-title", "Copied!");
             tooltip = new bootstrap.Tooltip(button, 
               { trigger: "manual", 
                 customClass: "code-copy-button-tooltip",
