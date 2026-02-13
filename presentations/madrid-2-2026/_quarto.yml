@@ -6,8 +6,10 @@ profile:
   group:
     - [english, spanish]
 
+website:
+  favicon: ../../images/logo.png
+
 format:
   revealjs:
     theme: [default, ../../theme.scss]
-    favicon: ../../images/logo.png
     center: false
