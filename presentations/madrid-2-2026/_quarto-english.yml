@@ -1,4 +1,6 @@
 lang: en
+header-includes:
+  - <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 format:
   revealjs:
     logo: ../../images/logo.png
@@ -6,11 +8,11 @@ format:
     menu:
       custom:
         - title: Language
-          icon: <i class="fa fa-globe"></i>
+          icon: <i class="fa fa-language"></i>
           content: |
             <ul class="reveal-menu-custom">
-              <hr>
-              <li><a href="index.html"><i class="fa fa-language"></i> <b>English</b></a></li>
-              <hr>
-              <li><a href="es/index.html"><i class="fa fa-language"></i> Español</a></li>
+              <br>
+              <li><a href="index.html"><b>English</b></a></li>
+              <br>
+              <li><a href="es/index.html">Español</a></li>
             </ul>

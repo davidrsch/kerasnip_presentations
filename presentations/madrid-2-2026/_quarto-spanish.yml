@@ -1,4 +1,6 @@
 lang: es
+header-includes:
+  - <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 project:
   output-dir: _site/es
 format:
@@ -8,11 +10,11 @@ format:
     menu:
       custom:
         - title: Language
-          icon: <i class="fa fa-globe"></i>
+          icon: <i class="fa fa-language"></i>
           content: |
             <ul class="reveal-menu-custom">
-              <hr>
-              <li><a href="../index.html"><i class="fa fa-language"></i> English</a></li>
-              <hr>
-              <li><a href="index.html"><i class="fa fa-language"></i> <b>Español</b></a></li>
+              <br>
+              <li><a href="../index.html">English</a></li>
+              <br>
+              <li><a href="index.html"><b>Español</b></a></li>
             </ul>
