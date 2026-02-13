@@ -51,7 +51,7 @@ Usage in Quarto headings:
 /* Landing Page Brand Colors - pkgdown Alignment */
 :root {
 	--brand-red: #BF281B;
-	--navbar-bg: #212529;
+	--navbar-bg: #BF281B;
 	--navbar-text: #f8f9fa;
 }
 
