@@ -123,7 +123,7 @@
     "href": "index.html#results-diamonds-cv-table",
     "title": "",
     "section": "Results (Diamonds): CV — Table",
-    "text": "Results (Diamonds): CV — Table\n\n\n\n\nnum_body\n\n\nbody_units\n\n\nbody_dropout\n\n\nmean\n\n\nstd_err\n\n\n\n\n\n\n2\n\n\n49\n\n\n0.030\n\n\n779.083\n\n\n60.882\n\n\n\n\n2\n\n\n35\n\n\n0.180\n\n\n791.003\n\n\n35.632\n\n\n\n\n2\n\n\n98\n\n\n0.121\n\n\n819.635\n\n\n72.925\n\n\n\n\n2\n\n\n62\n\n\n0.060\n\n\n826.206\n\n\n51.476\n\n\n\n\n3\n\n\n87\n\n\n0.076\n\n\n828.576\n\n\n84.041\n\n\n\n\n\nGoal: pick 1–2 strong candidates (don’t read the whole table).\nSay: - These are cross-validation estimates (mean + std_err). We’re selecting on CV, not the test set. - I usually look for a “stable region”: low mean RMSE and not wildly sensitive to depth/dropout.\nTransition: Let’s look at the CV plot to see interactions."
+    "text": "Results (Diamonds): CV — Table\n\n\n\n\nnum_body\n\n\nbody_units\n\n\nbody_dropout\n\n\nmean\n\n\nstd_err\n\n\n\n\n\n\n2\n\n\n62\n\n\n0.060\n\n\n780.592\n\n\n48.827\n\n\n\n\n2\n\n\n49\n\n\n0.030\n\n\n783.017\n\n\n53.869\n\n\n\n\n2\n\n\n35\n\n\n0.180\n\n\n784.838\n\n\n46.531\n\n\n\n\n2\n\n\n98\n\n\n0.121\n\n\n795.726\n\n\n66.742\n\n\n\n\n1\n\n\n127\n\n\n0.276\n\n\n838.413\n\n\n43.834\n\n\n\n\n\nGoal: pick 1–2 strong candidates (don’t read the whole table).\nSay: - These are cross-validation estimates (mean + std_err). We’re selecting on CV, not the test set. - I usually look for a “stable region”: low mean RMSE and not wildly sensitive to depth/dropout.\nTransition: Let’s look at the CV plot to see interactions."
   },
   {
     "objectID": "index.html#results-diamonds-cv-plot",
@@ -137,7 +137,7 @@
     "href": "index.html#results-diamonds-test-table",
     "title": "",
     "section": "Results (Diamonds): Test — Table",
-    "text": "Results (Diamonds): Test — Table\n\n\n\n\n.metric\n\n\n.estimate\n\n\n\n\n\n\nrmse\n\n\n733.7381\n\n\n\n\nmae\n\n\n364.3511\n\n\n\n\nrsq\n\n\n0.9667\n\n\n\n\n\nGoal: one-time confirmation.\nSay: - Test metrics are for final reporting; avoid using them to decide hyperparameters. - If test is worse than CV by a lot, it’s a sign of instability or leakage.\nTransition: I’ll show a quick visual sanity check on test predictions."
+    "text": "Results (Diamonds): Test — Table\n\n\n\n\n.metric\n\n\n.estimate\n\n\n\n\n\n\nrmse\n\n\n816.0214\n\n\n\n\nmae\n\n\n425.0585\n\n\n\n\nrsq\n\n\n0.9663\n\n\n\n\n\nGoal: one-time confirmation.\nSay: - Test metrics are for final reporting; avoid using them to decide hyperparameters. - If test is worse than CV by a lot, it’s a sign of instability or leakage.\nTransition: I’ll show a quick visual sanity check on test predictions."
   },
   {
     "objectID": "index.html#results-diamonds-test-plot",
@@ -193,7 +193,7 @@
     "href": "index.html#results-attrition-cv-table",
     "title": "",
     "section": "Results (Attrition): CV — Table",
-    "text": "Results (Attrition): CV — Table\n\nGoal: explain caching/repro quickly.\nSay: - Cache once, show consistently.\n\nRender once (with freeze: auto) or run Rscript presentations/madrid-2-2026/make_results.R\nIt saves presentations/madrid-2-2026/results/attrition_res.rds\n\nTypical inspection:\ncollect_metrics() → show_best() → select_best() → finalize_workflow() → last_fit()\nTransition: Now the table: pick a configuration.\n\n\n\n\n\ntower_a_units\n\n\ntower_b_units\n\n\nmean\n\n\nstd_err\n\n\n\n\n\n\n89\n\n\n84\n\n\n0.8024\n\n\n0.0255\n\n\n\n\n21\n\n\n105\n\n\n0.7912\n\n\n0.0214\n\n\n\n\n47\n\n\n24\n\n\n0.7909\n\n\n0.0212\n\n\n\n\n120\n\n\n57\n\n\n0.7908\n\n\n0.0231\n\n\n\n\n70\n\n\n64\n\n\n0.7907\n\n\n0.0158\n\n\n\n\n\nGoal: pick a sensible (often simple) configuration.\nSay: - We’re selecting on CV ROC AUC; AUC uses predicted probabilities. - If many configs are similar, prefer smaller towers (simpler = easier to maintain).\nTransition: Next: check sensitivity in a heatmap."
+    "text": "Results (Attrition): CV — Table\n\nGoal: explain caching/repro quickly.\nSay: - Cache once, show consistently.\n\nRender once (with freeze: auto) or run Rscript presentations/madrid-2-2026/make_results.R\nIt saves presentations/madrid-2-2026/results/attrition_res.rds\n\nTypical inspection:\ncollect_metrics() → show_best() → select_best() → finalize_workflow() → last_fit()\nTransition: Now the table: pick a configuration.\n\n\n\n\n\ntower_a_units\n\n\ntower_b_units\n\n\nmean\n\n\nstd_err\n\n\n\n\n\n\n47\n\n\n24\n\n\n0.8037\n\n\n0.0162\n\n\n\n\n21\n\n\n105\n\n\n0.7968\n\n\n0.0175\n\n\n\n\n80\n\n\n95\n\n\n0.7939\n\n\n0.0256\n\n\n\n\n89\n\n\n84\n\n\n0.7907\n\n\n0.0281\n\n\n\n\n120\n\n\n57\n\n\n0.7878\n\n\n0.0175\n\n\n\n\n\nGoal: pick a sensible (often simple) configuration.\nSay: - We’re selecting on CV ROC AUC; AUC uses predicted probabilities. - If many configs are similar, prefer smaller towers (simpler = easier to maintain).\nTransition: Next: check sensitivity in a heatmap."
   },
   {
     "objectID": "index.html#results-attrition-cv-plot",
@@ -207,7 +207,7 @@
     "href": "index.html#results-attrition-test-table",
     "title": "",
     "section": "Results (Attrition): Test — Table",
-    "text": "Results (Attrition): Test — Table\n\n\n\n\n.metric\n\n\n.estimate\n\n\n\n\n\n\naccuracy\n\n\n0.8428\n\n\n\n\nroc_auc\n\n\n0.8072\n\n\n\n\n\nGoal: report final test performance once.\nSay: - CV chose the architecture; test is for final confirmation. - If the dataset is imbalanced, ROC AUC is often more informative than accuracy.\nTransition: Show ROC curve as a visual summary."
+    "text": "Results (Attrition): Test — Table\n\n\n\n\n.metric\n\n\n.estimate\n\n\n\n\n\n\naccuracy\n\n\n0.8753\n\n\n\n\nroc_auc\n\n\n0.8239\n\n\n\n\n\nGoal: report final test performance once.\nSay: - CV chose the architecture; test is for final confirmation. - If the dataset is imbalanced, ROC AUC is often more informative than accuracy.\nTransition: Show ROC curve as a visual summary."
   },
   {
     "objectID": "index.html#results-attrition-test-plot",
