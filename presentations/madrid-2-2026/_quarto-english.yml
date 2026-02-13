@@ -9,6 +9,8 @@ format:
           icon: <i class="fa fa-globe"></i>
           content: |
             <ul class="reveal-menu-custom">
-              <li><a href="index.html"><b>English</b></a></li>
-              <li><a href="es/index.html">Español</a></li>
+              <hr>
+              <li><a href="index.html"><i class="fa fa-language"></i> <b>English</b></a></li>
+              <hr>
+              <li><a href="es/index.html"><i class="fa fa-language"></i> Español</a></li>
             </ul>
