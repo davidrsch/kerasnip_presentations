@@ -48,24 +48,43 @@ Usage in Quarto headings:
 	font-size: 22px;
 }
 
-/* Landing Page Brand Colors */
+/* Landing Page Brand Colors - Premium Feel */
 :root {
-  --brand-red: #BF281B;
+	--brand-red: #BF281B;
+	--text-main: #333;
 }
 
-h1, h2, h3, h4, .navbar-brand {
-  color: var(--brand-red) !important;
+/* Heading colors - keep professional */
+h1,
+h2,
+h3,
+h4,
+.navbar-brand {
+	color: var(--text-main) !important;
 }
 
+/* Specific brand accent for the main landing page title */
+#title-block-header.quarto-title-block.default .quarto-title .title {
+	color: var(--brand-red) !important;
+}
+
+/* Subtle link styling */
 a {
-  color: var(--brand-red);
+	color: var(--brand-red);
+	text-decoration: none;
 }
 
 a:hover {
-  color: #a02217;
+	color: #a02217;
+	text-decoration: underline;
 }
 
+/* Sleek navbar accent */
 .navbar {
-  border-bottom: 2px solid var(--brand-red);
+	border-top: 3px solid var(--brand-red);
+	border-bottom: 1px solid #eee;
 }
 
+.navbar-brand {
+	font-weight: bold;
+}
