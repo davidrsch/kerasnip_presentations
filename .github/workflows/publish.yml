@@ -88,6 +88,7 @@ jobs:
           # Spanish content
           cp -ra _site/es/. final_site/es/
           # Cleanup and set as final _site
+          rm -rf _site _site_en
           mv final_site _site
 
       - name: Upload rendered presentation
@@ -129,6 +130,7 @@ jobs:
           cp -ra _site/es/. final_site/es/
           # Ensure global assets are preserved
           cp -ra images final_site/ || true
+          rm -rf _site _site_en
           mv final_site _site
 
       - name: Download rendered presentations
