@@ -260,19 +260,20 @@ if (can_run("tidymodels", "modeldata", "kerasnip", "keras3")) {
 Docs: [davidrsch.github.io/kerasnip](https://davidrsch.github.io/kerasnip/) · Repo: [github.com/davidrsch/kerasnip](https://github.com/davidrsch/kerasnip)
 
 ::: {.notes}
-Goal: set expectations and frame the problem.
+**Goal**: Hook the audience with the core conflict.
 
-Say:
-- Welcome. David Díaz.
-- `kerasnip` bridges deep learning (Keras) with tidymodels workflows.
-- Today is about **architectural tuning** inside tidymodels, not a Keras tutorial.
+**Stage Directions**:
+- Start energetic.
+- Ask: "How many of you love `tidymodels`?" (Wait for hands).
+- Ask: "How many of you fight with Keras architectures?"
 
-Extra capabilities (mention briefly, details later/Q&A):
-- `step_collapse()`.
-- Register custom Keras objects: `register_keras_optimizer()`, `register_keras_loss()`, `register_keras_metric()`.
-- Post-fit tools: `extract_keras_model()`, `extract_keras_history()`, `keras_evaluate()`.
+**The Hook**:
+- Keras and Tidymodels are like **Oil and Water**.
+- **Keras** is an imperative builder (you write code to *do* things).
+- **Tidymodels** is a declarative configuration (you describe *what* you want).
+- `kerasnip` is the emulsifier that lets them mix.
 
-Transition: Quick agenda, then the core gap.
+**Key Takeaway**: Today is about solving the *architectural tuning* problem.
 :::
 
 ---
@@ -326,21 +327,15 @@ Transition: Let’s situate Keras vs tidymodels and name the gap.
 **The Gap**: Using `tune_grid()` to optimize Neural Network topology (depth/width) is difficult because `parsnip` expects fixed arguments, while Keras models are arbitrary graphs.
 
 ::: {.notes}
-Goal: contrast the two mental models (code vs workflow).
+**Goal**: Anchor the mental model using the "Architect vs. Form Filler" analogy.
 
-Say:
-- Keras is great for building; tidymodels is great for workflow.
-- The gap is in **architectural tuning**.
+**Analogy**:
+- **Keras** is an **Architect's Table**. You have a blank sheet, rulers, and pencils. You can draw *anything* (a house, a skyscraper, a bridge).
+- **Tidymodels** is a **Government Form**. It asks specific questions: "Number of floors?", "Color of walls?". It's easy to process (tune), but you can't "fill in a form" to invent a new kind of building.
 
-Plain-language framing:
-- In tidymodels, a “model spec” is basically a function call with named arguments.
-- In Keras, the architecture is a graph you build with code.
-- So you can tune things that already exist as arguments (learning rate), but changing topology usually means rewriting the model code.
-
-Bridge we want:
-- Make architecture decisions *look like spec arguments* so `tune_grid()` can control them.
-
-Transition: Next: the dynamic-spec approach.
+**The Solution**:
+- We need a way to turn the *structure of the building* into fields on the form.
+- That's what `kerasnip` does: it lets you define the blueprint, and then exposes the "knobs" (depth, width) as standard arguments.
 :::
 
 ---
@@ -570,21 +565,17 @@ output_block <- function(model) {
 ```
 
 ::: {.notes}
-Goal: show that blocks are simple and reusable.
+**Goal**: Show that "Blocks" are just standard R functions.
 
-Say:
-- Blocks are just functions.
-- The signature matters: args become spec args (prefixed by block name).
+**Walkthrough**:
+- Point to `input_block`: "It just returns a model. No magic yet."
+- Point to `dense_block`: "This looks exactly like standard Keras code, right?"
+- **The Trick**: The function signature `(model, units, dropout)` defines what will be tunable later.
+- If you want to tune it, make it an argument.
 
-Good practice:
-- Keep blocks deterministic.
-- Use sensible defaults so the base model runs without tuning.
-
-If asked “can I make each repeated layer different?”
-- Repetitions share hyperparameters by design.
-- If you want different parameters per layer, define multiple blocks (e.g. `body1`, `body2`) instead of repeating one.
-
-Transition: Next: generate the spec from these blocks.
+**Best Practice**:
+- Keep blocks "pure" and deterministic.
+- Repetitions (via `num_body`) share these hyperparameters by design.
 :::
 
 ---
@@ -1018,19 +1009,17 @@ That’s the key to:
 - branch/merge architectures
 
 ::: {.notes}
-Goal: explain `inp_spec()` as readable wiring.
+**Goal**: Demystify `inp_spec()`.
 
-Say:
-- Most people get functional Keras, but the missing piece is: expressing the graph cleanly in R.
+**The Analogy**: "Synthesizer Patch Cables"
+- If you've ever seen a modular synthesizer or a server patch panel, that's what `kerasnip` does here.
+- In Keras code, you assign variables: `x = layer(input)`.
+- In `kerasnip`, we need to describe that connection *declaratively*.
+- `inp_spec(block, "name")` is the label on the cable: "Plug the output of 'Tower A' into the input of 'Concat'".
 
-Rule of thumb:
-- If you can describe your model as a simple chain, use sequential.
-- Use functional when you need named tensors: branches/merges, shared towers, skip connections, or multiple inputs.
-
-Also worth saying:
-- `inp_spec()` is the wiring layer: it makes the graph explicit and readable.
-
-Transition: Next: minimal functional blocks.
+**Technical Insight** (for the curious):
+- `inp_spec` uses metaprogramming to rewrite the function signature.
+- It maps the string "main_input" to the actual tensor object at build time.
 :::
 
 ---
@@ -1059,20 +1048,16 @@ output_block <- function(tensor, num_classes) {
 ```
 
 ::: {.notes}
-Goal: show block conventions and avoid wiring mistakes.
+**Goal**: Highlight the "Node" concept.
 
-Say:
-- Two key correctness points (from the `kerasnip` docs):
+**Explanation**:
+- In the **Functional API**, blocks aren't steps in a recipe; they are **Nodes in a Graph**.
+- Notice `input_block` takes `input_shape`, not `model`.
+- Notice `dense_block` takes `tensor`, not `model`.
+- Using pipes (`|>`) here is fine *inside* the block, but `kerasnip` manages the flow *between* blocks.
 
-- The input block is `function(input_shape)` (no `model` argument).
-- Downstream blocks take the upstream tensor as the first argument.
-
-`inp_spec()` is how we wire outputs into named arguments.
-
-Common pitfall:
-- The names you reference in `inp_spec(..., "main_input")` must match block names exactly.
-
-Transition: Next: generate the functional spec.
+**Caution**:
+- The names you use in `inp_spec` must match the names in your block list exactly.
 :::
 
 ---
@@ -1198,13 +1183,15 @@ if (file.exists(attrition_rds)) {
 ```
 
 ::: {.notes}
-Goal: pick a sensible (often simple) configuration.
+**Goal**: Interpret the results with nuance.
 
-Say:
-- We’re selecting on CV ROC AUC; AUC uses predicted probabilities.
-- If many configs are similar, prefer smaller towers (simpler = easier to maintain).
+**Key Insight**: "Stability vs. Performance"
+- Look at the `mean` (ROC AUC) but also the `std_err`.
+- **Flat Heatmap**: This is good! It means your architecture is robust. You can pick the cheaper/smaller model (fewer units) without losing accuracy.
+- **Sharp Peak**: This indicates sensitivity. You might have found a local optimum, but is it stable?
 
-Transition: Next: check sensitivity in a heatmap.
+**Decision**:
+- I usually pick the simplest architecture that is within 1 standard error of the best.
 :::
 
 ---
@@ -1417,19 +1404,20 @@ Transition: Stop sharing, take questions.
 Docs: [davidrsch.github.io/kerasnip](https://davidrsch.github.io/kerasnip/) · Repo: [github.com/davidrsch/kerasnip](https://github.com/davidrsch/kerasnip)
 
 ::: {.notes}
-Objetivo: marcar expectativas y encuadrar el problema.
+**Objetivo**: Enganchar a la audiencia con el conflicto central "Aceite y Agua".
 
-Qué decir:
-- Bienvenidos. David Díaz.
-- `kerasnip` une Keras (deep learning) con workflows de tidymodels.
-- Hoy va de **ajuste arquitectónico** dentro de tidymodels; no es un curso de Keras.
+**Direcciones de Escena**:
+- Empezar con energía.
+- Pregunta: "¿Cuántos de vosotros amáis `tidymodels`?"
+- Pregunta: "¿Cuántos de vosotros os peleáis con arquitecturas de Keras?"
 
-Capacidades extra (mencionar rápido; detalles luego o en preguntas):
-- `step_collapse()`.
-- Registro de objetos Keras: `register_keras_optimizer()`, `register_keras_loss()`, `register_keras_metric()`.
-- Post-entrenamiento: `extract_keras_model()`, `extract_keras_history()`, `keras_evaluate()`.
+**El Gancho**:
+- Keras y Tidymodels son como **Aceite y Agua**.
+- **Keras** es un constructor imperativo (escribes código para *hacer* cosas).
+- **Tidymodels** es una configuración declarativa (describes *qué* quieres).
+- `kerasnip` es el emulsionante que permite mezclarlos.
 
-Transición: Vemos agenda y enseguida situamos la brecha Keras ↔ tidymodels.
+**Mensaje Clave**: Hoy vamos a resolver el problema del *ajuste de arquitectura*.
 :::
 
 ---
@@ -1483,21 +1471,15 @@ Transición: Situamos Keras y tidymodels y nombramos la brecha.
 **La brecha**: optimizar la topología (profundidad/ancho) con `tune_grid()` es difícil: `parsnip` espera un conjunto fijo de argumentos, mientras que Keras permite grafos arbitrarios.
 
 ::: {.notes}
-Objetivo: contrastar “código” vs “workflow”.
+**Objetivo**: Anclar el modelo mental con la analogía "El Arquitecto vs. El Formulario".
 
-Qué decir:
-- Keras es excelente para construir; tidymodels, para el flujo.
-- La brecha está en el **ajuste arquitectónico**.
+**Analogía**:
+- **Keras** es una **Mesa de Arquitecto**. Tienes papel en blanco, reglas y lápices. Puedes dibujar *lo que sea* (una casa, un rascacielos).
+- **Tidymodels** es un **Formulario del Gobierno**. Te hace preguntas fijas: "¿Número de plantas?", "¿Color de las paredes?". Es fácil de procesar (ajustar), pero no puedes "rellenar un formulario" para inventar un nuevo tipo de edificio.
 
-En sencillo:
-- En tidymodels, un “spec” es básicamente una llamada a función con argumentos.
-- En Keras, la arquitectura es un grafo que se construye con código.
-- Por eso se ajusta bien lo que ya es argumento (learning rate), pero cambiar topología suele implicar reescribir el modelo.
-
-Puente que buscamos:
-- Convertir decisiones de arquitectura en *argumentos ajustables* para que `tune_grid()` los controle.
-
-Transición: Siguiente: el enfoque de specs dinámicos.
+**La Solución**:
+- Necesitamos convertir la *estructura del edificio* en casillas del formulario.
+- Eso hace `kerasnip`: te deja definir los planos (bloques) y expone los "diales" (profundidad, ancho) como argumentos estándar.
 :::
 
 ---
@@ -2150,14 +2132,17 @@ Transición: `inp_spec()` es el mecanismo de cableado.
 - arquitecturas con ramas y uniones
 
 ::: {.notes}
-Objetivo: explicar `inp_spec()` como cableado legible.
+**Objetivo**: Desmitificar `inp_spec()`.
 
-Qué decir:
-- La mayoría entiende el API funcional, pero necesita una forma clara de expresarlo en R.
-- Regla práctica: si tu modelo es una cadena simple, secuencial; si necesitas tensores con nombre (ramas/uniones, torres compartidas, conexiones de salto, multi-entrada), funcional.
-- `inp_spec()` es la capa de cableado: hace el grafo explícito y legible.
+**La Analogía**: "Cables de Sintetizador Modular"
+- Si habéis visto un sintetizador modular o un patch panel, eso es `kerasnip` aquí.
+- En código Keras normal, asignas variables: `x = capa(entrada)`.
+- En `kerasnip`, necesitamos describir esa conexión de forma *declarativa*.
+- `inp_spec(bloque, "nombre")` es la etiqueta en el cable: "Enchufa la salida de 'Torre A' en la entrada de 'Concat'".
 
-Transición: Siguiente: bloques funcionales mínimos.
+**Detalle Técnico**:
+- Usamos metaprogramación para reescribir la firma de la función.
+- Mapeamos la cadena "main_input" al objeto tensor real en tiempo de construcción.
 :::
 
 ---
