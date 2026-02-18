@@ -205,10 +205,10 @@
 <p><strong>kerasnip v0.1.0.900</strong></p>
 <p>Docs: <a href="https://davidrsch.github.io/kerasnip/">davidrsch.github.io/kerasnip</a> · Repo: <a href="https://github.com/davidrsch/kerasnip">github.com/davidrsch/kerasnip</a></p>
 <aside class="notes">
-<p>Objetivo: marcar expectativas y encuadrar el problema.</p>
-<p>Qué decir: - Bienvenidos. David Díaz. - <code>kerasnip</code> une Keras (deep learning) con workflows de tidymodels. - Hoy va de <strong>ajuste arquitectónico</strong> dentro de tidymodels; no es un curso de Keras.</p>
-<p>Capacidades extra (mencionar rápido; detalles luego o en preguntas): - <code>step_collapse()</code>. - Registro de objetos Keras: <code>register_keras_optimizer()</code>, <code>register_keras_loss()</code>, <code>register_keras_metric()</code>. - Post-entrenamiento: <code>extract_keras_model()</code>, <code>extract_keras_history()</code>, <code>keras_evaluate()</code>.</p>
-<p>Transición: Vemos agenda y enseguida situamos la brecha Keras ↔︎ tidymodels.</p>
+<p><strong>Objetivo</strong>: Enganchar a la audiencia con el conflicto central “Aceite y Agua”.</p>
+<p><strong>Direcciones de Escena</strong>: - Empezar con energía. - Pregunta: “¿Cuántos de vosotros amáis <code>tidymodels</code>?” - Pregunta: “¿Cuántos de vosotros os peleáis con arquitecturas de Keras?”</p>
+<p><strong>El Gancho</strong>: - Keras y Tidymodels son como <strong>Aceite y Agua</strong>. - <strong>Keras</strong> es un constructor imperativo (escribes código para <em>hacer</em> cosas). - <strong>Tidymodels</strong> es una configuración declarativa (describes <em>qué</em> quieres). - <code>kerasnip</code> es el emulsionante que permite mezclarlos.</p>
+<p><strong>Mensaje Clave</strong>: Hoy vamos a resolver el problema del <em>ajuste de arquitectura</em>.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -269,11 +269,9 @@
 </div></div>
 <p><strong>La brecha</strong>: optimizar la topología (profundidad/ancho) con <code>tune_grid()</code> es difícil: <code>parsnip</code> espera un conjunto fijo de argumentos, mientras que Keras permite grafos arbitrarios.</p>
 <aside class="notes">
-<p>Objetivo: contrastar “código” vs “workflow”.</p>
-<p>Qué decir: - Keras es excelente para construir; tidymodels, para el flujo. - La brecha está en el <strong>ajuste arquitectónico</strong>.</p>
-<p>En sencillo: - En tidymodels, un “spec” es básicamente una llamada a función con argumentos. - En Keras, la arquitectura es un grafo que se construye con código. - Por eso se ajusta bien lo que ya es argumento (learning rate), pero cambiar topología suele implicar reescribir el modelo.</p>
-<p>Puente que buscamos: - Convertir decisiones de arquitectura en <em>argumentos ajustables</em> para que <code>tune_grid()</code> los controle.</p>
-<p>Transición: Siguiente: el enfoque de specs dinámicos.</p>
+<p><strong>Objetivo</strong>: Anclar el modelo mental con la analogía “El Arquitecto vs.&nbsp;El Formulario”.</p>
+<p><strong>Analogía</strong>: - <strong>Keras</strong> es una <strong>Mesa de Arquitecto</strong>. Tienes papel en blanco, reglas y lápices. Puedes dibujar <em>lo que sea</em> (una casa, un rascacielos). - <strong>Tidymodels</strong> es un <strong>Formulario del Gobierno</strong>. Te hace preguntas fijas: “¿Número de plantas?”, “¿Color de las paredes?”. Es fácil de procesar (ajustar), pero no puedes “rellenar un formulario” para inventar un nuevo tipo de edificio.</p>
+<p><strong>La Solución</strong>: - Necesitamos convertir la <em>estructura del edificio</em> en casillas del formulario. - Eso hace <code>kerasnip</code>: te deja definir los planos (bloques) y expone los “diales” (profundidad, ancho) como argumentos estándar.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -726,16 +724,16 @@ std_err
 2
 </td>
 <td style="text-align:right;">
-62
+35
 </td>
 <td style="text-align:right;">
-0.060
+0.180
 </td>
 <td style="text-align:right;">
-780.567
+782.530
 </td>
 <td style="text-align:right;">
-63.661
+43.734
 </td>
 </tr>
 <tr>
@@ -743,16 +741,16 @@ std_err
 2
 </td>
 <td style="text-align:right;">
-35
+62
 </td>
 <td style="text-align:right;">
-0.180
+0.060
 </td>
 <td style="text-align:right;">
-782.589
+784.473
 </td>
 <td style="text-align:right;">
-43.051
+58.633
 </td>
 </tr>
 <tr>
@@ -766,10 +764,10 @@ std_err
 0.030
 </td>
 <td style="text-align:right;">
-789.239
+792.699
 </td>
 <td style="text-align:right;">
-60.469
+83.838
 </td>
 </tr>
 <tr>
@@ -783,10 +781,10 @@ std_err
 0.121
 </td>
 <td style="text-align:right;">
-810.547
+818.107
 </td>
 <td style="text-align:right;">
-63.666
+76.136
 </td>
 </tr>
 <tr>
@@ -800,10 +798,10 @@ std_err
 0.276
 </td>
 <td style="text-align:right;">
-835.414
+836.959
 </td>
 <td style="text-align:right;">
-50.015
+47.602
 </td>
 </tr>
 </tbody>
@@ -860,7 +858,7 @@ std_err
 rmse
 </td>
 <td style="text-align:right;">
-732.0833
+821.6876
 </td>
 </tr>
 <tr>
@@ -868,7 +866,7 @@ rmse
 mae
 </td>
 <td style="text-align:right;">
-343.9436
+375.8849
 </td>
 </tr>
 <tr>
@@ -876,7 +874,7 @@ mae
 rsq
 </td>
 <td style="text-align:right;">
-0.9667
+0.9576
 </td>
 </tr>
 </tbody>
@@ -980,9 +978,9 @@ rsq
 <p><code>inp_spec(func, inputs)</code> mapea explícitamente <strong>salidas de bloques</strong> a <strong>argumentos</strong>.</p>
 <p>Útil para: - modelos multi-entrada - skip connections - arquitecturas con ramas y uniones</p>
 <aside class="notes">
-<p>Objetivo: explicar <code>inp_spec()</code> como cableado legible.</p>
-<p>Qué decir: - La mayoría entiende el API funcional, pero necesita una forma clara de expresarlo en R. - Regla práctica: si tu modelo es una cadena simple, secuencial; si necesitas tensores con nombre (ramas/uniones, torres compartidas, conexiones de salto, multi-entrada), funcional. - <code>inp_spec()</code> es la capa de cableado: hace el grafo explícito y legible.</p>
-<p>Transición: Siguiente: bloques funcionales mínimos.</p>
+<p><strong>Objetivo</strong>: Desmitificar <code>inp_spec()</code>.</p>
+<p><strong>La Analogía</strong>: “Cables de Sintetizador Modular” - Si habéis visto un sintetizador modular o un patch panel, eso es <code>kerasnip</code> aquí. - En código Keras normal, asignas variables: <code>x = capa(entrada)</code>. - En <code>kerasnip</code>, necesitamos describir esa conexión de forma <em>declarativa</em>. - <code>inp_spec(bloque, "nombre")</code> es la etiqueta en el cable: “Enchufa la salida de ‘Torre A’ en la entrada de ‘Concat’”.</p>
+<p><strong>Detalle Técnico</strong>: - Usamos metaprogramación para reescribir la firma de la función. - Mapeamos la cadena “main_input” al objeto tensor real en tiempo de construcción.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1138,44 +1136,30 @@ std_err
 <tbody>
 <tr>
 <td style="text-align:right;">
-109
-</td>
-<td style="text-align:right;">
-115
-</td>
-<td style="text-align:right;">
-0.8018
-</td>
-<td style="text-align:right;">
-0.0254
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-47
-</td>
-<td style="text-align:right;">
-24
-</td>
-<td style="text-align:right;">
-0.8003
-</td>
-<td style="text-align:right;">
-0.0256
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
 41
 </td>
 <td style="text-align:right;">
 33
 </td>
 <td style="text-align:right;">
-0.7917
+0.8015
 </td>
 <td style="text-align:right;">
-0.0245
+0.0178
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+21
+</td>
+<td style="text-align:right;">
+105
+</td>
+<td style="text-align:right;">
+0.8011
+</td>
+<td style="text-align:right;">
+0.0127
 </td>
 </tr>
 <tr>
@@ -1186,10 +1170,10 @@ std_err
 64
 </td>
 <td style="text-align:right;">
-0.7886
+0.8008
 </td>
 <td style="text-align:right;">
-0.0223
+0.0244
 </td>
 </tr>
 <tr>
@@ -1200,10 +1184,24 @@ std_err
 57
 </td>
 <td style="text-align:right;">
-0.7878
+0.7997
 </td>
 <td style="text-align:right;">
-0.0195
+0.0211
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+47
+</td>
+<td style="text-align:right;">
+24
+</td>
+<td style="text-align:right;">
+0.7904
+</td>
+<td style="text-align:right;">
+0.0176
 </td>
 </tr>
 </tbody>
@@ -1246,7 +1244,7 @@ std_err
 accuracy
 </td>
 <td style="text-align:right;">
-0.8591
+0.8455
 </td>
 </tr>
 <tr>
@@ -1254,7 +1252,7 @@ accuracy
 roc_auc
 </td>
 <td style="text-align:right;">
-0.7835
+0.8013
 </td>
 </tr>
 </tbody>

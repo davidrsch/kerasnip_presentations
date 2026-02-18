@@ -205,10 +205,10 @@
 <p><strong>kerasnip v0.1.0.900</strong></p>
 <p>Docs: <a href="https://davidrsch.github.io/kerasnip/">davidrsch.github.io/kerasnip</a> · Repo: <a href="https://github.com/davidrsch/kerasnip">github.com/davidrsch/kerasnip</a></p>
 <aside class="notes">
-<p>Goal: set expectations and frame the problem.</p>
-<p>Say: - Welcome. David Díaz. - <code>kerasnip</code> bridges deep learning (Keras) with tidymodels workflows. - Today is about <strong>architectural tuning</strong> inside tidymodels, not a Keras tutorial.</p>
-<p>Extra capabilities (mention briefly, details later/Q&amp;A): - <code>step_collapse()</code>. - Register custom Keras objects: <code>register_keras_optimizer()</code>, <code>register_keras_loss()</code>, <code>register_keras_metric()</code>. - Post-fit tools: <code>extract_keras_model()</code>, <code>extract_keras_history()</code>, <code>keras_evaluate()</code>.</p>
-<p>Transition: Quick agenda, then the core gap.</p>
+<p><strong>Goal</strong>: Hook the audience with the core conflict.</p>
+<p><strong>Stage Directions</strong>: - Start energetic. - Ask: “How many of you love <code>tidymodels</code>?” (Wait for hands). - Ask: “How many of you fight with Keras architectures?”</p>
+<p><strong>The Hook</strong>: - Keras and Tidymodels are like <strong>Oil and Water</strong>. - <strong>Keras</strong> is an imperative builder (you write code to <em>do</em> things). - <strong>Tidymodels</strong> is a declarative configuration (you describe <em>what</em> you want). - <code>kerasnip</code> is the emulsifier that lets them mix.</p>
+<p><strong>Key Takeaway</strong>: Today is about solving the <em>architectural tuning</em> problem.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -269,11 +269,9 @@
 </div></div>
 <p><strong>The Gap</strong>: Using <code>tune_grid()</code> to optimize Neural Network topology (depth/width) is difficult because <code>parsnip</code> expects fixed arguments, while Keras models are arbitrary graphs.</p>
 <aside class="notes">
-<p>Goal: contrast the two mental models (code vs workflow).</p>
-<p>Say: - Keras is great for building; tidymodels is great for workflow. - The gap is in <strong>architectural tuning</strong>.</p>
-<p>Plain-language framing: - In tidymodels, a “model spec” is basically a function call with named arguments. - In Keras, the architecture is a graph you build with code. - So you can tune things that already exist as arguments (learning rate), but changing topology usually means rewriting the model code.</p>
-<p>Bridge we want: - Make architecture decisions <em>look like spec arguments</em> so <code>tune_grid()</code> can control them.</p>
-<p>Transition: Next: the dynamic-spec approach.</p>
+<p><strong>Goal</strong>: Anchor the mental model using the “Architect vs.&nbsp;Form Filler” analogy.</p>
+<p><strong>Analogy</strong>: - <strong>Keras</strong> is an <strong>Architect’s Table</strong>. You have a blank sheet, rulers, and pencils. You can draw <em>anything</em> (a house, a skyscraper, a bridge). - <strong>Tidymodels</strong> is a <strong>Government Form</strong>. It asks specific questions: “Number of floors?”, “Color of walls?”. It’s easy to process (tune), but you can’t “fill in a form” to invent a new kind of building.</p>
+<p><strong>The Solution</strong>: - We need a way to turn the <em>structure of the building</em> into fields on the form. - That’s what <code>kerasnip</code> does: it lets you define the blueprint, and then exposes the “knobs” (depth, width) as standard arguments.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -565,11 +563,9 @@
 <span id="cb1-12"><a></a>  model <span class="sc">|&gt;</span> <span class="fu">layer_dense</span>(<span class="at">units =</span> <span class="dv">1</span>)</span>
 <span id="cb1-13"><a></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <aside class="notes">
-<p>Goal: show that blocks are simple and reusable.</p>
-<p>Say: - Blocks are just functions. - The signature matters: args become spec args (prefixed by block name).</p>
-<p>Good practice: - Keep blocks deterministic. - Use sensible defaults so the base model runs without tuning.</p>
-<p>If asked “can I make each repeated layer different?” - Repetitions share hyperparameters by design. - If you want different parameters per layer, define multiple blocks (e.g.&nbsp;<code>body1</code>, <code>body2</code>) instead of repeating one.</p>
-<p>Transition: Next: generate the spec from these blocks.</p>
+<p><strong>Goal</strong>: Show that “Blocks” are just standard R functions.</p>
+<p><strong>Walkthrough</strong>: - Point to <code>input_block</code>: “It just returns a model. No magic yet.” - Point to <code>dense_block</code>: “This looks exactly like standard Keras code, right?” - <strong>The Trick</strong>: The function signature <code>(model, units, dropout)</code> defines what will be tunable later. - If you want to tune it, make it an argument.</p>
+<p><strong>Best Practice</strong>: - Keep blocks “pure” and deterministic. - Repetitions (via <code>num_body</code>) share these hyperparameters by design.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -729,16 +725,16 @@ std_err
 2
 </td>
 <td style="text-align:right;">
-62
+35
 </td>
 <td style="text-align:right;">
-0.060
+0.180
 </td>
 <td style="text-align:right;">
-780.567
+782.530
 </td>
 <td style="text-align:right;">
-63.661
+43.734
 </td>
 </tr>
 <tr>
@@ -746,16 +742,16 @@ std_err
 2
 </td>
 <td style="text-align:right;">
-35
+62
 </td>
 <td style="text-align:right;">
-0.180
+0.060
 </td>
 <td style="text-align:right;">
-782.589
+784.473
 </td>
 <td style="text-align:right;">
-43.051
+58.633
 </td>
 </tr>
 <tr>
@@ -769,10 +765,10 @@ std_err
 0.030
 </td>
 <td style="text-align:right;">
-789.239
+792.699
 </td>
 <td style="text-align:right;">
-60.469
+83.838
 </td>
 </tr>
 <tr>
@@ -786,10 +782,10 @@ std_err
 0.121
 </td>
 <td style="text-align:right;">
-810.547
+818.107
 </td>
 <td style="text-align:right;">
-63.666
+76.136
 </td>
 </tr>
 <tr>
@@ -803,10 +799,10 @@ std_err
 0.276
 </td>
 <td style="text-align:right;">
-835.414
+836.959
 </td>
 <td style="text-align:right;">
-50.015
+47.602
 </td>
 </tr>
 </tbody>
@@ -865,7 +861,7 @@ std_err
 rmse
 </td>
 <td style="text-align:right;">
-732.0833
+821.6876
 </td>
 </tr>
 <tr>
@@ -873,7 +869,7 @@ rmse
 mae
 </td>
 <td style="text-align:right;">
-343.9436
+375.8849
 </td>
 </tr>
 <tr>
@@ -881,7 +877,7 @@ mae
 rsq
 </td>
 <td style="text-align:right;">
-0.9667
+0.9576
 </td>
 </tr>
 </tbody>
@@ -997,11 +993,9 @@ rsq
 <p><code>inp_spec(func, inputs)</code> explicitly maps <strong>upstream block outputs</strong> to <strong>function arguments</strong>.</p>
 <p>That’s the key to: - multi-input models - skip connections - branch/merge architectures</p>
 <aside class="notes">
-<p>Goal: explain <code>inp_spec()</code> as readable wiring.</p>
-<p>Say: - Most people get functional Keras, but the missing piece is: expressing the graph cleanly in R.</p>
-<p>Rule of thumb: - If you can describe your model as a simple chain, use sequential. - Use functional when you need named tensors: branches/merges, shared towers, skip connections, or multiple inputs.</p>
-<p>Also worth saying: - <code>inp_spec()</code> is the wiring layer: it makes the graph explicit and readable.</p>
-<p>Transition: Next: minimal functional blocks.</p>
+<p><strong>Goal</strong>: Demystify <code>inp_spec()</code>.</p>
+<p><strong>The Analogy</strong>: “Synthesizer Patch Cables” - If you’ve ever seen a modular synthesizer or a server patch panel, that’s what <code>kerasnip</code> does here. - In Keras code, you assign variables: <code>x = layer(input)</code>. - In <code>kerasnip</code>, we need to describe that connection <em>declaratively</em>. - <code>inp_spec(block, "name")</code> is the label on the cable: “Plug the output of ‘Tower A’ into the input of ‘Concat’”.</p>
+<p><strong>Technical Insight</strong> (for the curious): - <code>inp_spec</code> uses metaprogramming to rewrite the function signature. - It maps the string “main_input” to the actual tensor object at build time.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1035,15 +1029,9 @@ rsq
 <span id="cb9-17"><a></a>  tensor <span class="sc">|&gt;</span> <span class="fu">layer_dense</span>(<span class="at">units =</span> num_classes, <span class="at">activation =</span> <span class="st">"softmax"</span>)</span>
 <span id="cb9-18"><a></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <aside class="notes">
-<p>Goal: show block conventions and avoid wiring mistakes.</p>
-<p>Say: - Two key correctness points (from the <code>kerasnip</code> docs):</p>
-<ul>
-<li>The input block is <code>function(input_shape)</code> (no <code>model</code> argument).</li>
-<li>Downstream blocks take the upstream tensor as the first argument.</li>
-</ul>
-<p><code>inp_spec()</code> is how we wire outputs into named arguments.</p>
-<p>Common pitfall: - The names you reference in <code>inp_spec(..., "main_input")</code> must match block names exactly.</p>
-<p>Transition: Next: generate the functional spec.</p>
+<p><strong>Goal</strong>: Highlight the “Node” concept.</p>
+<p><strong>Explanation</strong>: - In the <strong>Functional API</strong>, blocks aren’t steps in a recipe; they are <strong>Nodes in a Graph</strong>. - Notice <code>input_block</code> takes <code>input_shape</code>, not <code>model</code>. - Notice <code>dense_block</code> takes <code>tensor</code>, not <code>model</code>. - Using pipes (<code>|&gt;</code>) here is fine <em>inside</em> the block, but <code>kerasnip</code> manages the flow <em>between</em> blocks.</p>
+<p><strong>Caution</strong>: - The names you use in <code>inp_spec</code> must match the names in your block list exactly.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1172,44 +1160,30 @@ std_err
 <tbody>
 <tr>
 <td style="text-align:right;">
-109
-</td>
-<td style="text-align:right;">
-115
-</td>
-<td style="text-align:right;">
-0.8018
-</td>
-<td style="text-align:right;">
-0.0254
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-47
-</td>
-<td style="text-align:right;">
-24
-</td>
-<td style="text-align:right;">
-0.8003
-</td>
-<td style="text-align:right;">
-0.0256
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
 41
 </td>
 <td style="text-align:right;">
 33
 </td>
 <td style="text-align:right;">
-0.7917
+0.8015
 </td>
 <td style="text-align:right;">
-0.0245
+0.0178
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+21
+</td>
+<td style="text-align:right;">
+105
+</td>
+<td style="text-align:right;">
+0.8011
+</td>
+<td style="text-align:right;">
+0.0127
 </td>
 </tr>
 <tr>
@@ -1220,10 +1194,10 @@ std_err
 64
 </td>
 <td style="text-align:right;">
-0.7886
+0.8008
 </td>
 <td style="text-align:right;">
-0.0223
+0.0244
 </td>
 </tr>
 <tr>
@@ -1234,18 +1208,32 @@ std_err
 57
 </td>
 <td style="text-align:right;">
-0.7878
+0.7997
 </td>
 <td style="text-align:right;">
-0.0195
+0.0211
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+47
+</td>
+<td style="text-align:right;">
+24
+</td>
+<td style="text-align:right;">
+0.7904
+</td>
+<td style="text-align:right;">
+0.0176
 </td>
 </tr>
 </tbody>
 </table>
 <aside class="notes">
-<p>Goal: pick a sensible (often simple) configuration.</p>
-<p>Say: - We’re selecting on CV ROC AUC; AUC uses predicted probabilities. - If many configs are similar, prefer smaller towers (simpler = easier to maintain).</p>
-<p>Transition: Next: check sensitivity in a heatmap.</p>
+<p><strong>Goal</strong>: Interpret the results with nuance.</p>
+<p><strong>Key Insight</strong>: “Stability vs.&nbsp;Performance” - Look at the <code>mean</code> (ROC AUC) but also the <code>std_err</code>. - <strong>Flat Heatmap</strong>: This is good! It means your architecture is robust. You can pick the cheaper/smaller model (fewer units) without losing accuracy. - <strong>Sharp Peak</strong>: This indicates sensitivity. You might have found a local optimum, but is it stable?</p>
+<p><strong>Decision</strong>: - I usually pick the simplest architecture that is within 1 standard error of the best.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1296,7 +1284,7 @@ std_err
 accuracy
 </td>
 <td style="text-align:right;">
-0.8591
+0.8455
 </td>
 </tr>
 <tr>
@@ -1304,7 +1292,7 @@ accuracy
 roc_auc
 </td>
 <td style="text-align:right;">
-0.7835
+0.8013
 </td>
 </tr>
 </tbody>
