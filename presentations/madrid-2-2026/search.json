@@ -123,7 +123,7 @@
     "href": "index.html#results-diamonds-cv-table",
     "title": "",
     "section": "Results (Diamonds): CV — Table",
-    "text": "Results (Diamonds): CV — Table\n\n\n\n\nnum_body\n\n\nbody_units\n\n\nbody_dropout\n\n\nmean\n\n\nstd_err\n\n\n\n\n\n\n2\n\n\n35\n\n\n0.180\n\n\n782.530\n\n\n43.734\n\n\n\n\n2\n\n\n62\n\n\n0.060\n\n\n784.473\n\n\n58.633\n\n\n\n\n2\n\n\n49\n\n\n0.030\n\n\n792.699\n\n\n83.838\n\n\n\n\n2\n\n\n98\n\n\n0.121\n\n\n818.107\n\n\n76.136\n\n\n\n\n1\n\n\n127\n\n\n0.276\n\n\n836.959\n\n\n47.602\n\n\n\n\n\nGoal: pick 1–2 strong candidates (don’t read the whole table).\nSay: - These are cross-validation estimates (mean + std_err). We’re selecting on CV, not the test set. - I usually look for a “stable region”: low mean RMSE and not wildly sensitive to depth/dropout.\nTransition: Let’s look at the CV plot to see interactions."
+    "text": "Results (Diamonds): CV — Table\n\n\n\n\nnum_body\n\n\nbody_units\n\n\nbody_dropout\n\n\nmean\n\n\nstd_err\n\n\n\n\n\n\n2\n\n\n49\n\n\n0.030\n\n\n785.572\n\n\n71.554\n\n\n\n\n2\n\n\n35\n\n\n0.180\n\n\n791.711\n\n\n40.245\n\n\n\n\n2\n\n\n98\n\n\n0.121\n\n\n794.936\n\n\n54.108\n\n\n\n\n2\n\n\n62\n\n\n0.060\n\n\n804.091\n\n\n57.338\n\n\n\n\n3\n\n\n69\n\n\n0.246\n\n\n835.431\n\n\n50.148\n\n\n\n\n\nGoal: pick 1–2 strong candidates (don’t read the whole table).\nSay: - These are cross-validation estimates (mean + std_err). We’re selecting on CV, not the test set. - I usually look for a “stable region”: low mean RMSE and not wildly sensitive to depth/dropout.\nTransition: Let’s look at the CV plot to see interactions."
   },
   {
     "objectID": "index.html#results-diamonds-cv-plot",
@@ -137,7 +137,7 @@
     "href": "index.html#results-diamonds-test-table",
     "title": "",
     "section": "Results (Diamonds): Test — Table",
-    "text": "Results (Diamonds): Test — Table\n\n\n\n\n.metric\n\n\n.estimate\n\n\n\n\n\n\nrmse\n\n\n821.6876\n\n\n\n\nmae\n\n\n375.8849\n\n\n\n\nrsq\n\n\n0.9576\n\n\n\n\n\nGoal: one-time confirmation.\nSay: - Test metrics are for final reporting; avoid using them to decide hyperparameters. - If test is worse than CV by a lot, it’s a sign of instability or leakage.\nTransition: I’ll show a quick visual sanity check on test predictions."
+    "text": "Results (Diamonds): Test — Table\n\n\n\n\n.metric\n\n\n.estimate\n\n\n\n\n\n\nrmse\n\n\n731.0865\n\n\n\n\nmae\n\n\n343.9417\n\n\n\n\nrsq\n\n\n0.9671\n\n\n\n\n\nGoal: one-time confirmation.\nSay: - Test metrics are for final reporting; avoid using them to decide hyperparameters. - If test is worse than CV by a lot, it’s a sign of instability or leakage.\nTransition: I’ll show a quick visual sanity check on test predictions."
   },
   {
     "objectID": "index.html#results-diamonds-test-plot",
@@ -193,7 +193,7 @@
     "href": "index.html#results-attrition-cv-table",
     "title": "",
     "section": "Results (Attrition): CV — Table",
-    "text": "Results (Attrition): CV — Table\n\nGoal: explain caching/repro quickly.\nSay: - Cache once, show consistently.\n\nRender once (with freeze: auto) or run Rscript presentations/madrid-2-2026/make_results.R\nIt saves presentations/madrid-2-2026/results/attrition_res.rds\n\nTypical inspection:\ncollect_metrics() → show_best() → select_best() → finalize_workflow() → last_fit()\nTransition: Now the table: pick a configuration.\n\n\n\n\n\ntower_a_units\n\n\ntower_b_units\n\n\nmean\n\n\nstd_err\n\n\n\n\n\n\n41\n\n\n33\n\n\n0.8015\n\n\n0.0178\n\n\n\n\n21\n\n\n105\n\n\n0.8011\n\n\n0.0127\n\n\n\n\n70\n\n\n64\n\n\n0.8008\n\n\n0.0244\n\n\n\n\n120\n\n\n57\n\n\n0.7997\n\n\n0.0211\n\n\n\n\n47\n\n\n24\n\n\n0.7904\n\n\n0.0176\n\n\n\n\n\nGoal: Interpret the results with nuance.\nKey Insight: “Stability vs. Performance” - Look at the mean (ROC AUC) but also the std_err. - Flat Heatmap: This is good! It means your architecture is robust. You can pick the cheaper/smaller model (fewer units) without losing accuracy. - Sharp Peak: This indicates sensitivity. You might have found a local optimum, but is it stable?\nDecision: - I usually pick the simplest architecture that is within 1 standard error of the best."
+    "text": "Results (Attrition): CV — Table\n\nGoal: explain caching/repro quickly.\nSay: - Cache once, show consistently.\n\nRender once (with freeze: auto) or run Rscript presentations/madrid-2-2026/make_results.R\nIt saves presentations/madrid-2-2026/results/attrition_res.rds\n\nTypical inspection:\ncollect_metrics() → show_best() → select_best() → finalize_workflow() → last_fit()\nTransition: Now the table: pick a configuration.\n\n\n\n\n\ntower_a_units\n\n\ntower_b_units\n\n\nmean\n\n\nstd_err\n\n\n\n\n\n\n47\n\n\n24\n\n\n0.8010\n\n\n0.0297\n\n\n\n\n21\n\n\n105\n\n\n0.7959\n\n\n0.0244\n\n\n\n\n80\n\n\n95\n\n\n0.7946\n\n\n0.0269\n\n\n\n\n89\n\n\n84\n\n\n0.7899\n\n\n0.0172\n\n\n\n\n120\n\n\n57\n\n\n0.7894\n\n\n0.0229\n\n\n\n\n\nGoal: Interpret the results with nuance.\nKey Insight: “Stability vs. Performance” - Look at the mean (ROC AUC) but also the std_err. - Flat Heatmap: This is good! It means your architecture is robust. You can pick the cheaper/smaller model (fewer units) without losing accuracy. - Sharp Peak: This indicates sensitivity. You might have found a local optimum, but is it stable?\nDecision: - I usually pick the simplest architecture that is within 1 standard error of the best."
   },
   {
     "objectID": "index.html#results-attrition-cv-plot",
@@ -207,7 +207,7 @@
     "href": "index.html#results-attrition-test-table",
     "title": "",
     "section": "Results (Attrition): Test — Table",
-    "text": "Results (Attrition): Test — Table\n\n\n\n\n.metric\n\n\n.estimate\n\n\n\n\n\n\naccuracy\n\n\n0.8455\n\n\n\n\nroc_auc\n\n\n0.8013\n\n\n\n\n\nGoal: report final test performance once.\nSay: - CV chose the architecture; test is for final confirmation. - If the dataset is imbalanced, ROC AUC is often more informative than accuracy.\nTransition: Show ROC curve as a visual summary."
+    "text": "Results (Attrition): Test — Table\n\n\n\n\n.metric\n\n\n.estimate\n\n\n\n\n\n\naccuracy\n\n\n0.8482\n\n\n\n\nroc_auc\n\n\n0.8427\n\n\n\n\n\nGoal: report final test performance once.\nSay: - CV chose the architecture; test is for final confirmation. - If the dataset is imbalanced, ROC AUC is often more informative than accuracy.\nTransition: Show ROC curve as a visual summary."
   },
   {
     "objectID": "index.html#results-attrition-test-plot",

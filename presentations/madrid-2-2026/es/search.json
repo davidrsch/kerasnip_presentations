@@ -123,7 +123,7 @@
     "href": "index.html#resultados-diamantes-cv-tabla",
     "title": "",
     "section": "Resultados (Diamantes): CV — Tabla",
-    "text": "Resultados (Diamantes): CV — Tabla\n\n\n\n\nnum_body\n\n\nbody_units\n\n\nbody_dropout\n\n\nmean\n\n\nstd_err\n\n\n\n\n\n\n2\n\n\n35\n\n\n0.180\n\n\n782.530\n\n\n43.734\n\n\n\n\n2\n\n\n62\n\n\n0.060\n\n\n784.473\n\n\n58.633\n\n\n\n\n2\n\n\n49\n\n\n0.030\n\n\n792.699\n\n\n83.838\n\n\n\n\n2\n\n\n98\n\n\n0.121\n\n\n818.107\n\n\n76.136\n\n\n\n\n1\n\n\n127\n\n\n0.276\n\n\n836.959\n\n\n47.602\n\n\n\n\n\nObjetivo: elegir 1–2 candidatos (no leer toda la tabla).\nQué decir: - Son estimaciones de validación cruzada (media + error estándar). Se selecciona con CV, no con el test. - Busca una zona “estable”: buen RMSE medio y poca sensibilidad a profundidad/dropout. Transición: Veamos el gráfico para entender interacciones."
+    "text": "Resultados (Diamantes): CV — Tabla\n\n\n\n\nnum_body\n\n\nbody_units\n\n\nbody_dropout\n\n\nmean\n\n\nstd_err\n\n\n\n\n\n\n2\n\n\n49\n\n\n0.030\n\n\n785.572\n\n\n71.554\n\n\n\n\n2\n\n\n35\n\n\n0.180\n\n\n791.711\n\n\n40.245\n\n\n\n\n2\n\n\n98\n\n\n0.121\n\n\n794.936\n\n\n54.108\n\n\n\n\n2\n\n\n62\n\n\n0.060\n\n\n804.091\n\n\n57.338\n\n\n\n\n3\n\n\n69\n\n\n0.246\n\n\n835.431\n\n\n50.148\n\n\n\n\n\nObjetivo: elegir 1–2 candidatos (no leer toda la tabla).\nQué decir: - Son estimaciones de validación cruzada (media + error estándar). Se selecciona con CV, no con el test. - Busca una zona “estable”: buen RMSE medio y poca sensibilidad a profundidad/dropout. Transición: Veamos el gráfico para entender interacciones."
   },
   {
     "objectID": "index.html#resultados-diamantes-cv-gráfico",
@@ -137,7 +137,7 @@
     "href": "index.html#resultados-diamantes-test-tabla",
     "title": "",
     "section": "Resultados (Diamantes): Test — Tabla",
-    "text": "Resultados (Diamantes): Test — Tabla\n\n\n\n\n.metric\n\n\n.estimate\n\n\n\n\n\n\nrmse\n\n\n821.6876\n\n\n\n\nmae\n\n\n375.8849\n\n\n\n\nrsq\n\n\n0.9576\n\n\n\n\n\nObjetivo: confirmación final una sola vez.\nQué decir: - El test es para reportar, no para decidir hiperparámetros. - Si el test empeora mucho respecto a CV, sospecha inestabilidad o leakage. Transición: Siguiente: una comprobación visual rápida en las predicciones de test."
+    "text": "Resultados (Diamantes): Test — Tabla\n\n\n\n\n.metric\n\n\n.estimate\n\n\n\n\n\n\nrmse\n\n\n731.0865\n\n\n\n\nmae\n\n\n343.9417\n\n\n\n\nrsq\n\n\n0.9671\n\n\n\n\n\nObjetivo: confirmación final una sola vez.\nQué decir: - El test es para reportar, no para decidir hiperparámetros. - Si el test empeora mucho respecto a CV, sospecha inestabilidad o leakage. Transición: Siguiente: una comprobación visual rápida en las predicciones de test."
   },
   {
     "objectID": "index.html#resultados-diamantes-test-gráfico",
@@ -193,7 +193,7 @@
     "href": "index.html#resultados-rotación-cv-tabla",
     "title": "",
     "section": "Resultados (Rotación): CV — Tabla",
-    "text": "Resultados (Rotación): CV — Tabla\n\nObjetivo: elegir 1–2 candidatos (sin leer toda la tabla).\nQué decir: - Son estimaciones de validación cruzada (media + error estándar). Se selecciona con CV, no con el test. - Busca una zona “estable”: buena AUC y poca sensibilidad al tamaño de las torres. - Repro: renderiza una vez (con freeze: auto) o ejecuta Rscript presentations/madrid-2-2026/make_results.R; se guarda presentations/madrid-2-2026/results/attrition_res.rds. - Inspección típica: collect_metrics() → show_best() → select_best() → finalize_workflow() → last_fit().\nTransición: Ahora el mapa de calor para ver sensibilidad/interacciones.\n\n\n\n\n\ntower_a_units\n\n\ntower_b_units\n\n\nmean\n\n\nstd_err\n\n\n\n\n\n\n41\n\n\n33\n\n\n0.8015\n\n\n0.0178\n\n\n\n\n21\n\n\n105\n\n\n0.8011\n\n\n0.0127\n\n\n\n\n70\n\n\n64\n\n\n0.8008\n\n\n0.0244\n\n\n\n\n120\n\n\n57\n\n\n0.7997\n\n\n0.0211\n\n\n\n\n47\n\n\n24\n\n\n0.7904\n\n\n0.0176"
+    "text": "Resultados (Rotación): CV — Tabla\n\nObjetivo: elegir 1–2 candidatos (sin leer toda la tabla).\nQué decir: - Son estimaciones de validación cruzada (media + error estándar). Se selecciona con CV, no con el test. - Busca una zona “estable”: buena AUC y poca sensibilidad al tamaño de las torres. - Repro: renderiza una vez (con freeze: auto) o ejecuta Rscript presentations/madrid-2-2026/make_results.R; se guarda presentations/madrid-2-2026/results/attrition_res.rds. - Inspección típica: collect_metrics() → show_best() → select_best() → finalize_workflow() → last_fit().\nTransición: Ahora el mapa de calor para ver sensibilidad/interacciones.\n\n\n\n\n\ntower_a_units\n\n\ntower_b_units\n\n\nmean\n\n\nstd_err\n\n\n\n\n\n\n47\n\n\n24\n\n\n0.8010\n\n\n0.0297\n\n\n\n\n21\n\n\n105\n\n\n0.7959\n\n\n0.0244\n\n\n\n\n80\n\n\n95\n\n\n0.7946\n\n\n0.0269\n\n\n\n\n89\n\n\n84\n\n\n0.7899\n\n\n0.0172\n\n\n\n\n120\n\n\n57\n\n\n0.7894\n\n\n0.0229"
   },
   {
     "objectID": "index.html#resultados-rotación-cv-gráfico",
@@ -207,7 +207,7 @@
     "href": "index.html#resultados-rotación-test-tabla",
     "title": "",
     "section": "Resultados (Rotación): Test — Tabla",
-    "text": "Resultados (Rotación): Test — Tabla\n\n\n\n\n.metric\n\n\n.estimate\n\n\n\n\n\n\naccuracy\n\n\n0.8455\n\n\n\n\nroc_auc\n\n\n0.8013\n\n\n\n\n\nObjetivo: reportar el rendimiento final una sola vez.\nQué decir: - La selección se hizo con CV; el test es confirmación final. - En conjuntos desbalanceados, ROC AUC suele ser más informativa que accuracy. Transición: Siguiente: una curva ROC como resumen visual."
+    "text": "Resultados (Rotación): Test — Tabla\n\n\n\n\n.metric\n\n\n.estimate\n\n\n\n\n\n\naccuracy\n\n\n0.8482\n\n\n\n\nroc_auc\n\n\n0.8427\n\n\n\n\n\nObjetivo: reportar el rendimiento final una sola vez.\nQué decir: - La selección se hizo con CV; el test es confirmación final. - En conjuntos desbalanceados, ROC AUC suele ser más informativa que accuracy. Transición: Siguiente: una curva ROC como resumen visual."
   },
   {
     "objectID": "index.html#resultados-rotación-test-gráfico",
