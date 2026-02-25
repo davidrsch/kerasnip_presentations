@@ -29,8 +29,8 @@ execute:
 # so cache files should live in `presentations/madrid-2-2026/results/` (i.e. `results/` here).
 results_dir <- "results"
 old_results_dirs <- c(
-  file.path("..", "..", "madrid-2026", "results"),
-  file.path("madrid-2026", "results")
+    file.path("..", "..", "madrid-2026", "results"),
+    file.path("madrid-2026", "results")
 )
 dir.create(results_dir, showWarnings = FALSE, recursive = TRUE)
 
@@ -38,14 +38,14 @@ dir.create(results_dir, showWarnings = FALSE, recursive = TRUE)
 # - Before the folder move, cached results lived at `madrid-2026/results/`.
 # - Older versions could also write nested `madrid-2026/results/` inside the project dir.
 for (old_results_dir in old_results_dirs) {
-  if (!dir.exists(old_results_dir)) {
-    next
-  }
+    if (!dir.exists(old_results_dir)) {
+        next
+    }
 
-  old_rds <- list.files(old_results_dir, pattern = "\\.rds$", full.names = TRUE)
-  if (length(old_rds) > 0) {
-    file.copy(old_rds, results_dir, overwrite = FALSE)
-  }
+    old_rds <- list.files(old_results_dir, pattern = "\\.rds$", full.names = TRUE)
+    if (length(old_rds) > 0) {
+        file.copy(old_rds, results_dir, overwrite = FALSE)
+    }
 }
 
 diamonds_rds <- file.path(results_dir, "diamonds_res.rds")
@@ -56,197 +56,197 @@ attrition_final_rds <- file.path(results_dir, "attrition_final.rds")
 set.seed(20260203)
 
 can_run <- function(...) {
-  all(vapply(list(...), requireNamespace, logical(1), quietly = TRUE))
+    all(vapply(list(...), requireNamespace, logical(1), quietly = TRUE))
 }
 
 if (can_run("tidymodels", "kerasnip", "keras3")) {
-  suppressPackageStartupMessages({
-    library(tidymodels)
-    library(kerasnip)
-    library(keras3)
-  })
+    suppressPackageStartupMessages({
+        library(tidymodels)
+        library(kerasnip)
+        library(keras3)
+    })
 
-  data(diamonds, package = "ggplot2")
+    data(diamonds, package = "ggplot2")
 
-  input_block <- function(model, input_shape) {
-    keras_model_sequential(input_shape = input_shape)
-  }
+    input_block <- function(model, input_shape) {
+        keras_model_sequential(input_shape = input_shape)
+    }
 
-  dense_block <- function(model, units = 128, dropout = 0.0) {
-    model |>
-      layer_dense(units = units, activation = "relu") |>
-      layer_dropout(rate = dropout)
-  }
+    dense_block <- function(model, units = 128, dropout = 0.0) {
+        model |>
+            layer_dense(units = units, activation = "relu") |>
+            layer_dropout(rate = dropout)
+    }
 
-  output_block <- function(model) {
-    model |> layer_dense(units = 1)
-  }
+    output_block <- function(model) {
+        model |> layer_dense(units = 1)
+    }
 
-  create_keras_sequential_spec(
-    model_name = "diamond_mlp",
-    layer_blocks = list(
-      input = input_block,
-      body = dense_block,
-      output = output_block
-    ),
-    mode = "regression"
-  )
-
-  diamonds_split <- initial_split(diamonds, strata = price)
-  diamonds_train <- training(diamonds_split)
-
-  diamonds_rec <- recipe(price ~ ., data = diamonds_train) |>
-    step_dummy(all_nominal_predictors()) |>
-    step_zv(all_predictors()) |>
-    step_normalize(all_numeric_predictors())
-
-  spec <- diamond_mlp(
-    num_body = tune(),
-    body_units = tune(),
-    body_dropout = tune(),
-    fit_epochs = 5
-  ) |>
-    set_engine("keras")
-
-  wf <- workflow() |>
-    add_recipe(diamonds_rec) |>
-    add_model(spec)
-
-  params <- extract_parameter_set_dials(wf) |>
-    update(
-      num_body = dials::num_terms(c(1, 3)),
-      body_units = dials::hidden_units(c(32, 128)),
-      body_dropout = dials::dropout(c(0, 0.3))
+    create_keras_sequential_spec(
+        model_name = "diamond_mlp",
+        layer_blocks = list(
+            input = input_block,
+            body = dense_block,
+            output = output_block
+        ),
+        mode = "regression"
     )
 
-  grid <- grid_latin_hypercube(params, size = 8)
-  folds <- vfold_cv(diamonds_train, v = 3, strata = price)
+    diamonds_split <- initial_split(diamonds, strata = price)
+    diamonds_train <- training(diamonds_split)
 
-  if (!file.exists(diamonds_rds)) {
-    res <- tune_grid(wf, resamples = folds, grid = grid, control = control_grid())
-    saveRDS(res, diamonds_rds)
-  } else {
-    res <- readRDS(diamonds_rds)
-  }
+    diamonds_rec <- recipe(price ~ ., data = diamonds_train) |>
+        step_dummy(all_nominal_predictors()) |>
+        step_zv(all_predictors()) |>
+        step_normalize(all_numeric_predictors())
 
-  if (!file.exists(diamonds_final_rds)) {
-    best <- select_best(res, metric = "rmse")
-    final_wf <- finalize_workflow(wf, best)
-    lf <- last_fit(final_wf, split = diamonds_split, metrics = metric_set(rmse, mae, rsq))
+    spec <- diamond_mlp(
+        num_body = tune(),
+        body_units = tune(),
+        body_dropout = tune(),
+        fit_epochs = 5
+    ) |>
+        set_engine("keras")
 
-    diamonds_final <- list(
-      best = best,
-      metrics = collect_metrics(lf),
-      preds = collect_predictions(lf)
-    )
-    saveRDS(diamonds_final, diamonds_final_rds)
-  }
+    wf <- workflow() |>
+        add_recipe(diamonds_rec) |>
+        add_model(spec)
+
+    params <- extract_parameter_set_dials(wf) |>
+        update(
+            num_body = dials::num_terms(c(1, 3)),
+            body_units = dials::hidden_units(c(32, 128)),
+            body_dropout = dials::dropout(c(0, 0.3))
+        )
+
+    grid <- grid_latin_hypercube(params, size = 8)
+    folds <- vfold_cv(diamonds_train, v = 3, strata = price)
+
+    if (!file.exists(diamonds_rds)) {
+        res <- tune_grid(wf, resamples = folds, grid = grid, control = control_grid())
+        saveRDS(res, diamonds_rds)
+    } else {
+        res <- readRDS(diamonds_rds)
+    }
+
+    if (!file.exists(diamonds_final_rds)) {
+        best <- select_best(res, metric = "rmse")
+        final_wf <- finalize_workflow(wf, best)
+        lf <- last_fit(final_wf, split = diamonds_split, metrics = metric_set(rmse, mae, rsq))
+
+        diamonds_final <- list(
+            best = best,
+            metrics = collect_metrics(lf),
+            preds = collect_predictions(lf)
+        )
+        saveRDS(diamonds_final, diamonds_final_rds)
+    }
 }
 
 if (can_run("tidymodels", "modeldata", "kerasnip", "keras3")) {
-  suppressPackageStartupMessages({
-    library(tidymodels)
-    library(modeldata)
-    library(kerasnip)
-    library(keras3)
-  })
+    suppressPackageStartupMessages({
+        library(tidymodels)
+        library(modeldata)
+        library(kerasnip)
+        library(keras3)
+    })
 
-  data(attrition)
+    data(attrition)
 
-  # Correct functional signatures per kerasnip docs:
-  input_block <- function(input_shape) {
-    layer_input(shape = input_shape, name = "features")
-  }
-
-  dense_block <- function(tensor, units = 64, dropout = 0.0) {
-    tensor |>
-      layer_dense(units = units, activation = "relu") |>
-      layer_dropout(rate = dropout)
-  }
-
-  concat_block <- function(input_a, input_b) {
-    layer_concatenate(list(input_a, input_b))
-  }
-
-  output_block <- function(tensor, num_classes) {
-    tensor |> layer_dense(units = num_classes, activation = "softmax")
-  }
-
-  create_keras_functional_spec(
-    model_name = "attrition_towers",
-    layer_blocks = list(
-      main_input = input_block,
-      tower_a = inp_spec(dense_block, "main_input"),
-      tower_b = inp_spec(dense_block, "main_input"),
-      joined = inp_spec(concat_block, c(input_a = "tower_a", input_b = "tower_b")),
-      output = inp_spec(output_block, "joined")
-    ),
-    mode = "classification"
-  )
-
-  split <- initial_split(attrition, strata = Attrition)
-  train <- training(split)
-
-  rec <- recipe(Attrition ~ ., data = train) |>
-    step_zv(all_predictors()) |>
-    step_dummy(all_nominal_predictors()) |>
-    step_normalize(all_numeric_predictors())
-
-  spec <- attrition_towers(
-    tower_a_units = tune(),
-    tower_b_units = tune(),
-    fit_epochs = 5
-  ) |>
-    set_engine("keras")
-
-  wf <- workflow() |>
-    add_recipe(rec) |>
-    add_model(spec)
-
-  params <- extract_parameter_set_dials(wf) |>
-    update(
-      tower_a_units = dials::hidden_units(c(16, 128)),
-      tower_b_units = dials::hidden_units(c(16, 128))
-    )
-
-  grid <- grid_latin_hypercube(params, size = 8)
-  folds <- vfold_cv(train, v = 3, strata = Attrition)
-
-  if (!file.exists(attrition_rds)) {
-    res <- tune_grid(wf, resamples = folds, grid = grid, metrics = metric_set(roc_auc, accuracy))
-    saveRDS(res, attrition_rds)
-  } else {
-    res <- readRDS(attrition_rds)
-  }
-
-  if (!file.exists(attrition_final_rds)) {
-    best <- select_best(res, metric = "roc_auc")
-    final_wf <- finalize_workflow(wf, best)
-    lf <- last_fit(final_wf, split = split, metrics = metric_set(roc_auc, accuracy))
-
-    preds <- collect_predictions(lf)
-    event_level <- levels(preds$Attrition)[1]
-    preferred <- paste0(".pred_", event_level)
-    pos_col <- if (preferred %in% names(preds)) {
-      preferred
-    } else {
-      pcols <- grep("^\\.pred_", names(preds), value = TRUE)
-      pcols <- setdiff(pcols, ".pred_class")
-      pcols[1]
+    # Correct functional signatures per kerasnip docs:
+    input_block <- function(input_shape) {
+        layer_input(shape = input_shape, name = "features")
     }
 
-    attrition_final <- list(
-      best = best,
-      metrics = collect_metrics(lf),
-      preds = preds,
-      roc = if (!is.na(pos_col)) {
-        roc_curve(preds, truth = Attrition, !!rlang::sym(pos_col))
-      } else {
-        NULL
-      }
+    dense_block <- function(tensor, units = 64, dropout = 0.0) {
+        tensor |>
+            layer_dense(units = units, activation = "relu") |>
+            layer_dropout(rate = dropout)
+    }
+
+    concat_block <- function(input_a, input_b) {
+        layer_concatenate(list(input_a, input_b))
+    }
+
+    output_block <- function(tensor, num_classes) {
+        tensor |> layer_dense(units = num_classes, activation = "softmax")
+    }
+
+    create_keras_functional_spec(
+        model_name = "attrition_towers",
+        layer_blocks = list(
+            main_input = input_block,
+            tower_a = inp_spec(dense_block, "main_input"),
+            tower_b = inp_spec(dense_block, "main_input"),
+            joined = inp_spec(concat_block, c(input_a = "tower_a", input_b = "tower_b")),
+            output = inp_spec(output_block, "joined")
+        ),
+        mode = "classification"
     )
-    saveRDS(attrition_final, attrition_final_rds)
-  }
+
+    split <- initial_split(attrition, strata = Attrition)
+    train <- training(split)
+
+    rec <- recipe(Attrition ~ ., data = train) |>
+        step_zv(all_predictors()) |>
+        step_dummy(all_nominal_predictors()) |>
+        step_normalize(all_numeric_predictors())
+
+    spec <- attrition_towers(
+        tower_a_units = tune(),
+        tower_b_units = tune(),
+        fit_epochs = 5
+    ) |>
+        set_engine("keras")
+
+    wf <- workflow() |>
+        add_recipe(rec) |>
+        add_model(spec)
+
+    params <- extract_parameter_set_dials(wf) |>
+        update(
+            tower_a_units = dials::hidden_units(c(16, 128)),
+            tower_b_units = dials::hidden_units(c(16, 128))
+        )
+
+    grid <- grid_latin_hypercube(params, size = 8)
+    folds <- vfold_cv(train, v = 3, strata = Attrition)
+
+    if (!file.exists(attrition_rds)) {
+        res <- tune_grid(wf, resamples = folds, grid = grid, metrics = metric_set(roc_auc, accuracy))
+        saveRDS(res, attrition_rds)
+    } else {
+        res <- readRDS(attrition_rds)
+    }
+
+    if (!file.exists(attrition_final_rds)) {
+        best <- select_best(res, metric = "roc_auc")
+        final_wf <- finalize_workflow(wf, best)
+        lf <- last_fit(final_wf, split = split, metrics = metric_set(roc_auc, accuracy))
+
+        preds <- collect_predictions(lf)
+        event_level <- levels(preds$Attrition)[1]
+        preferred <- paste0(".pred_", event_level)
+        pos_col <- if (preferred %in% names(preds)) {
+            preferred
+        } else {
+            pcols <- grep("^\\.pred_", names(preds), value = TRUE)
+            pcols <- setdiff(pcols, ".pred_class")
+            pcols[1]
+        }
+
+        attrition_final <- list(
+            best = best,
+            metrics = collect_metrics(lf),
+            preds = preds,
+            roc = if (!is.na(pos_col)) {
+                roc_curve(preds, truth = Attrition, !!rlang::sym(pos_col))
+            } else {
+                NULL
+            }
+        )
+        saveRDS(attrition_final, attrition_final_rds)
+    }
 }
 ```
 
@@ -260,20 +260,13 @@ if (can_run("tidymodels", "modeldata", "kerasnip", "keras3")) {
 Docs: [davidrsch.github.io/kerasnip](https://davidrsch.github.io/kerasnip/) · Repo: [github.com/davidrsch/kerasnip](https://github.com/davidrsch/kerasnip)
 
 ::: {.notes}
-**Goal**: Hook the audience with the core conflict.
+Open with energy. Ask: "Who loves tidymodels?" then "Who fights with Keras architectures?"
 
-**Stage Directions**:
-- Start energetic.
-- Ask: "How many of you love `tidymodels`?" (Wait for hands).
-- Ask: "How many of you fight with Keras architectures?"
+Say:
+- Keras and tidymodels are like oil and water — kerasnip is the emulsifier.
+- Today: solving the *architectural tuning* problem.
 
-**The Hook**:
-- Keras and Tidymodels are like **Oil and Water**.
-- **Keras** is an imperative builder (you write code to *do* things).
-- **Tidymodels** is a declarative configuration (you describe *what* you want).
-- `kerasnip` is the emulsifier that lets them mix.
-
-**Key Takeaway**: Today is about solving the *architectural tuning* problem.
+If stuck: "Keras builds freely; tidymodels tunes systematically. We bridge them."
 :::
 
 ---
@@ -327,15 +320,13 @@ Transition: Let’s situate Keras vs tidymodels and name the gap.
 **The Gap**: Using `tune_grid()` to optimize Neural Network topology (depth/width) is difficult because `parsnip` expects fixed arguments, while Keras models are arbitrary graphs.
 
 ::: {.notes}
-**Goal**: Anchor the mental model using the "Architect vs. Form Filler" analogy.
+Analogy: Keras = architect's blank sheet; tidymodels = government form with fixed fields.
 
-**Analogy**:
-- **Keras** is an **Architect's Table**. You have a blank sheet, rulers, and pencils. You can draw *anything* (a house, a skyscraper, a bridge).
-- **Tidymodels** is a **Government Form**. It asks specific questions: "Number of floors?", "Color of walls?". It's easy to process (tune), but you can't "fill in a form" to invent a new kind of building.
+Say:
+- kerasnip turns the building's *structure* into form fields.
+- You define the blueprint (blocks), it exposes the knobs (depth, width) as standard arguments.
 
-**The Solution**:
-- We need a way to turn the *structure of the building* into fields on the form.
-- That's what `kerasnip` does: it lets you define the blueprint, and then exposes the "knobs" (depth, width) as standard arguments.
+If stuck: "Keras draws freely; tidymodels fills forms. kerasnip makes the forms fit the drawings."
 :::
 
 ---
@@ -451,16 +442,9 @@ Transition: Next: the minimal set of functions you’ll see in the examples.
 - `extract_parameter_set_dials()` (what can be tuned?)
 
 ::: {.notes}
-Goal: de-risk the API surface area.
-
 Say:
-- No need to memorize; just map each function to its role.
-
-Bonus: other kerasnip functions you may want later (not all shown in code today):
-- Debugging the compilation stage: `extract_valid_grid()` (keep only successful builds), `inform_errors()` (summarize common compile failures).
-- Evaluation + introspection: `extract_keras_model()`, `extract_keras_history()`, `keras_evaluate()`.
-- Keras object discovery + tuning: `keras_optimizers`, `keras_losses`, `keras_metrics`, `optimizer_function()`, `loss_function_keras()`.
-- Housekeeping: `model_exists()`, `remove_keras_spec()`, `get_model_env()`.
+- No need to memorize — just know each function's role.
+- Other helpers exist (debugging, evaluation, housekeeping) and are covered in the docs.
 
 Transition: Next: naming conventions, so the code reads naturally.
 :::
@@ -514,19 +498,15 @@ Transition: We’ll start sequential (easier), then come back to functional.
 - Keep tuning spaces reasonable (depth × width can explode)
 
 ::: {.notes}
-Goal: preempt the top failure modes.
-
 Say:
-- This slide is here to save pain during Q&A.
+- Recipes must output numeric matrices (dummy + normalize).
+- Start small: confirm structure with `compile_keras_grid()` before tuning.
+- Keep search spaces reasonable; depth x width can explode.
 
-Extra gotchas to mention out loud:
-- Classification: make sure the outcome is a factor (tidymodels convention) and the final layer/loss matches binary vs multiclass.
-- Every grid point is a *fresh model build + fresh training*; set seeds if you want stable comparisons.
-- Training controls (epochs/callbacks) should be held constant during architecture search unless you intentionally tune them.
+If stuck: "Numeric in, small grid first, check the build."
 
-Transition: With those guardrails, let’s run a simple sequential example.
+Transition: With those guardrails, let's run a simple sequential example.
 :::
-
 ---
 
 ## Workflow 1: Sequential API (Regression)
@@ -565,17 +545,12 @@ output_block <- function(model) {
 ```
 
 ::: {.notes}
-**Goal**: Show that "Blocks" are just standard R functions.
+Say:
+- Blocks are plain R functions — nothing magical.
+- The function signature (units, dropout) defines what becomes tunable later.
+- Repeated blocks (via `num_body`) share hyperparameters by design.
 
-**Walkthrough**:
-- Point to `input_block`: "It just returns a model. No magic yet."
-- Point to `dense_block`: "This looks exactly like standard Keras code, right?"
-- **The Trick**: The function signature `(model, units, dropout)` defines what will be tunable later.
-- If you want to tune it, make it an argument.
-
-**Best Practice**:
-- Keep blocks "pure" and deterministic.
-- Repetitions (via `num_body`) share these hyperparameters by design.
+If stuck: "If you want to tune it, make it an argument."
 :::
 
 ---
@@ -662,14 +637,9 @@ wf <- workflow() |>
 ```
 
 ::: {.notes}
-Goal: show the tidymodels parity story.
-
 Say:
-- The workflow looks normal.
-- The Keras complexity is “behind” the parsnip spec.
-
-If you want one extra credibility sentence:
-- kerasnip handles the recipe → Keras conversions via internal helpers like `process_x_sequential()` / `process_y_sequential()` and `generic_sequential_fit()`.
+- The workflow looks identical to any other tidymodels model.
+- Keras complexity is hidden behind the parsnip spec.
 
 Transition: Next: define the tuning ranges and run `tune_grid()`.
 :::
@@ -714,20 +684,20 @@ Transition: Now let’s look at CV results and pick a candidate before touching 
 diamonds_rds <- file.path("results", "diamonds_res.rds")
 
 if (file.exists(diamonds_rds)) {
-  suppressPackageStartupMessages({
-    library(dplyr)
-    library(tidymodels)
-  })
+    suppressPackageStartupMessages({
+        library(dplyr)
+        library(tidymodels)
+    })
 
-  res <- readRDS(diamonds_rds)
+    res <- readRDS(diamonds_rds)
 
-  best_tbl <- show_best(res, metric = "rmse", n = 5)
-  best_tbl <- best_tbl |>
-    dplyr::select(num_body, body_units, body_dropout, mean, std_err) |>
-    dplyr::mutate(dplyr::across(where(is.numeric), ~ round(.x, 3)))
-  cat(knitr::kable(best_tbl, format = "html"), "\n\n")
+    best_tbl <- show_best(res, metric = "rmse", n = 5)
+    best_tbl <- best_tbl |>
+        dplyr::select(num_body, body_units, body_dropout, mean, std_err) |>
+        dplyr::mutate(dplyr::across(where(is.numeric), ~ round(.x, 3)))
+    cat(knitr::kable(best_tbl, format = "html"), "\n\n")
 } else {
-  cat("No cached results found yet. Render once to compute them.\n")
+    cat("No cached results found yet. Render once to compute them.\n")
 }
 ```
 
@@ -753,29 +723,29 @@ Transition: Let’s look at the CV plot to see interactions.
 diamonds_rds <- file.path("results", "diamonds_res.rds")
 
 if (file.exists(diamonds_rds)) {
-  suppressPackageStartupMessages({
-    library(dplyr)
-    library(ggplot2)
-    library(tidymodels)
-  })
+    suppressPackageStartupMessages({
+        library(dplyr)
+        library(ggplot2)
+        library(tidymodels)
+    })
 
-  res <- readRDS(diamonds_rds)
+    res <- readRDS(diamonds_rds)
 
-  p_trends <- collect_metrics(res) |>
-    filter(.metric == "rmse") |>
-    ggplot(aes(x = num_body, y = mean, color = factor(body_units), group = interaction(body_units, body_dropout))) +
-    geom_point() +
-    geom_line(alpha = 0.35) +
-    facet_wrap(~ body_dropout) +
-    labs(
-      x = "num_body (depth)",
-      y = "CV RMSE (mean)",
-      color = "body_units",
-      title = "Cross-validation trends across depth/width"
-    )
-  print(p_trends)
+    p_trends <- collect_metrics(res) |>
+        filter(.metric == "rmse") |>
+        ggplot(aes(x = num_body, y = mean, color = factor(body_units), group = interaction(body_units, body_dropout))) +
+        geom_point() +
+        geom_line(alpha = 0.35) +
+        facet_wrap(~body_dropout) +
+        labs(
+            x = "num_body (depth)",
+            y = "CV RMSE (mean)",
+            color = "body_units",
+            title = "Cross-validation trends across depth/width"
+        )
+    print(p_trends)
 } else {
-  cat("No cached results found yet. Render once to compute them.\n")
+    cat("No cached results found yet. Render once to compute them.\n")
 }
 ```
 
@@ -802,18 +772,18 @@ Transition: Now we do a one-time test-set confirmation.
 diamonds_final_rds <- file.path("results", "diamonds_final.rds")
 
 if (file.exists(diamonds_final_rds)) {
-  suppressPackageStartupMessages({
-    library(dplyr)
-  })
+    suppressPackageStartupMessages({
+        library(dplyr)
+    })
 
-  final <- readRDS(diamonds_final_rds)
+    final <- readRDS(diamonds_final_rds)
 
-  metrics_tbl <- final$metrics |>
-    dplyr::select(.metric, .estimate) |>
-    dplyr::mutate(.estimate = round(.estimate, 4))
-  cat(knitr::kable(metrics_tbl, format = "html"), "\n\n")
+    metrics_tbl <- final$metrics |>
+        dplyr::select(.metric, .estimate) |>
+        dplyr::mutate(.estimate = round(.estimate, 4))
+    cat(knitr::kable(metrics_tbl, format = "html"), "\n\n")
 } else {
-  cat("No cached final results found yet.\n")
+    cat("No cached final results found yet.\n")
 }
 ```
 
@@ -839,41 +809,30 @@ Transition: I’ll show a quick visual sanity check on test predictions.
 diamonds_final_rds <- file.path("results", "diamonds_final.rds")
 
 if (file.exists(diamonds_final_rds)) {
-  suppressPackageStartupMessages({
-    library(ggplot2)
-  })
+    suppressPackageStartupMessages({
+        library(ggplot2)
+    })
 
-  final <- readRDS(diamonds_final_rds)
+    final <- readRDS(diamonds_final_rds)
 
-  p_test <- final$preds |>
-    ggplot(aes(x = price, y = .pred)) +
-    geom_point(alpha = 0.25) +
-    geom_abline(slope = 1, intercept = 0, linewidth = 0.8) +
-    coord_fixed() +
-    labs(x = "Truth (price)", y = "Predicted", title = "Final model on test set")
-  print(p_test)
+    p_test <- final$preds |>
+        ggplot(aes(x = price, y = .pred)) +
+        geom_point(alpha = 0.25) +
+        geom_abline(slope = 1, intercept = 0, linewidth = 0.8) +
+        coord_fixed() +
+        labs(x = "Truth (price)", y = "Predicted", title = "Final model on test set")
+    print(p_test)
 } else {
-  cat("No cached final results found yet.\n")
+    cat("No cached final results found yet.\n")
 }
 ```
 
 ::: {.notes}
-Goal: keep slides uncluttered and interpret the final model.
-
 Say:
-- Show results only; talk over them.
+- Points near the diagonal = good predictions; systematic deviations reveal bias.
+- High-price diamonds are typically harder to predict — check spread there.
 
-Reproducibility workflow:
-
-- Quarto `freeze: auto` runs once and reuses cached results.
-- Manual: `Rscript presentations/madrid-2-2026/make_results.R` creates the same `.rds` artifacts.
-
-Typical inspection steps:
-
-`collect_metrics(res)` → `show_best()` → `select_best()` → `finalize_workflow()` → `last_fit()`
-
-One more practical note:
-- If you want to inspect the final Keras model, use `extract_keras_model()` and `extract_keras_history()` on the fitted workflow/fit object.
+If stuck: "Tight diagonal = strong fit; fan-out = heteroscedasticity."
 
 Transition: Next: how to debug/inspect the generated architecture.
 :::
@@ -892,32 +851,32 @@ Transition: Next: how to debug/inspect the generated architecture.
 #| message: false
 #| warning: false
 suppressPackageStartupMessages({
-  library(dplyr)
-  library(tibble)
-  library(purrr)
-  library(tidymodels)
-  library(kerasnip)
-  library(keras3)
+    library(dplyr)
+    library(tibble)
+    library(purrr)
+    library(tidymodels)
+    library(kerasnip)
+    library(keras3)
 })
 
 if (!exists("diamond_mlp", mode = "function") || !kerasnip::model_exists("diamond_mlp")) {
-  input_block <- function(model, input_shape) {
-    keras_model_sequential(input_shape = input_shape)
-  }
-  dense_block <- function(model, units = 128, dropout = 0.0) {
-    model |>
-      layer_dense(units = units, activation = "relu") |>
-      layer_dropout(rate = dropout)
-  }
-  output_block <- function(model) {
-    model |> layer_dense(units = 1)
-  }
+    input_block <- function(model, input_shape) {
+        keras_model_sequential(input_shape = input_shape)
+    }
+    dense_block <- function(model, units = 128, dropout = 0.0) {
+        model |>
+            layer_dense(units = units, activation = "relu") |>
+            layer_dropout(rate = dropout)
+    }
+    output_block <- function(model) {
+        model |> layer_dense(units = 1)
+    }
 
-  create_keras_sequential_spec(
-    model_name = "diamond_mlp",
-    layer_blocks = list(input = input_block, body = dense_block, output = output_block),
-    mode = "regression"
-  )
+    create_keras_sequential_spec(
+        model_name = "diamond_mlp",
+        layer_blocks = list(input = input_block, body = dense_block, output = output_block),
+        mode = "regression"
+    )
 }
 
 prep_rec <- prep(diamonds_rec, training = diamonds_train)
@@ -926,52 +885,43 @@ x <- juiced |> select(-price)
 y <- juiced$price
 
 dbg <- compile_keras_grid(
-  spec = diamond_mlp(
-    num_body = tune(),
-    body_units = tune(),
-    body_dropout = tune(),
-    fit_epochs = 5
-  ) |> set_engine("keras"),
-  grid = tibble(num_body = 3, body_units = 128, body_dropout = 0.2),
-  x = x,
-  y = y
+    spec = diamond_mlp(
+        num_body = tune(),
+        body_units = tune(),
+        body_dropout = tune(),
+        fit_epochs = 5
+    ) |> set_engine("keras"),
+    grid = tibble(num_body = 3, body_units = 128, body_dropout = 0.2),
+    x = x,
+    y = y
 )
 
 dbg |> select(num_body, body_units, body_dropout, error)
 
 if (!is.null(dbg$compiled_model[[1]])) {
-  model <- dbg$compiled_model[[1]]
-  tibble(
-    n_features = ncol(x),
-    n_layers = length(model$layers),
-    n_params = model$count_params()
-  )
+    model <- dbg$compiled_model[[1]]
+    tibble(
+        n_features = ncol(x),
+        n_layers = length(model$layers),
+        n_params = model$count_params()
+    )
 
-  layer_tbl <- tibble(
-    layer = map_chr(model$layers, "name"),
-    class = map_chr(model$layers, ~ class(.x)[1])
-  ) |>
-    slice_head(n = 8)
-  layer_tbl
+    layer_tbl <- tibble(
+        layer = map_chr(model$layers, "name"),
+        class = map_chr(model$layers, ~ class(.x)[1])
+    ) |>
+        slice_head(n = 8)
+    layer_tbl
 }
 ```
 
 ::: {.notes}
-Goal: keep sanity during structural search.
-
 Say:
-- Confirm depth/width changes are really happening.
-
-Two extra helpers worth calling out:
-- `extract_valid_grid(dbg)` filters to the grid points that compiled successfully.
-- `inform_errors(dbg)` summarizes the most common compilation errors.
-
-Cleanup tip:
-- Use `remove_keras_spec("diamond_mlp")` when iterating interactively so you don’t leave lots of generated specs around.
+- `compile_keras_grid()` confirms depth/width changes are actually happening.
+- `extract_valid_grid()` keeps only successful builds; `inform_errors()` summarizes failures.
 
 Transition: Next: switch to a functional (graph) example.
 :::
-
 ---
 
 ## Workflow 2: Functional API (Branch/Merge)
@@ -1009,19 +959,14 @@ That’s the key to:
 - branch/merge architectures
 
 ::: {.notes}
-**Goal**: Demystify `inp_spec()`.
+Analogy: patch cables on a synthesizer. `inp_spec()` labels each cable.
 
-**The Analogy**: "Synthesizer Patch Cables"
-- If you've ever seen a modular synthesizer or a server patch panel, that's what `kerasnip` does here.
-- In Keras code, you assign variables: `x = layer(input)`.
-- In `kerasnip`, we need to describe that connection *declaratively*.
-- `inp_spec(block, "name")` is the label on the cable: "Plug the output of 'Tower A' into the input of 'Concat'".
+Say:
+- In Keras you assign variables (`x = layer(input)`). In kerasnip you declare connections by name.
+- `inp_spec(block, "name")` = "plug Tower A's output into Concat's input".
 
-**Technical Insight** (for the curious):
-- `inp_spec` uses metaprogramming to rewrite the function signature.
-- It maps the string "main_input" to the actual tensor object at build time.
+If stuck: "It's just labeling which output goes into which input."
 :::
-
 ---
 
 ## Functional Blocks (minimal) {.compact .code-compact}
@@ -1048,18 +993,12 @@ output_block <- function(tensor, num_classes) {
 ```
 
 ::: {.notes}
-**Goal**: Highlight the "Node" concept.
+Say:
+- In functional Keras, blocks receive tensors (not models). Input block takes `input_shape`; downstream blocks take the upstream tensor.
+- `inp_spec()` wires outputs to inputs by name; names must match exactly.
 
-**Explanation**:
-- In the **Functional API**, blocks aren't steps in a recipe; they are **Nodes in a Graph**.
-- Notice `input_block` takes `input_shape`, not `model`.
-- Notice `dense_block` takes `tensor`, not `model`.
-- Using pipes (`|>`) here is fine *inside* the block, but `kerasnip` manages the flow *between* blocks.
-
-**Caution**:
-- The names you use in `inp_spec` must match the names in your block list exactly.
+If stuck: "Functional = tensors flowing through a graph; sequential = layers stacking on a model."
 :::
-
 ---
 
 ## Build the graph (spec) {.compact .code-compact}
@@ -1124,39 +1063,23 @@ attr_wf <- workflow() |>
 ```
 
 ::: {.notes}
-Goal: re-anchor to tidymodels.
-
 Say:
-- This slide is intentionally “workflow first”.
-- If people only remember one thing: you still tune with `tune_grid()`.
-
-Classification-specific reminders:
-- Ensure the outcome is a factor and keep levels stable so dummy columns don’t drift.
-- Metrics like ROC AUC use class probabilities; confirm the workflow produces them.
+- Same workflow pattern: recipe + spec + workflow + tune_grid().
+- Ensure the outcome is a factor and levels are stable.
 
 Transition: Now: CV results and selection.
 :::
-
 ---
 
 ## Results (Attrition): CV — Table
 
 ::: {.notes}
-Goal: explain caching/repro quickly.
-
 Say:
-- Cache once, show consistently.
+- These are cross-validation estimates (mean + std_err). Select on CV, not on test.
+- Look for a stable region: good AUC with low sensitivity to tower sizes.
 
-- Render once (with `freeze: auto`) or run `Rscript presentations/madrid-2-2026/make_results.R`
-- It saves `presentations/madrid-2-2026/results/attrition_res.rds`
-
-Typical inspection:
-
-`collect_metrics()` → `show_best()` → `select_best()` → `finalize_workflow()` → `last_fit()`
-
-Transition: Now the table: pick a configuration.
+Transition: Let's look at the CV plot to see interactions.
 :::
-
 ```{r}
 #| label: attrition-results-cv-table
 #| echo: false
@@ -1166,34 +1089,29 @@ Transition: Now the table: pick a configuration.
 attrition_rds <- file.path("results", "attrition_res.rds")
 
 if (file.exists(attrition_rds)) {
-  attr_res <- readRDS(attrition_rds)
-  suppressPackageStartupMessages({
-    library(dplyr)
-    library(tune)
-  })
+    attr_res <- readRDS(attrition_rds)
+    suppressPackageStartupMessages({
+        library(dplyr)
+        library(tune)
+    })
 
-  best_tbl <- show_best(attr_res, metric = "roc_auc", n = 5)
-  best_tbl <- best_tbl |>
-    dplyr::select(tower_a_units, tower_b_units, mean, std_err) |>
-    dplyr::mutate(dplyr::across(where(is.numeric), ~ round(.x, 4)))
-  cat(knitr::kable(best_tbl, format = "html"), "\n\n")
+    best_tbl <- show_best(attr_res, metric = "roc_auc", n = 5)
+    best_tbl <- best_tbl |>
+        dplyr::select(tower_a_units, tower_b_units, mean, std_err) |>
+        dplyr::mutate(dplyr::across(where(is.numeric), ~ round(.x, 4)))
+    cat(knitr::kable(best_tbl, format = "html"), "\n\n")
 } else {
-  cat("No cached results found yet. Render once to compute them.\n")
+    cat("No cached results found yet. Render once to compute them.\n")
 }
 ```
 
 ::: {.notes}
-**Goal**: Interpret the results with nuance.
-
-**Key Insight**: "Stability vs. Performance"
-- Look at the `mean` (ROC AUC) but also the `std_err`.
-- **Flat Heatmap**: This is good! It means your architecture is robust. You can pick the cheaper/smaller model (fewer units) without losing accuracy.
-- **Sharp Peak**: This indicates sensitivity. You might have found a local optimum, but is it stable?
-
-**Decision**:
-- I usually pick the simplest architecture that is within 1 standard error of the best.
+Say:
+- Look at mean ROC AUC but also std_err.
+- Flat heatmap = robust architecture; pick the cheaper/smaller model.
+- Sharp peak = sensitive; might be a local optimum.
+- Rule of thumb: pick the simplest within 1 std_err of the best.
 :::
-
 ---
 
 ## Results (Attrition): CV — Plot
@@ -1206,22 +1124,22 @@ if (file.exists(attrition_rds)) {
 attrition_rds <- file.path("results", "attrition_res.rds")
 
 if (file.exists(attrition_rds)) {
-  attr_res <- readRDS(attrition_rds)
-  suppressPackageStartupMessages({
-    library(dplyr)
-    library(ggplot2)
-    library(tune)
-  })
+    attr_res <- readRDS(attrition_rds)
+    suppressPackageStartupMessages({
+        library(dplyr)
+        library(ggplot2)
+        library(tune)
+    })
 
-  p_heat <- collect_metrics(attr_res) |>
-    filter(.metric == "roc_auc") |>
-    ggplot(aes(x = factor(tower_a_units), y = factor(tower_b_units), fill = mean)) +
-    geom_tile() +
-    scale_fill_gradient(low = "#f0f1f2", high = "#BF281B") +
-    labs(x = "tower_a_units", y = "tower_b_units", fill = "mean roc_auc", title = "CV mean roc_auc")
-  print(p_heat)
+    p_heat <- collect_metrics(attr_res) |>
+        filter(.metric == "roc_auc") |>
+        ggplot(aes(x = factor(tower_a_units), y = factor(tower_b_units), fill = mean)) +
+        geom_tile() +
+        scale_fill_gradient(low = "#f0f1f2", high = "#BF281B") +
+        labs(x = "tower_a_units", y = "tower_b_units", fill = "mean roc_auc", title = "CV mean roc_auc")
+    print(p_heat)
 } else {
-  cat("No cached results found yet. Render once to compute them.\n")
+    cat("No cached results found yet. Render once to compute them.\n")
 }
 ```
 
@@ -1248,18 +1166,18 @@ Transition: Now: one-time test reporting.
 attrition_final_rds <- file.path("results", "attrition_final.rds")
 
 if (file.exists(attrition_final_rds)) {
-  suppressPackageStartupMessages({
-    library(dplyr)
-  })
+    suppressPackageStartupMessages({
+        library(dplyr)
+    })
 
-  final <- readRDS(attrition_final_rds)
+    final <- readRDS(attrition_final_rds)
 
-  metrics_tbl <- final$metrics |>
-    dplyr::select(.metric, .estimate) |>
-    dplyr::mutate(.estimate = round(.estimate, 4))
-  cat(knitr::kable(metrics_tbl, format = "html"), "\n\n")
+    metrics_tbl <- final$metrics |>
+        dplyr::select(.metric, .estimate) |>
+        dplyr::mutate(.estimate = round(.estimate, 4))
+    cat(knitr::kable(metrics_tbl, format = "html"), "\n\n")
 } else {
-  cat("No cached final results found yet.\n")
+    cat("No cached final results found yet.\n")
 }
 ```
 
@@ -1285,38 +1203,34 @@ Transition: Show ROC curve as a visual summary.
 attrition_final_rds <- file.path("results", "attrition_final.rds")
 
 if (file.exists(attrition_final_rds)) {
-  suppressPackageStartupMessages({
-    library(ggplot2)
-  })
+    suppressPackageStartupMessages({
+        library(ggplot2)
+    })
 
-  final <- readRDS(attrition_final_rds)
+    final <- readRDS(attrition_final_rds)
 
-  if (!is.null(final$roc)) {
-    p_roc <- ggplot(final$roc, aes(x = 1 - specificity, y = sensitivity)) +
-      geom_line(linewidth = 1) +
-      geom_abline(linetype = "dashed", alpha = 0.5) +
-      coord_equal() +
-      labs(x = "False positive rate", y = "True positive rate", title = "ROC curve (test set)")
-    print(p_roc)
-  } else {
-    cat("ROC curve not available.\n")
-  }
+    if (!is.null(final$roc)) {
+        p_roc <- ggplot(final$roc, aes(x = 1 - specificity, y = sensitivity)) +
+            geom_line(linewidth = 1) +
+            geom_abline(linetype = "dashed", alpha = 0.5) +
+            coord_equal() +
+            labs(x = "False positive rate", y = "True positive rate", title = "ROC curve (test set)")
+        print(p_roc)
+    } else {
+        cat("ROC curve not available.\n")
+    }
 } else {
-  cat("No cached final results found yet.\n")
+    cat("No cached final results found yet.\n")
 }
 ```
 
 ::: {.notes}
-Goal: interpret the ROC curve in one sentence.
-
 Say:
-- Think “capacity vs generalization”: bigger models may win on training but not on CV/test.
+- The further the curve from the diagonal, the better the discrimination.
 - When results are close, pick the simplest architecture within uncertainty.
-- Cache results so both language decks show the same tables/plots.
 
 Transition: Close with practical tips and failure modes.
 :::
-
 ---
 
 ## Practical Tips (so you don’t suffer)
@@ -1326,20 +1240,12 @@ Transition: Close with practical tips and failure modes.
 - Prefer a few meaningful tunables over 30 tiny ones
 
 ::: {.notes}
-Goal: give survival advice people can apply tomorrow.
-
 Say:
-- If something breaks in the functional graph, the error messages can be deep in Keras.
-- Reducing the graph to 2–3 blocks is the fastest debugging strategy.
+- If something breaks in a functional graph, reduce to 2-3 blocks to isolate the error.
+- Keep blocks small and testable; prefer a few meaningful tunables over many tiny ones.
 
-More “power user” tips to mention verbally:
-- If you need a different predictor format, consider `step_collapse()` to bundle predictors into a single list-column (useful for custom model interfaces).
-- For custom optimizers/losses/metrics, register them: `register_keras_optimizer()`, `register_keras_loss()`, `register_keras_metric()`.
-- Use the discovered Keras object lists (`keras_optimizers`, `keras_losses`, `keras_metrics`) to keep names valid across Keras versions.
-
-Transition: I’ll close with trade-offs and the roadmap.
+Transition: I'll close with trade-offs and the roadmap.
 :::
-
 ---
 
 ## Advantages & Limitations
@@ -1354,22 +1260,12 @@ Transition: I’ll close with trade-offs and the roadmap.
 -   **Custom Losses**: Integration requires some boilerplate for custom objects.
 
 ::: {.notes}
-Goal: be honest about trade-offs while keeping the pitch credible.
-
 Say:
-- The learning curve is “how to write good blocks”.
-- Once blocks exist, the workflow becomes familiar again.
-
-If someone asks “how do I evaluate / inspect the Keras object?”
-- `extract_keras_model()` returns the underlying Keras model.
-- `extract_keras_history()` returns training history.
-- `keras_evaluate()` can run evaluation on provided `x`/`y`.
-
-If asked about templates: the goal is to add helpers without turning the package into a model zoo.
+- The learning curve is writing good blocks; after that, the workflow is standard.
+- No pre-built blocks yet (e.g. ResNet50), but any Keras layer can be wrapped.
 
 Transition: Close with a short roadmap and invite questions.
 :::
-
 ---
 
 ## Roadmap
@@ -1404,22 +1300,14 @@ Transition: Stop sharing, take questions.
 Docs: [davidrsch.github.io/kerasnip](https://davidrsch.github.io/kerasnip/) · Repo: [github.com/davidrsch/kerasnip](https://github.com/davidrsch/kerasnip)
 
 ::: {.notes}
-**Objetivo**: Enganchar a la audiencia con el conflicto central "Aceite y Agua".
+Empezar con energia. Preguntar: "Quien ama tidymodels?" y "Quien pelea con Keras?"
 
-**Direcciones de Escena**:
-- Empezar con energía.
-- Pregunta: "¿Cuántos de vosotros amáis `tidymodels`?"
-- Pregunta: "¿Cuántos de vosotros os peleáis con arquitecturas de Keras?"
+Decir:
+- Keras y tidymodels son como aceite y agua; kerasnip es el emulsionante.
+- Hoy: resolver el problema del *ajuste de arquitectura*.
 
-**El Gancho**:
-- Keras y Tidymodels son como **Aceite y Agua**.
-- **Keras** es un constructor imperativo (escribes código para *hacer* cosas).
-- **Tidymodels** es una configuración declarativa (describes *qué* quieres).
-- `kerasnip` es el emulsionante que permite mezclarlos.
-
-**Mensaje Clave**: Hoy vamos a resolver el problema del *ajuste de arquitectura*.
+Si te bloqueas: "Keras construye libre; tidymodels ajusta sistematicamente. Los conectamos."
 :::
-
 ---
 
 ## Hoy
@@ -1431,21 +1319,12 @@ Docs: [davidrsch.github.io/kerasnip](https://davidrsch.github.io/kerasnip/) · R
 - Depuración y consejos prácticos
 
 ::: {.notes}
-Objetivo: orientar para que nadie se pierda.
+Decir:
+- Primera parte: secuencial + ajuste estructural + depuracion.
+- Segunda parte: grafos funcionales con `inp_spec()`.
 
-Qué decir:
-- Ritmo flexible; primero claridad.
-- Primera parte: secuencial + ajuste estructural (`num_{block}`) + depuración.
-- Segunda parte: grafos funcionales con `inp_spec()` con el mismo flujo de ajuste.
-
-También mencionar (muy rápido):
-- Depuración: `extract_valid_grid()`, `inform_errors()`.
-- Objetos Keras: `keras_optimizers`, `keras_losses`, `keras_metrics`, `optimizer_function()`, `loss_function_keras()`.
-- Ciclo de vida del spec: `model_exists()`, `remove_keras_spec()`, `get_model_env()`.
-
-Transición: Situamos Keras y tidymodels y nombramos la brecha.
+Transicion: Situamos Keras y tidymodels y nombramos la brecha.
 :::
-
 ---
 
 ## El Panorama
@@ -1471,17 +1350,14 @@ Transición: Situamos Keras y tidymodels y nombramos la brecha.
 **La brecha**: optimizar la topología (profundidad/ancho) con `tune_grid()` es difícil: `parsnip` espera un conjunto fijo de argumentos, mientras que Keras permite grafos arbitrarios.
 
 ::: {.notes}
-**Objetivo**: Anclar el modelo mental con la analogía "El Arquitecto vs. El Formulario".
+Analogia: Keras = mesa de arquitecto (papel en blanco); tidymodels = formulario con casillas fijas.
 
-**Analogía**:
-- **Keras** es una **Mesa de Arquitecto**. Tienes papel en blanco, reglas y lápices. Puedes dibujar *lo que sea* (una casa, un rascacielos).
-- **Tidymodels** es un **Formulario del Gobierno**. Te hace preguntas fijas: "¿Número de plantas?", "¿Color de las paredes?". Es fácil de procesar (ajustar), pero no puedes "rellenar un formulario" para inventar un nuevo tipo de edificio.
+Decir:
+- kerasnip convierte la *estructura del edificio* en casillas del formulario.
+- Defines los planos (bloques), el paquete expone los diales (profundidad, ancho).
 
-**La Solución**:
-- Necesitamos convertir la *estructura del edificio* en casillas del formulario.
-- Eso hace `kerasnip`: te deja definir los planos (bloques) y expone los "diales" (profundidad, ancho) como argumentos estándar.
+Si te bloqueas: "Keras dibuja libre; tidymodels rellena formularios. kerasnip adapta los formularios a los dibujos."
 :::
-
 ---
 
 ## El Problema (en una frase)
@@ -1595,21 +1471,12 @@ Transición: Siguiente: funciones mínimas que verás en los ejemplos.
 - `extract_parameter_set_dials()` (¿qué se puede ajustar?)
 
 ::: {.notes}
-Objetivo: bajar la ansiedad por “demasiadas funciones”.
+Decir:
+- No hay que memorizar; solo entender el rol de cada funcion.
+- Existen otros helpers (depuracion, evaluacion, limpieza) documentados en la web.
 
-Qué decir:
-- No hay que memorizar; solo entender el rol de cada función.
-
-Bonus: otras funciones útiles (no todas salen en el demo):
-- Depuración/compilación: `extract_valid_grid()` (filtra builds correctos), `inform_errors()` (resume errores típicos).
-- Evaluación e inspección: `extract_keras_model()`, `extract_keras_history()`, `keras_evaluate()`.
-- Descubrimiento de objetos Keras: `keras_optimizers`, `keras_losses`, `keras_metrics`.
-- Tuning seguro de nombres Keras: `optimizer_function()`, `loss_function_keras()`.
-- Limpieza: `model_exists()`, `remove_keras_spec()`, `get_model_env()`.
-
-Transición: Siguiente: convenciones de nombres, para que el código se lea solo.
+Transicion: Siguiente: convenciones de nombres.
 :::
-
 ---
 
 ## Convenciones de nombres (args autogenerados)
@@ -1659,16 +1526,15 @@ Transición: Empezamos con secuencial (más simple) y luego volvemos a funcional
 - Mantén el espacio de ajuste razonable (profundidad × ancho explota)
 
 ::: {.notes}
-Objetivo: prevenir los fallos más comunes.
+Decir:
+- Las recetas deben producir matrices numericas (dummy + normalize).
+- Empieza con un grid pequeno y confirma la estructura con `compile_keras_grid()`.
+- Manten el espacio de busqueda razonable; profundidad x ancho explota.
 
-Qué decir:
-- Esta diapositiva está aquí para ahorrarte dolores en el turno de preguntas.
-- Clasificación: asegúrate de que el outcome sea factor (convención tidymodels) y que la última capa/loss encaje en binaria vs multiclase.
-- Cada punto del grid es *construir + entrenar* un modelo nuevo; fija seeds si quieres comparaciones estables.
+Si te bloqueas: "Numerico, grid pequeno primero, revisa el build."
 
-Transición: Con estos guardarraíles, vamos al ejemplo secuencial.
+Transicion: Con estos guardarrailes, vamos al ejemplo secuencial.
 :::
-
 ---
 
 ## Flujo 1: API Secuencial (Regresión)
@@ -1707,22 +1573,14 @@ output_block <- function(model) {
 ```
 
 ::: {.notes}
-Objetivo: que se vea que los bloques son simples y reutilizables.
+Decir:
+- Los bloques son funciones normales de R; la firma define que sera ajustable.
+- Las repeticiones (via `num_body`) comparten hiperparametros a proposito.
 
-Qué decir:
-- Los bloques son funciones normales; la firma importa porque se transforma en argumentos del spec.
+Si te bloqueas: "Si quieres ajustarlo, hazlo argumento de la funcion."
 
-Buenas prácticas:
-- Mantén los bloques deterministas.
-- Usa valores por defecto razonables para que el modelo base funcione sin ajuste.
-
-Si preguntan “¿puedo tener parámetros distintos por capa?”
-- Las repeticiones comparten hiperparámetros a propósito.
-- Si quieres diferencias por capa, define varios bloques (`body1`, `body2`, …) en vez de repetir uno.
-
-Transición: Siguiente: generar el spec a partir de estos bloques.
+Transicion: Siguiente: generar el spec a partir de estos bloques.
 :::
-
 ---
 
 ## Generar el spec `parsnip`
@@ -1803,18 +1661,12 @@ wf <- workflow() |>
 ```
 
 ::: {.notes}
-Objetivo: reforzar la “paridad” con tidymodels.
+Decir:
+- El workflow se ve identico a cualquier otro modelo de tidymodels.
+- La complejidad Keras queda detras del spec parsnip.
 
-Qué decir:
-- El workflow se ve “normal”.
-- La complejidad Keras queda detrás del spec parsnip.
-
-Si hace falta una frase de “integración real”:
-- kerasnip gestiona la conversión receta → Keras mediante helpers internos como `process_x_sequential()` / `process_y_sequential()` y `generic_sequential_fit()`.
-
-Transición: Siguiente: definir rangos y lanzar `tune_grid()`.
+Transicion: Siguiente: definir rangos y lanzar `tune_grid()`.
 :::
-
 ---
 
 ## Grid de ajuste (incluye profundidad) {.compact .code-compact}
@@ -1855,20 +1707,20 @@ Transición: Ahora vemos resultados en CV y elegimos candidato antes de mirar el
 diamonds_rds <- file.path("results", "diamonds_res.rds")
 
 if (file.exists(diamonds_rds)) {
-  suppressPackageStartupMessages({
-    library(dplyr)
-    library(tidymodels)
-  })
+    suppressPackageStartupMessages({
+        library(dplyr)
+        library(tidymodels)
+    })
 
-  res <- readRDS(diamonds_rds)
+    res <- readRDS(diamonds_rds)
 
-  best_tbl <- show_best(res, metric = "rmse", n = 5)
-  best_tbl <- best_tbl |>
-    dplyr::select(num_body, body_units, body_dropout, mean, std_err) |>
-    dplyr::mutate(dplyr::across(where(is.numeric), ~ round(.x, 3)))
-  cat(knitr::kable(best_tbl, format = "html"), "\n\n")
+    best_tbl <- show_best(res, metric = "rmse", n = 5)
+    best_tbl <- best_tbl |>
+        dplyr::select(num_body, body_units, body_dropout, mean, std_err) |>
+        dplyr::mutate(dplyr::across(where(is.numeric), ~ round(.x, 3)))
+    cat(knitr::kable(best_tbl, format = "html"), "\n\n")
 } else {
-  cat("Todavía no hay resultados en caché. Renderiza una vez para calcularlos.\n")
+    cat("Todavía no hay resultados en caché. Renderiza una vez para calcularlos.\n")
 }
 ```
 
@@ -1893,29 +1745,29 @@ Transición: Veamos el gráfico para entender interacciones.
 diamonds_rds <- file.path("results", "diamonds_res.rds")
 
 if (file.exists(diamonds_rds)) {
-  suppressPackageStartupMessages({
-    library(dplyr)
-    library(ggplot2)
-    library(tidymodels)
-  })
+    suppressPackageStartupMessages({
+        library(dplyr)
+        library(ggplot2)
+        library(tidymodels)
+    })
 
-  res <- readRDS(diamonds_rds)
+    res <- readRDS(diamonds_rds)
 
-  p_trends <- collect_metrics(res) |>
-    filter(.metric == "rmse") |>
-    ggplot(aes(x = num_body, y = mean, color = factor(body_units), group = interaction(body_units, body_dropout))) +
-    geom_point() +
-    geom_line(alpha = 0.35) +
-    facet_wrap(~ body_dropout) +
-    labs(
-      x = "num_body (profundidad)",
-      y = "RMSE CV (media)",
-      color = "body_units",
-      title = "Tendencias en validación cruzada"
-    )
-  print(p_trends)
+    p_trends <- collect_metrics(res) |>
+        filter(.metric == "rmse") |>
+        ggplot(aes(x = num_body, y = mean, color = factor(body_units), group = interaction(body_units, body_dropout))) +
+        geom_point() +
+        geom_line(alpha = 0.35) +
+        facet_wrap(~body_dropout) +
+        labs(
+            x = "num_body (profundidad)",
+            y = "RMSE CV (media)",
+            color = "body_units",
+            title = "Tendencias en validación cruzada"
+        )
+    print(p_trends)
 } else {
-  cat("Todavía no hay resultados en caché. Renderiza una vez para calcularlos.\n")
+    cat("Todavía no hay resultados en caché. Renderiza una vez para calcularlos.\n")
 }
 ```
 
@@ -1941,18 +1793,18 @@ Transición: Ahora confirmamos una sola vez en el conjunto de test.
 diamonds_final_rds <- file.path("results", "diamonds_final.rds")
 
 if (file.exists(diamonds_final_rds)) {
-  suppressPackageStartupMessages({
-    library(dplyr)
-  })
+    suppressPackageStartupMessages({
+        library(dplyr)
+    })
 
-  final <- readRDS(diamonds_final_rds)
+    final <- readRDS(diamonds_final_rds)
 
-  metrics_tbl <- final$metrics |>
-    dplyr::select(.metric, .estimate) |>
-    dplyr::mutate(.estimate = round(.estimate, 4))
-  cat(knitr::kable(metrics_tbl, format = "html"), "\n\n")
+    metrics_tbl <- final$metrics |>
+        dplyr::select(.metric, .estimate) |>
+        dplyr::mutate(.estimate = round(.estimate, 4))
+    cat(knitr::kable(metrics_tbl, format = "html"), "\n\n")
 } else {
-  cat("Todavía no hay resultados finales en caché.\n")
+    cat("Todavía no hay resultados finales en caché.\n")
 }
 ```
 
@@ -1977,36 +1829,33 @@ Transición: Siguiente: una comprobación visual rápida en las predicciones de 
 diamonds_final_rds <- file.path("results", "diamonds_final.rds")
 
 if (file.exists(diamonds_final_rds)) {
-  suppressPackageStartupMessages({
-    library(ggplot2)
-  })
+    suppressPackageStartupMessages({
+        library(ggplot2)
+    })
 
-  final <- readRDS(diamonds_final_rds)
+    final <- readRDS(diamonds_final_rds)
 
-  p_test <- final$preds |>
-    ggplot(aes(x = price, y = .pred)) +
-    geom_point(alpha = 0.25) +
-    geom_abline(slope = 1, intercept = 0, linewidth = 0.8) +
-    coord_fixed() +
-    labs(x = "Valor real (price)", y = "Predicho", title = "Modelo final en test")
-  print(p_test)
+    p_test <- final$preds |>
+        ggplot(aes(x = price, y = .pred)) +
+        geom_point(alpha = 0.25) +
+        geom_abline(slope = 1, intercept = 0, linewidth = 0.8) +
+        coord_fixed() +
+        labs(x = "Valor real (price)", y = "Predicho", title = "Modelo final en test")
+    print(p_test)
 } else {
-  cat("Todavía no hay resultados finales en caché.\n")
+    cat("Todavía no hay resultados finales en caché.\n")
 }
 ```
 
 ::: {.notes}
-Objetivo: interpretar el modelo final sin llenar la diapositiva.
+Decir:
+- Puntos cerca de la diagonal = buenas predicciones; desviaciones sistematicas revelan sesgo.
+- Los diamantes caros suelen ser mas dificiles de predecir; revisa la dispersion ahi.
 
-Qué decir:
-- Mantén la diapositiva limpia: muestra solo resultados y comenta encima.
-- Reproducibilidad: Quarto `freeze: auto` ejecuta una vez y reutiliza la caché; manualmente, `Rscript presentations/madrid-2-2026/make_results.R` crea los mismos `.rds`.
-- Inspección típica: `collect_metrics(res)` → `show_best()` → `select_best()` → `finalize_workflow()` → `last_fit()`.
-- Nota práctica: para inspeccionar el objeto final, usa `extract_keras_model()` y `extract_keras_history()`.
+Si te bloqueas: "Diagonal ajustada = buen modelo; abanico = heterocedasticidad."
 
-Transición: Siguiente: cómo depurar/inspeccionar la arquitectura generada.
+Transicion: Siguiente: como depurar/inspeccionar la arquitectura generada.
 :::
-
 ---
 
 ## Depuración: “¿qué modelo se generó?” {.compact .table-compact}
@@ -2021,32 +1870,32 @@ Transición: Siguiente: cómo depurar/inspeccionar la arquitectura generada.
 #| message: false
 #| warning: false
 suppressPackageStartupMessages({
-  library(dplyr)
-  library(tibble)
-  library(purrr)
-  library(tidymodels)
-  library(kerasnip)
-  library(keras3)
+    library(dplyr)
+    library(tibble)
+    library(purrr)
+    library(tidymodels)
+    library(kerasnip)
+    library(keras3)
 })
 
 if (!exists("diamond_mlp", mode = "function") || !kerasnip::model_exists("diamond_mlp")) {
-  input_block <- function(model, input_shape) {
-    keras_model_sequential(input_shape = input_shape)
-  }
-  dense_block <- function(model, units = 128, dropout = 0.0) {
-    model |>
-      layer_dense(units = units, activation = "relu") |>
-      layer_dropout(rate = dropout)
-  }
-  output_block <- function(model) {
-    model |> layer_dense(units = 1)
-  }
+    input_block <- function(model, input_shape) {
+        keras_model_sequential(input_shape = input_shape)
+    }
+    dense_block <- function(model, units = 128, dropout = 0.0) {
+        model |>
+            layer_dense(units = units, activation = "relu") |>
+            layer_dropout(rate = dropout)
+    }
+    output_block <- function(model) {
+        model |> layer_dense(units = 1)
+    }
 
-  create_keras_sequential_spec(
-    model_name = "diamond_mlp",
-    layer_blocks = list(input = input_block, body = dense_block, output = output_block),
-    mode = "regression"
-  )
+    create_keras_sequential_spec(
+        model_name = "diamond_mlp",
+        layer_blocks = list(input = input_block, body = dense_block, output = output_block),
+        mode = "regression"
+    )
 }
 
 prep_rec <- prep(diamonds_rec, training = diamonds_train)
@@ -2055,48 +1904,43 @@ x <- juiced |> select(-price)
 y <- juiced$price
 
 dbg <- compile_keras_grid(
-  spec = diamond_mlp(
-    num_body = tune(),
-    body_units = tune(),
-    body_dropout = tune(),
-    fit_epochs = 5
-  ) |> set_engine("keras"),
-  grid = tibble(num_body = 3, body_units = 128, body_dropout = 0.2),
-  x = x,
-  y = y
+    spec = diamond_mlp(
+        num_body = tune(),
+        body_units = tune(),
+        body_dropout = tune(),
+        fit_epochs = 5
+    ) |> set_engine("keras"),
+    grid = tibble(num_body = 3, body_units = 128, body_dropout = 0.2),
+    x = x,
+    y = y
 )
 
 dbg |> select(num_body, body_units, body_dropout, error)
 
 if (!is.null(dbg$compiled_model[[1]])) {
-  model <- dbg$compiled_model[[1]]
-  tibble(
-    n_features = ncol(x),
-    n_layers = length(model$layers),
-    n_params = model$count_params()
-  )
+    model <- dbg$compiled_model[[1]]
+    tibble(
+        n_features = ncol(x),
+        n_layers = length(model$layers),
+        n_params = model$count_params()
+    )
 
-  layer_tbl <- tibble(
-    layer = map_chr(model$layers, "name"),
-    class = map_chr(model$layers, ~ class(.x)[1])
-  ) |>
-    slice_head(n = 8)
-  layer_tbl
+    layer_tbl <- tibble(
+        layer = map_chr(model$layers, "name"),
+        class = map_chr(model$layers, ~ class(.x)[1])
+    ) |>
+        slice_head(n = 8)
+    layer_tbl
 }
 ```
 
 ::: {.notes}
-Objetivo: mantener la cordura durante la búsqueda estructural.
+Decir:
+- `compile_keras_grid()` confirma que los cambios de estructura realmente ocurren.
+- `extract_valid_grid()` filtra builds correctos; `inform_errors()` resume errores comunes.
 
-Qué decir:
-- Esto confirma que la estructura cambia como esperamos.
-- `extract_valid_grid(dbg)` se queda solo con los puntos del grid que compilaron bien.
-- `inform_errors(dbg)` resume los errores de compilación más comunes.
-- En sesiones interactivas: `remove_keras_spec("diamond_mlp")` para no acumular specs generados.
-
-Transición: Siguiente: pasamos a un ejemplo funcional (grafo).
+Transicion: Siguiente: pasamos a un ejemplo funcional (grafo).
 :::
-
 ---
 
 ## Flujo 2: API Funcional (Ramificar/Unir)
@@ -2132,19 +1976,14 @@ Transición: `inp_spec()` es el mecanismo de cableado.
 - arquitecturas con ramas y uniones
 
 ::: {.notes}
-**Objetivo**: Desmitificar `inp_spec()`.
+Analogia: cables de sintetizador modular. `inp_spec()` etiqueta cada cable.
 
-**La Analogía**: "Cables de Sintetizador Modular"
-- Si habéis visto un sintetizador modular o un patch panel, eso es `kerasnip` aquí.
-- En código Keras normal, asignas variables: `x = capa(entrada)`.
-- En `kerasnip`, necesitamos describir esa conexión de forma *declarativa*.
-- `inp_spec(bloque, "nombre")` es la etiqueta en el cable: "Enchufa la salida de 'Torre A' en la entrada de 'Concat'".
+Decir:
+- En Keras asignas variables (`x = capa(entrada)`). En kerasnip declaras conexiones por nombre.
+- `inp_spec(bloque, "nombre")` = "enchufa la salida de Torre A en la entrada de Concat".
 
-**Detalle Técnico**:
-- Usamos metaprogramación para reescribir la firma de la función.
-- Mapeamos la cadena "main_input" al objeto tensor real en tiempo de construcción.
+Si te bloqueas: "Solo es etiquetar que salida va a que entrada."
 :::
-
 ---
 
 ## Bloques Funcionales (mínimos) {.compact .code-compact}
@@ -2171,16 +2010,12 @@ output_block <- function(tensor, num_classes) {
 ```
 
 ::: {.notes}
-Objetivo: evitar errores típicos de cableado.
+Decir:
+- En Keras funcional, los bloques reciben tensores (no modelos). El bloque de entrada recibe `input_shape`; los demas reciben el tensor upstream.
+- `inp_spec()` conecta salidas a entradas por nombre; los nombres deben coincidir exactamente.
 
-Qué decir:
-- Dos puntos de corrección (según la documentación de `kerasnip`): el bloque de entrada es `function(input_shape)` (sin argumento `model`) y los bloques posteriores reciben el tensor upstream como primer argumento.
-- `inp_spec()` es lo que nos permite cablear salidas a argumentos con nombre.
-- Error típico: los nombres usados en `inp_spec(..., "main_input")` tienen que coincidir exactamente con los nombres de bloque.
-
-Transición: Siguiente: generar el spec funcional.
+Si te bloqueas: "Funcional = tensores fluyendo por un grafo; secuencial = capas apiladas sobre un modelo."
 :::
-
 ---
 
 ## Construir el grafo (spec) {.compact .code-compact}
@@ -2241,32 +2076,23 @@ attr_wf <- workflow() |>
 ```
 
 ::: {.notes}
-Objetivo: re-anclar a tidymodels.
+Decir:
+- Mismo patron: receta + spec + workflow + tune_grid().
+- Asegurate de que el outcome sea factor y los niveles sean estables.
 
-Qué decir:
-- Workflow primero: al final, sigue siendo `tune_grid()`.
-- Asegúrate de que el outcome sea factor y de mantener niveles estables para que no “cambien” las columnas dummy.
-- Para ROC AUC, necesitas probabilidades de clase; comprueba que el flujo las produce.
-
-Transición: Ahora: resultados en CV y selección.
+Transicion: Ahora: resultados en CV y seleccion.
 :::
-
 ---
 
 ## Resultados (Rotación): CV — Tabla
 
 ::: {.notes}
-Objetivo: elegir 1–2 candidatos (sin leer toda la tabla).
+Decir:
+- Son estimaciones de validacion cruzada (media + error estandar). Se selecciona con CV, no con el test.
+- Busca una zona estable: buena AUC y poca sensibilidad al tamano de las torres.
 
-Qué decir:
-- Son estimaciones de validación cruzada (media + error estándar). Se selecciona con CV, no con el test.
-- Busca una zona “estable”: buena AUC y poca sensibilidad al tamaño de las torres.
-- Repro: renderiza una vez (con `freeze: auto`) o ejecuta `Rscript presentations/madrid-2-2026/make_results.R`; se guarda `presentations/madrid-2-2026/results/attrition_res.rds`.
-- Inspección típica: `collect_metrics()` → `show_best()` → `select_best()` → `finalize_workflow()` → `last_fit()`.
-
-Transición: Ahora el mapa de calor para ver sensibilidad/interacciones.
+Transicion: Ahora el mapa de calor para ver sensibilidad.
 :::
-
 ```{r}
 #| label: attrition-results-cv-table-es
 #| echo: false
@@ -2276,19 +2102,19 @@ Transición: Ahora el mapa de calor para ver sensibilidad/interacciones.
 attrition_rds <- file.path("results", "attrition_res.rds")
 
 if (file.exists(attrition_rds)) {
-  attr_res <- readRDS(attrition_rds)
-  suppressPackageStartupMessages({
-    library(dplyr)
-    library(tune)
-  })
+    attr_res <- readRDS(attrition_rds)
+    suppressPackageStartupMessages({
+        library(dplyr)
+        library(tune)
+    })
 
-  best_tbl <- show_best(attr_res, metric = "roc_auc", n = 5)
-  best_tbl <- best_tbl |>
-    dplyr::select(tower_a_units, tower_b_units, mean, std_err) |>
-    dplyr::mutate(dplyr::across(where(is.numeric), ~ round(.x, 4)))
-  cat(knitr::kable(best_tbl, format = "html"), "\n\n")
+    best_tbl <- show_best(attr_res, metric = "roc_auc", n = 5)
+    best_tbl <- best_tbl |>
+        dplyr::select(tower_a_units, tower_b_units, mean, std_err) |>
+        dplyr::mutate(dplyr::across(where(is.numeric), ~ round(.x, 4)))
+    cat(knitr::kable(best_tbl, format = "html"), "\n\n")
 } else {
-  cat("Todavía no hay resultados en caché. Renderiza una vez para calcularlos.\n")
+    cat("Todavía no hay resultados en caché. Renderiza una vez para calcularlos.\n")
 }
 ```
 
@@ -2304,22 +2130,22 @@ if (file.exists(attrition_rds)) {
 attrition_rds <- file.path("results", "attrition_res.rds")
 
 if (file.exists(attrition_rds)) {
-  attr_res <- readRDS(attrition_rds)
-  suppressPackageStartupMessages({
-    library(dplyr)
-    library(ggplot2)
-    library(tune)
-  })
+    attr_res <- readRDS(attrition_rds)
+    suppressPackageStartupMessages({
+        library(dplyr)
+        library(ggplot2)
+        library(tune)
+    })
 
-  p_heat <- collect_metrics(attr_res) |>
-    filter(.metric == "roc_auc") |>
-    ggplot(aes(x = factor(tower_a_units), y = factor(tower_b_units), fill = mean)) +
-    geom_tile() +
-    scale_fill_gradient(low = "#f0f1f2", high = "#BF281B") +
-    labs(x = "tower_a_units", y = "tower_b_units", fill = "media roc_auc", title = "Media roc_auc (CV)")
-  print(p_heat)
+    p_heat <- collect_metrics(attr_res) |>
+        filter(.metric == "roc_auc") |>
+        ggplot(aes(x = factor(tower_a_units), y = factor(tower_b_units), fill = mean)) +
+        geom_tile() +
+        scale_fill_gradient(low = "#f0f1f2", high = "#BF281B") +
+        labs(x = "tower_a_units", y = "tower_b_units", fill = "media roc_auc", title = "Media roc_auc (CV)")
+    print(p_heat)
 } else {
-  cat("Todavía no hay resultados en caché. Renderiza una vez para calcularlos.\n")
+    cat("Todavía no hay resultados en caché. Renderiza una vez para calcularlos.\n")
 }
 ```
 
@@ -2345,18 +2171,18 @@ Transición: Siguiente: reportamos una sola vez en test.
 attrition_final_rds <- file.path("results", "attrition_final.rds")
 
 if (file.exists(attrition_final_rds)) {
-  suppressPackageStartupMessages({
-    library(dplyr)
-  })
+    suppressPackageStartupMessages({
+        library(dplyr)
+    })
 
-  final <- readRDS(attrition_final_rds)
+    final <- readRDS(attrition_final_rds)
 
-  metrics_tbl <- final$metrics |>
-    dplyr::select(.metric, .estimate) |>
-    dplyr::mutate(.estimate = round(.estimate, 4))
-  cat(knitr::kable(metrics_tbl, format = "html"), "\n\n")
+    metrics_tbl <- final$metrics |>
+        dplyr::select(.metric, .estimate) |>
+        dplyr::mutate(.estimate = round(.estimate, 4))
+    cat(knitr::kable(metrics_tbl, format = "html"), "\n\n")
 } else {
-  cat("Todavía no hay resultados finales en caché.\n")
+    cat("Todavía no hay resultados finales en caché.\n")
 }
 ```
 
@@ -2381,39 +2207,34 @@ Transición: Siguiente: una curva ROC como resumen visual.
 attrition_final_rds <- file.path("results", "attrition_final.rds")
 
 if (file.exists(attrition_final_rds)) {
-  suppressPackageStartupMessages({
-    library(ggplot2)
-  })
+    suppressPackageStartupMessages({
+        library(ggplot2)
+    })
 
-  final <- readRDS(attrition_final_rds)
+    final <- readRDS(attrition_final_rds)
 
-  if (!is.null(final$roc)) {
-    p_roc <- ggplot(final$roc, aes(x = 1 - specificity, y = sensitivity)) +
-      geom_line(linewidth = 1) +
-      geom_abline(linetype = "dashed", alpha = 0.5) +
-      coord_equal() +
-      labs(x = "Tasa falsos positivos", y = "Tasa verdaderos positivos", title = "Curva ROC (test)")
-    print(p_roc)
-  } else {
-    cat("No hay curva ROC disponible.\n")
-  }
+    if (!is.null(final$roc)) {
+        p_roc <- ggplot(final$roc, aes(x = 1 - specificity, y = sensitivity)) +
+            geom_line(linewidth = 1) +
+            geom_abline(linetype = "dashed", alpha = 0.5) +
+            coord_equal() +
+            labs(x = "Tasa falsos positivos", y = "Tasa verdaderos positivos", title = "Curva ROC (test)")
+        print(p_roc)
+    } else {
+        cat("No hay curva ROC disponible.\n")
+    }
 } else {
-  cat("Todavía no hay resultados finales en caché.\n")
+    cat("Todavía no hay resultados finales en caché.\n")
 }
 ```
 
 ::: {.notes}
-Objetivo: una intuición visual de “qué tan bien separa” el modelo.
+Decir:
+- Cuanto mas lejos de la diagonal, mejor la discriminacion.
+- Si los resultados son parecidos, elige la arquitectura mas simple dentro de la incertidumbre.
 
-Interpretación rápida:
-- Piensa en “capacidad vs generalización”: modelos más grandes pueden ganar en entrenamiento, pero no necesariamente en CV/test.
-- Si los resultados son parecidos, elige la arquitectura más simple dentro de la incertidumbre.
-
-Y recordatorio de reproducibilidad:
-- Al guardar resultados en caché, ambas versiones (EN/ES) muestran las mismas tablas y gráficos.
-Transición: Cerramos con consejos prácticos para no sufrir.
+Transicion: Cerramos con consejos practicos.
 :::
-
 ---
 
 ## Consejos Prácticos
@@ -2423,17 +2244,12 @@ Transición: Cerramos con consejos prácticos para no sufrir.
 - Pocos hiperparámetros importantes > muchos microajustes
 
 ::: {.notes}
-Objetivo: dar consejos que eviten sufrimiento mañana.
+Decir:
+- Si algo falla en el grafo funcional, reduce a 2-3 bloques para aislar el error.
+- Bloques pequenos y testeables; pocos hiperparametros importantes.
 
-Qué decir:
-- Si algo falla en el grafo funcional, reduce a 2–3 bloques para aislar el error.
-- Si necesitas un formato distinto de predictores, considera `step_collapse()` para agrupar predictores en una única columna tipo lista.
-- Para optimizadores/losses/métricas custom: `register_keras_optimizer()`, `register_keras_loss()`, `register_keras_metric()`.
-- Para evitar nombres inválidos según tu versión de Keras: usa `keras_optimizers`, `keras_losses`, `keras_metrics`.
-
-Transición: Cierro con ventajas/limitaciones y hoja de ruta.
+Transicion: Cierro con ventajas/limitaciones y hoja de ruta.
 :::
-
 ---
 
 ## Ventajas y Limitaciones
@@ -2448,22 +2264,12 @@ Transición: Cierro con ventajas/limitaciones y hoja de ruta.
 -   **Funciones de pérdida**: una integración profunda de pérdidas personalizadas requiere algo de código repetitivo.
 
 ::: {.notes}
-Objetivo: ser honesto con los límites sin “pinchar” la propuesta.
+Decir:
+- El trabajo esta en definir buenos bloques; despues, el flujo es familiar.
+- No hay bloques preconstruidos (ej. ResNet50), pero cualquier capa Keras se puede envolver.
 
-Qué decir:
-- El trabajo está en definir buenos bloques.
-- Después, el flujo vuelve a ser familiar.
-
-Si alguien pregunta por evaluación/inspección del modelo:
-- `extract_keras_model()` devuelve el modelo Keras subyacente.
-- `extract_keras_history()` devuelve el historial de entrenamiento.
-- `keras_evaluate()` permite evaluar con `x`/`y`.
-
-Sobre plantillas: la idea es añadir helpers sin convertir el paquete en un “model zoo”.
-
-Transición: Terminamos con hoja de ruta y abrimos preguntas.
+Transicion: Terminamos con hoja de ruta y abrimos preguntas.
 :::
-
 ---
 
 ## Hoja de Ruta
