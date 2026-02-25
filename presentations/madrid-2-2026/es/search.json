@@ -4,21 +4,21 @@
     "href": "index.html#kerasnip-un-puente-entre-keras-y-tidymodels",
     "title": "",
     "section": "kerasnip: Un Puente entre ‘keras’ y ‘tidymodels’",
-    "text": "kerasnip: Un Puente entre ‘keras’ y ‘tidymodels’\nGrupo de Usuarios de R de Madrid | Febrero 2026\nkerasnip v0.1.0.900\nDocs: davidrsch.github.io/kerasnip · Repo: github.com/davidrsch/kerasnip\n\nObjetivo: Enganchar a la audiencia con el conflicto central “Aceite y Agua”.\nDirecciones de Escena: - Empezar con energía. - Pregunta: “¿Cuántos de vosotros amáis tidymodels?” - Pregunta: “¿Cuántos de vosotros os peleáis con arquitecturas de Keras?”\nEl Gancho: - Keras y Tidymodels son como Aceite y Agua. - Keras es un constructor imperativo (escribes código para hacer cosas). - Tidymodels es una configuración declarativa (describes qué quieres). - kerasnip es el emulsionante que permite mezclarlos.\nMensaje Clave: Hoy vamos a resolver el problema del ajuste de arquitectura."
+    "text": "kerasnip: Un Puente entre ‘keras’ y ‘tidymodels’\nGrupo de Usuarios de R de Madrid | Febrero 2026\nkerasnip v0.1.0.900\nDocs: davidrsch.github.io/kerasnip · Repo: github.com/davidrsch/kerasnip\n\nEmpezar con energia. Preguntar: “Quien ama tidymodels?” y “Quien pelea con Keras?”\nDecir: - Keras y tidymodels son como aceite y agua; kerasnip es el emulsionante. - Hoy: resolver el problema del ajuste de arquitectura.\nSi te bloqueas: “Keras construye libre; tidymodels ajusta sistematicamente. Los conectamos.”"
   },
   {
     "objectID": "index.html#hoy",
     "href": "index.html#hoy",
     "title": "",
     "section": "Hoy",
-    "text": "Hoy\n\nPor qué es difícil ajustar modelos Keras dentro de tidymodels\nQué genera kerasnip (y por qué importa)\nFlujo secuencial: ajuste estructural con num_{block}\nFlujo funcional: grafos con ramas y uniones con inp_spec()\nDepuración y consejos prácticos\n\n\nObjetivo: orientar para que nadie se pierda.\nQué decir: - Ritmo flexible; primero claridad. - Primera parte: secuencial + ajuste estructural (num_{block}) + depuración. - Segunda parte: grafos funcionales con inp_spec() con el mismo flujo de ajuste.\nTambién mencionar (muy rápido): - Depuración: extract_valid_grid(), inform_errors(). - Objetos Keras: keras_optimizers, keras_losses, keras_metrics, optimizer_function(), loss_function_keras(). - Ciclo de vida del spec: model_exists(), remove_keras_spec(), get_model_env().\nTransición: Situamos Keras y tidymodels y nombramos la brecha."
+    "text": "Hoy\n\nPor qué es difícil ajustar modelos Keras dentro de tidymodels\nQué genera kerasnip (y por qué importa)\nFlujo secuencial: ajuste estructural con num_{block}\nFlujo funcional: grafos con ramas y uniones con inp_spec()\nDepuración y consejos prácticos\n\n\nDecir: - Primera parte: secuencial + ajuste estructural + depuracion. - Segunda parte: grafos funcionales con inp_spec().\nTransicion: Situamos Keras y tidymodels y nombramos la brecha."
   },
   {
     "objectID": "index.html#el-panorama",
     "href": "index.html#el-panorama",
     "title": "",
     "section": "El Panorama",
-    "text": "El Panorama\n\n\n🧱 Keras (vía keras3)\n\nAprendizaje profundo\nPensado para tensores\nAgnóstico al backend (TF, JAX, Torch)\nGrafos arbitrarios de capas\n\n\n🧹 tidymodels\n\nAprendizaje automático\nPensado para data frames\nInterfaz unificada (fit, predict)\nAjuste de hiperparámetros, de forma estandarizada\n\n\nLa brecha: optimizar la topología (profundidad/ancho) con tune_grid() es difícil: parsnip espera un conjunto fijo de argumentos, mientras que Keras permite grafos arbitrarios.\n\nObjetivo: Anclar el modelo mental con la analogía “El Arquitecto vs. El Formulario”.\nAnalogía: - Keras es una Mesa de Arquitecto. Tienes papel en blanco, reglas y lápices. Puedes dibujar lo que sea (una casa, un rascacielos). - Tidymodels es un Formulario del Gobierno. Te hace preguntas fijas: “¿Número de plantas?”, “¿Color de las paredes?”. Es fácil de procesar (ajustar), pero no puedes “rellenar un formulario” para inventar un nuevo tipo de edificio.\nLa Solución: - Necesitamos convertir la estructura del edificio en casillas del formulario. - Eso hace kerasnip: te deja definir los planos (bloques) y expone los “diales” (profundidad, ancho) como argumentos estándar."
+    "text": "El Panorama\n\n\n🧱 Keras (vía keras3)\n\nAprendizaje profundo\nPensado para tensores\nAgnóstico al backend (TF, JAX, Torch)\nGrafos arbitrarios de capas\n\n\n🧹 tidymodels\n\nAprendizaje automático\nPensado para data frames\nInterfaz unificada (fit, predict)\nAjuste de hiperparámetros, de forma estandarizada\n\n\nLa brecha: optimizar la topología (profundidad/ancho) con tune_grid() es difícil: parsnip espera un conjunto fijo de argumentos, mientras que Keras permite grafos arbitrarios.\n\nAnalogia: Keras = mesa de arquitecto (papel en blanco); tidymodels = formulario con casillas fijas.\nDecir: - kerasnip convierte la estructura del edificio en casillas del formulario. - Defines los planos (bloques), el paquete expone los diales (profundidad, ancho).\nSi te bloqueas: “Keras dibuja libre; tidymodels rellena formularios. kerasnip adapta los formularios a los dibujos.”"
   },
   {
     "objectID": "index.html#el-problema-en-una-frase",
@@ -53,7 +53,7 @@
     "href": "index.html#funciones-clave",
     "title": "",
     "section": "Funciones Clave",
-    "text": "Funciones Clave\n\ncreate_keras_sequential_spec()\ncreate_keras_functional_spec()\ninp_spec() (conexiones funcionales)\ncompile_keras_grid() (inspección/depuración)\nextract_parameter_set_dials() (¿qué se puede ajustar?)\n\n\nObjetivo: bajar la ansiedad por “demasiadas funciones”.\nQué decir: - No hay que memorizar; solo entender el rol de cada función.\nBonus: otras funciones útiles (no todas salen en el demo): - Depuración/compilación: extract_valid_grid() (filtra builds correctos), inform_errors() (resume errores típicos). - Evaluación e inspección: extract_keras_model(), extract_keras_history(), keras_evaluate(). - Descubrimiento de objetos Keras: keras_optimizers, keras_losses, keras_metrics. - Tuning seguro de nombres Keras: optimizer_function(), loss_function_keras(). - Limpieza: model_exists(), remove_keras_spec(), get_model_env().\nTransición: Siguiente: convenciones de nombres, para que el código se lea solo."
+    "text": "Funciones Clave\n\ncreate_keras_sequential_spec()\ncreate_keras_functional_spec()\ninp_spec() (conexiones funcionales)\ncompile_keras_grid() (inspección/depuración)\nextract_parameter_set_dials() (¿qué se puede ajustar?)\n\n\nDecir: - No hay que memorizar; solo entender el rol de cada funcion. - Existen otros helpers (depuracion, evaluacion, limpieza) documentados en la web.\nTransicion: Siguiente: convenciones de nombres."
   },
   {
     "objectID": "index.html#convenciones-de-nombres-args-autogenerados",
@@ -74,7 +74,7 @@
     "href": "index.html#errores-comunes",
     "title": "",
     "section": "Errores Comunes",
-    "text": "Errores Comunes\n\nAsegúrate de que la receta produzca matrices numéricas (dummy + normalize)\nEmpieza con un grid pequeño y confirma la estructura con compile_keras_grid()\nMantén el espacio de ajuste razonable (profundidad × ancho explota)\n\n\nObjetivo: prevenir los fallos más comunes.\nQué decir: - Esta diapositiva está aquí para ahorrarte dolores en el turno de preguntas. - Clasificación: asegúrate de que el outcome sea factor (convención tidymodels) y que la última capa/loss encaje en binaria vs multiclase. - Cada punto del grid es construir + entrenar un modelo nuevo; fija seeds si quieres comparaciones estables.\nTransición: Con estos guardarraíles, vamos al ejemplo secuencial."
+    "text": "Errores Comunes\n\nAsegúrate de que la receta produzca matrices numéricas (dummy + normalize)\nEmpieza con un grid pequeño y confirma la estructura con compile_keras_grid()\nMantén el espacio de ajuste razonable (profundidad × ancho explota)\n\n\nDecir: - Las recetas deben producir matrices numericas (dummy + normalize). - Empieza con un grid pequeno y confirma la estructura con compile_keras_grid(). - Manten el espacio de busqueda razonable; profundidad x ancho explota.\nSi te bloqueas: “Numerico, grid pequeno primero, revisa el build.”\nTransicion: Con estos guardarrailes, vamos al ejemplo secuencial."
   },
   {
     "objectID": "index.html#flujo-1-api-secuencial-regresión",
@@ -88,7 +88,7 @@
     "href": "index.html#bloques-secuenciales-mínimos",
     "title": "",
     "section": "Bloques Secuenciales (mínimos)",
-    "text": "Bloques Secuenciales (mínimos)\ninput_block &lt;- function(model, input_shape) {\n  keras_model_sequential(input_shape = input_shape)\n}\n\ndense_block &lt;- function(model, units = 128, dropout = 0.0) {\n  model |&gt;\n    layer_dense(units = units, activation = \"relu\") |&gt;\n    layer_dropout(rate = dropout)\n}\n\noutput_block &lt;- function(model) {\n  model |&gt; layer_dense(units = 1)\n}\n\nObjetivo: que se vea que los bloques son simples y reutilizables.\nQué decir: - Los bloques son funciones normales; la firma importa porque se transforma en argumentos del spec.\nBuenas prácticas: - Mantén los bloques deterministas. - Usa valores por defecto razonables para que el modelo base funcione sin ajuste.\nSi preguntan “¿puedo tener parámetros distintos por capa?” - Las repeticiones comparten hiperparámetros a propósito. - Si quieres diferencias por capa, define varios bloques (body1, body2, …) en vez de repetir uno.\nTransición: Siguiente: generar el spec a partir de estos bloques."
+    "text": "Bloques Secuenciales (mínimos)\ninput_block &lt;- function(model, input_shape) {\n  keras_model_sequential(input_shape = input_shape)\n}\n\ndense_block &lt;- function(model, units = 128, dropout = 0.0) {\n  model |&gt;\n    layer_dense(units = units, activation = \"relu\") |&gt;\n    layer_dropout(rate = dropout)\n}\n\noutput_block &lt;- function(model) {\n  model |&gt; layer_dense(units = 1)\n}\n\nDecir: - Los bloques son funciones normales de R; la firma define que sera ajustable. - Las repeticiones (via num_body) comparten hiperparametros a proposito.\nSi te bloqueas: “Si quieres ajustarlo, hazlo argumento de la funcion.”\nTransicion: Siguiente: generar el spec a partir de estos bloques."
   },
   {
     "objectID": "index.html#generar-el-spec-parsnip",
@@ -109,7 +109,7 @@
     "href": "index.html#diamonds-workflow-tidymodels",
     "title": "",
     "section": "Diamonds + Workflow Tidymodels",
-    "text": "Diamonds + Workflow Tidymodels\nlibrary(tidymodels)\nlibrary(kerasnip)\n\ndata(diamonds, package = \"ggplot2\")\n\ndiamonds_split &lt;- initial_split(diamonds, strata = price)\ndiamonds_train &lt;- training(diamonds_split)\n\ndiamonds_rec &lt;- recipe(price ~ ., data = diamonds_train) |&gt;\n  step_dummy(all_nominal_predictors()) |&gt;\n  step_zv(all_predictors()) |&gt;\n  step_normalize(all_numeric_predictors())\n\nwf &lt;- workflow() |&gt;\n  add_recipe(diamonds_rec) |&gt;\n  add_model(spec)\n\nObjetivo: reforzar la “paridad” con tidymodels.\nQué decir: - El workflow se ve “normal”. - La complejidad Keras queda detrás del spec parsnip.\nSi hace falta una frase de “integración real”: - kerasnip gestiona la conversión receta → Keras mediante helpers internos como process_x_sequential() / process_y_sequential() y generic_sequential_fit().\nTransición: Siguiente: definir rangos y lanzar tune_grid()."
+    "text": "Diamonds + Workflow Tidymodels\nlibrary(tidymodels)\nlibrary(kerasnip)\n\ndata(diamonds, package = \"ggplot2\")\n\ndiamonds_split &lt;- initial_split(diamonds, strata = price)\ndiamonds_train &lt;- training(diamonds_split)\n\ndiamonds_rec &lt;- recipe(price ~ ., data = diamonds_train) |&gt;\n  step_dummy(all_nominal_predictors()) |&gt;\n  step_zv(all_predictors()) |&gt;\n  step_normalize(all_numeric_predictors())\n\nwf &lt;- workflow() |&gt;\n  add_recipe(diamonds_rec) |&gt;\n  add_model(spec)\n\nDecir: - El workflow se ve identico a cualquier otro modelo de tidymodels. - La complejidad Keras queda detras del spec parsnip.\nTransicion: Siguiente: definir rangos y lanzar tune_grid()."
   },
   {
     "objectID": "index.html#grid-de-ajuste-incluye-profundidad",
@@ -123,7 +123,7 @@
     "href": "index.html#resultados-diamantes-cv-tabla",
     "title": "",
     "section": "Resultados (Diamantes): CV — Tabla",
-    "text": "Resultados (Diamantes): CV — Tabla\n\n\n\n\nnum_body\n\n\nbody_units\n\n\nbody_dropout\n\n\nmean\n\n\nstd_err\n\n\n\n\n\n\n2\n\n\n49\n\n\n0.030\n\n\n785.572\n\n\n71.554\n\n\n\n\n2\n\n\n35\n\n\n0.180\n\n\n791.711\n\n\n40.245\n\n\n\n\n2\n\n\n98\n\n\n0.121\n\n\n794.936\n\n\n54.108\n\n\n\n\n2\n\n\n62\n\n\n0.060\n\n\n804.091\n\n\n57.338\n\n\n\n\n3\n\n\n69\n\n\n0.246\n\n\n835.431\n\n\n50.148\n\n\n\n\n\nObjetivo: elegir 1–2 candidatos (no leer toda la tabla).\nQué decir: - Son estimaciones de validación cruzada (media + error estándar). Se selecciona con CV, no con el test. - Busca una zona “estable”: buen RMSE medio y poca sensibilidad a profundidad/dropout. Transición: Veamos el gráfico para entender interacciones."
+    "text": "Resultados (Diamantes): CV — Tabla\n\n\n\n\nnum_body\n\n\nbody_units\n\n\nbody_dropout\n\n\nmean\n\n\nstd_err\n\n\n\n\n\n\n2\n\n\n49\n\n\n0.030\n\n\n778.690\n\n\n52.560\n\n\n\n\n2\n\n\n35\n\n\n0.180\n\n\n780.551\n\n\n46.298\n\n\n\n\n2\n\n\n98\n\n\n0.121\n\n\n782.132\n\n\n68.089\n\n\n\n\n2\n\n\n62\n\n\n0.060\n\n\n786.207\n\n\n67.648\n\n\n\n\n3\n\n\n69\n\n\n0.246\n\n\n827.485\n\n\n72.059\n\n\n\n\n\nObjetivo: elegir 1–2 candidatos (no leer toda la tabla).\nQué decir: - Son estimaciones de validación cruzada (media + error estándar). Se selecciona con CV, no con el test. - Busca una zona “estable”: buen RMSE medio y poca sensibilidad a profundidad/dropout. Transición: Veamos el gráfico para entender interacciones."
   },
   {
     "objectID": "index.html#resultados-diamantes-cv-gráfico",
@@ -137,21 +137,21 @@
     "href": "index.html#resultados-diamantes-test-tabla",
     "title": "",
     "section": "Resultados (Diamantes): Test — Tabla",
-    "text": "Resultados (Diamantes): Test — Tabla\n\n\n\n\n.metric\n\n\n.estimate\n\n\n\n\n\n\nrmse\n\n\n731.0865\n\n\n\n\nmae\n\n\n343.9417\n\n\n\n\nrsq\n\n\n0.9671\n\n\n\n\n\nObjetivo: confirmación final una sola vez.\nQué decir: - El test es para reportar, no para decidir hiperparámetros. - Si el test empeora mucho respecto a CV, sospecha inestabilidad o leakage. Transición: Siguiente: una comprobación visual rápida en las predicciones de test."
+    "text": "Resultados (Diamantes): Test — Tabla\n\n\n\n\n.metric\n\n\n.estimate\n\n\n\n\n\n\nrmse\n\n\n727.2212\n\n\n\n\nmae\n\n\n360.1882\n\n\n\n\nrsq\n\n\n0.9667\n\n\n\n\n\nObjetivo: confirmación final una sola vez.\nQué decir: - El test es para reportar, no para decidir hiperparámetros. - Si el test empeora mucho respecto a CV, sospecha inestabilidad o leakage. Transición: Siguiente: una comprobación visual rápida en las predicciones de test."
   },
   {
     "objectID": "index.html#resultados-diamantes-test-gráfico",
     "href": "index.html#resultados-diamantes-test-gráfico",
     "title": "",
     "section": "Resultados (Diamantes): Test — Gráfico",
-    "text": "Resultados (Diamantes): Test — Gráfico\n\n\nObjetivo: interpretar el modelo final sin llenar la diapositiva.\nQué decir: - Mantén la diapositiva limpia: muestra solo resultados y comenta encima. - Reproducibilidad: Quarto freeze: auto ejecuta una vez y reutiliza la caché; manualmente, Rscript presentations/madrid-2-2026/make_results.R crea los mismos .rds. - Inspección típica: collect_metrics(res) → show_best() → select_best() → finalize_workflow() → last_fit(). - Nota práctica: para inspeccionar el objeto final, usa extract_keras_model() y extract_keras_history().\nTransición: Siguiente: cómo depurar/inspeccionar la arquitectura generada."
+    "text": "Resultados (Diamantes): Test — Gráfico\n\n\nDecir: - Puntos cerca de la diagonal = buenas predicciones; desviaciones sistematicas revelan sesgo. - Los diamantes caros suelen ser mas dificiles de predecir; revisa la dispersion ahi.\nSi te bloqueas: “Diagonal ajustada = buen modelo; abanico = heterocedasticidad.”\nTransicion: Siguiente: como depurar/inspeccionar la arquitectura generada."
   },
   {
     "objectID": "index.html#depuración-qué-modelo-se-generó",
     "href": "index.html#depuración-qué-modelo-se-generó",
     "title": "",
     "section": "Depuración: “¿qué modelo se generó?”",
-    "text": "Depuración: “¿qué modelo se generó?”\n# compile_keras_grid(spec, grid, x, y)\n\n\n# A tibble: 1 × 4\n  num_body body_units body_dropout error\n     &lt;dbl&gt;      &lt;dbl&gt;        &lt;dbl&gt; &lt;chr&gt;\n1        3        128          0.2 &lt;NA&gt; \n\n\n# A tibble: 7 × 2\n  layer       class                                          \n  &lt;chr&gt;       &lt;chr&gt;                                          \n1 dense_154   keras.src.layers.core.dense.Dense              \n2 dropout_103 keras.src.layers.regularization.dropout.Dropout\n3 dense_155   keras.src.layers.core.dense.Dense              \n4 dropout_104 keras.src.layers.regularization.dropout.Dropout\n5 dense_156   keras.src.layers.core.dense.Dense              \n6 dropout_105 keras.src.layers.regularization.dropout.Dropout\n7 dense_157   keras.src.layers.core.dense.Dense              \n\n\n\nObjetivo: mantener la cordura durante la búsqueda estructural.\nQué decir: - Esto confirma que la estructura cambia como esperamos. - extract_valid_grid(dbg) se queda solo con los puntos del grid que compilaron bien. - inform_errors(dbg) resume los errores de compilación más comunes. - En sesiones interactivas: remove_keras_spec(\"diamond_mlp\") para no acumular specs generados.\nTransición: Siguiente: pasamos a un ejemplo funcional (grafo)."
+    "text": "Depuración: “¿qué modelo se generó?”\n# compile_keras_grid(spec, grid, x, y)\n\n\n# A tibble: 1 × 4\n  num_body body_units body_dropout error\n     &lt;dbl&gt;      &lt;dbl&gt;        &lt;dbl&gt; &lt;chr&gt;\n1        3        128          0.2 &lt;NA&gt; \n\n\n# A tibble: 7 × 2\n  layer       class                                          \n  &lt;chr&gt;       &lt;chr&gt;                                          \n1 dense_154   keras.src.layers.core.dense.Dense              \n2 dropout_103 keras.src.layers.regularization.dropout.Dropout\n3 dense_155   keras.src.layers.core.dense.Dense              \n4 dropout_104 keras.src.layers.regularization.dropout.Dropout\n5 dense_156   keras.src.layers.core.dense.Dense              \n6 dropout_105 keras.src.layers.regularization.dropout.Dropout\n7 dense_157   keras.src.layers.core.dense.Dense              \n\n\n\nDecir: - compile_keras_grid() confirma que los cambios de estructura realmente ocurren. - extract_valid_grid() filtra builds correctos; inform_errors() resume errores comunes.\nTransicion: Siguiente: pasamos a un ejemplo funcional (grafo)."
   },
   {
     "objectID": "index.html#flujo-2-api-funcional-ramificarunir",
@@ -165,14 +165,14 @@
     "href": "index.html#conexiones-con-inp_spec",
     "title": "",
     "section": "Conexiones con inp_spec()",
-    "text": "Conexiones con inp_spec()\ninp_spec(func, inputs) mapea explícitamente salidas de bloques a argumentos.\nÚtil para: - modelos multi-entrada - skip connections - arquitecturas con ramas y uniones\n\nObjetivo: Desmitificar inp_spec().\nLa Analogía: “Cables de Sintetizador Modular” - Si habéis visto un sintetizador modular o un patch panel, eso es kerasnip aquí. - En código Keras normal, asignas variables: x = capa(entrada). - En kerasnip, necesitamos describir esa conexión de forma declarativa. - inp_spec(bloque, \"nombre\") es la etiqueta en el cable: “Enchufa la salida de ‘Torre A’ en la entrada de ‘Concat’”.\nDetalle Técnico: - Usamos metaprogramación para reescribir la firma de la función. - Mapeamos la cadena “main_input” al objeto tensor real en tiempo de construcción."
+    "text": "Conexiones con inp_spec()\ninp_spec(func, inputs) mapea explícitamente salidas de bloques a argumentos.\nÚtil para: - modelos multi-entrada - skip connections - arquitecturas con ramas y uniones\n\nAnalogia: cables de sintetizador modular. inp_spec() etiqueta cada cable.\nDecir: - En Keras asignas variables (x = capa(entrada)). En kerasnip declaras conexiones por nombre. - inp_spec(bloque, \"nombre\") = “enchufa la salida de Torre A en la entrada de Concat”.\nSi te bloqueas: “Solo es etiquetar que salida va a que entrada.”"
   },
   {
     "objectID": "index.html#bloques-funcionales-mínimos",
     "href": "index.html#bloques-funcionales-mínimos",
     "title": "",
     "section": "Bloques Funcionales (mínimos)",
-    "text": "Bloques Funcionales (mínimos)\n# En Keras funcional, los tensores van “pasando” por bloques.\ninput_block &lt;- function(input_shape) {\n  layer_input(shape = input_shape, name = \"features\")\n}\n\ndense_block &lt;- function(tensor, units = 64, dropout = 0.0) {\n  tensor |&gt;\n    layer_dense(units = units, activation = \"relu\") |&gt;\n    layer_dropout(rate = dropout)\n}\n\nconcat_block &lt;- function(input_a, input_b) {\n  layer_concatenate(list(input_a, input_b))\n}\n\noutput_block &lt;- function(tensor, num_classes) {\n  tensor |&gt; layer_dense(units = num_classes, activation = \"softmax\")\n}\n\nObjetivo: evitar errores típicos de cableado.\nQué decir: - Dos puntos de corrección (según la documentación de kerasnip): el bloque de entrada es function(input_shape) (sin argumento model) y los bloques posteriores reciben el tensor upstream como primer argumento. - inp_spec() es lo que nos permite cablear salidas a argumentos con nombre. - Error típico: los nombres usados en inp_spec(..., \"main_input\") tienen que coincidir exactamente con los nombres de bloque.\nTransición: Siguiente: generar el spec funcional."
+    "text": "Bloques Funcionales (mínimos)\n# En Keras funcional, los tensores van “pasando” por bloques.\ninput_block &lt;- function(input_shape) {\n  layer_input(shape = input_shape, name = \"features\")\n}\n\ndense_block &lt;- function(tensor, units = 64, dropout = 0.0) {\n  tensor |&gt;\n    layer_dense(units = units, activation = \"relu\") |&gt;\n    layer_dropout(rate = dropout)\n}\n\nconcat_block &lt;- function(input_a, input_b) {\n  layer_concatenate(list(input_a, input_b))\n}\n\noutput_block &lt;- function(tensor, num_classes) {\n  tensor |&gt; layer_dense(units = num_classes, activation = \"softmax\")\n}\n\nDecir: - En Keras funcional, los bloques reciben tensores (no modelos). El bloque de entrada recibe input_shape; los demas reciben el tensor upstream. - inp_spec() conecta salidas a entradas por nombre; los nombres deben coincidir exactamente.\nSi te bloqueas: “Funcional = tensores fluyendo por un grafo; secuencial = capas apiladas sobre un modelo.”"
   },
   {
     "objectID": "index.html#construir-el-grafo-spec",
@@ -186,14 +186,14 @@
     "href": "index.html#workflow-de-rotación-alto-nivel",
     "title": "",
     "section": "Workflow de Rotación (alto nivel)",
-    "text": "Workflow de Rotación (alto nivel)\nlibrary(tidymodels)\nlibrary(modeldata)\n\ndata(attrition)\n\nattr_split &lt;- initial_split(attrition, strata = Attrition)\nattr_train &lt;- training(attr_split)\n\nattr_rec &lt;- recipe(Attrition ~ ., data = attr_train) |&gt;\n  step_zv(all_predictors()) |&gt;\n  step_dummy(all_nominal_predictors()) |&gt;\n  step_normalize(all_numeric_predictors())\n\nattr_spec &lt;- attrition_towers(\n  tower_a_units = tune(),\n  tower_b_units = tune(),\n  fit_epochs    = 20\n) |&gt;\n  set_engine(\"keras\")\n\nattr_wf &lt;- workflow() |&gt;\n  add_recipe(attr_rec) |&gt;\n  add_model(attr_spec)\n\nObjetivo: re-anclar a tidymodels.\nQué decir: - Workflow primero: al final, sigue siendo tune_grid(). - Asegúrate de que el outcome sea factor y de mantener niveles estables para que no “cambien” las columnas dummy. - Para ROC AUC, necesitas probabilidades de clase; comprueba que el flujo las produce.\nTransición: Ahora: resultados en CV y selección."
+    "text": "Workflow de Rotación (alto nivel)\nlibrary(tidymodels)\nlibrary(modeldata)\n\ndata(attrition)\n\nattr_split &lt;- initial_split(attrition, strata = Attrition)\nattr_train &lt;- training(attr_split)\n\nattr_rec &lt;- recipe(Attrition ~ ., data = attr_train) |&gt;\n  step_zv(all_predictors()) |&gt;\n  step_dummy(all_nominal_predictors()) |&gt;\n  step_normalize(all_numeric_predictors())\n\nattr_spec &lt;- attrition_towers(\n  tower_a_units = tune(),\n  tower_b_units = tune(),\n  fit_epochs    = 20\n) |&gt;\n  set_engine(\"keras\")\n\nattr_wf &lt;- workflow() |&gt;\n  add_recipe(attr_rec) |&gt;\n  add_model(attr_spec)\n\nDecir: - Mismo patron: receta + spec + workflow + tune_grid(). - Asegurate de que el outcome sea factor y los niveles sean estables.\nTransicion: Ahora: resultados en CV y seleccion."
   },
   {
     "objectID": "index.html#resultados-rotación-cv-tabla",
     "href": "index.html#resultados-rotación-cv-tabla",
     "title": "",
     "section": "Resultados (Rotación): CV — Tabla",
-    "text": "Resultados (Rotación): CV — Tabla\n\nObjetivo: elegir 1–2 candidatos (sin leer toda la tabla).\nQué decir: - Son estimaciones de validación cruzada (media + error estándar). Se selecciona con CV, no con el test. - Busca una zona “estable”: buena AUC y poca sensibilidad al tamaño de las torres. - Repro: renderiza una vez (con freeze: auto) o ejecuta Rscript presentations/madrid-2-2026/make_results.R; se guarda presentations/madrid-2-2026/results/attrition_res.rds. - Inspección típica: collect_metrics() → show_best() → select_best() → finalize_workflow() → last_fit().\nTransición: Ahora el mapa de calor para ver sensibilidad/interacciones.\n\n\n\n\n\ntower_a_units\n\n\ntower_b_units\n\n\nmean\n\n\nstd_err\n\n\n\n\n\n\n47\n\n\n24\n\n\n0.8010\n\n\n0.0297\n\n\n\n\n21\n\n\n105\n\n\n0.7959\n\n\n0.0244\n\n\n\n\n80\n\n\n95\n\n\n0.7946\n\n\n0.0269\n\n\n\n\n89\n\n\n84\n\n\n0.7899\n\n\n0.0172\n\n\n\n\n120\n\n\n57\n\n\n0.7894\n\n\n0.0229"
+    "text": "Resultados (Rotación): CV — Tabla\n\nDecir: - Son estimaciones de validacion cruzada (media + error estandar). Se selecciona con CV, no con el test. - Busca una zona estable: buena AUC y poca sensibilidad al tamano de las torres.\nTransicion: Ahora el mapa de calor para ver sensibilidad.\n\n\n\n\n\ntower_a_units\n\n\ntower_b_units\n\n\nmean\n\n\nstd_err\n\n\n\n\n\n\n89\n\n\n84\n\n\n0.8025\n\n\n0.0235\n\n\n\n\n41\n\n\n33\n\n\n0.7963\n\n\n0.0192\n\n\n\n\n70\n\n\n64\n\n\n0.7926\n\n\n0.0184\n\n\n\n\n120\n\n\n57\n\n\n0.7868\n\n\n0.0277\n\n\n\n\n47\n\n\n24\n\n\n0.7866\n\n\n0.0217"
   },
   {
     "objectID": "index.html#resultados-rotación-cv-gráfico",
@@ -207,28 +207,28 @@
     "href": "index.html#resultados-rotación-test-tabla",
     "title": "",
     "section": "Resultados (Rotación): Test — Tabla",
-    "text": "Resultados (Rotación): Test — Tabla\n\n\n\n\n.metric\n\n\n.estimate\n\n\n\n\n\n\naccuracy\n\n\n0.8482\n\n\n\n\nroc_auc\n\n\n0.8427\n\n\n\n\n\nObjetivo: reportar el rendimiento final una sola vez.\nQué decir: - La selección se hizo con CV; el test es confirmación final. - En conjuntos desbalanceados, ROC AUC suele ser más informativa que accuracy. Transición: Siguiente: una curva ROC como resumen visual."
+    "text": "Resultados (Rotación): Test — Tabla\n\n\n\n\n.metric\n\n\n.estimate\n\n\n\n\n\n\naccuracy\n\n\n0.8564\n\n\n\n\nroc_auc\n\n\n0.8080\n\n\n\n\n\nObjetivo: reportar el rendimiento final una sola vez.\nQué decir: - La selección se hizo con CV; el test es confirmación final. - En conjuntos desbalanceados, ROC AUC suele ser más informativa que accuracy. Transición: Siguiente: una curva ROC como resumen visual."
   },
   {
     "objectID": "index.html#resultados-rotación-test-gráfico",
     "href": "index.html#resultados-rotación-test-gráfico",
     "title": "",
     "section": "Resultados (Rotación): Test — Gráfico",
-    "text": "Resultados (Rotación): Test — Gráfico\n\n\nObjetivo: una intuición visual de “qué tan bien separa” el modelo.\nInterpretación rápida: - Piensa en “capacidad vs generalización”: modelos más grandes pueden ganar en entrenamiento, pero no necesariamente en CV/test. - Si los resultados son parecidos, elige la arquitectura más simple dentro de la incertidumbre.\nY recordatorio de reproducibilidad: - Al guardar resultados en caché, ambas versiones (EN/ES) muestran las mismas tablas y gráficos. Transición: Cerramos con consejos prácticos para no sufrir."
+    "text": "Resultados (Rotación): Test — Gráfico\n\n\nDecir: - Cuanto mas lejos de la diagonal, mejor la discriminacion. - Si los resultados son parecidos, elige la arquitectura mas simple dentro de la incertidumbre.\nTransicion: Cerramos con consejos practicos."
   },
   {
     "objectID": "index.html#consejos-prácticos",
     "href": "index.html#consejos-prácticos",
     "title": "",
     "section": "Consejos Prácticos",
-    "text": "Consejos Prácticos\n\nEmpieza con compile_keras_grid() antes de ajustar\nMantén bloques pequeños y testeables\nPocos hiperparámetros importantes &gt; muchos microajustes\n\n\nObjetivo: dar consejos que eviten sufrimiento mañana.\nQué decir: - Si algo falla en el grafo funcional, reduce a 2–3 bloques para aislar el error. - Si necesitas un formato distinto de predictores, considera step_collapse() para agrupar predictores en una única columna tipo lista. - Para optimizadores/losses/métricas custom: register_keras_optimizer(), register_keras_loss(), register_keras_metric(). - Para evitar nombres inválidos según tu versión de Keras: usa keras_optimizers, keras_losses, keras_metrics.\nTransición: Cierro con ventajas/limitaciones y hoja de ruta."
+    "text": "Consejos Prácticos\n\nEmpieza con compile_keras_grid() antes de ajustar\nMantén bloques pequeños y testeables\nPocos hiperparámetros importantes &gt; muchos microajustes\n\n\nDecir: - Si algo falla en el grafo funcional, reduce a 2-3 bloques para aislar el error. - Bloques pequenos y testeables; pocos hiperparametros importantes.\nTransicion: Cierro con ventajas/limitaciones y hoja de ruta."
   },
   {
     "objectID": "index.html#ventajas-y-limitaciones",
     "href": "index.html#ventajas-y-limitaciones",
     "title": "",
     "section": "Ventajas y Limitaciones",
-    "text": "Ventajas y Limitaciones\nVentajas\n\nParidad: Usa recipes, workflows y tune igual que con glmnet.\nReproducibilidad: La topología es código. Control de versiones total.\nExtensibilidad: Envuelve cualquier capa Keras (Transformers, RNNs) en un bloque.\n\nLimitaciones\n\nBloques manuales: no hay bloques tipo “ResNet50” prehechos (hay que definirlos).\nFunciones de pérdida: una integración profunda de pérdidas personalizadas requiere algo de código repetitivo.\n\n\nObjetivo: ser honesto con los límites sin “pinchar” la propuesta.\nQué decir: - El trabajo está en definir buenos bloques. - Después, el flujo vuelve a ser familiar.\nSi alguien pregunta por evaluación/inspección del modelo: - extract_keras_model() devuelve el modelo Keras subyacente. - extract_keras_history() devuelve el historial de entrenamiento. - keras_evaluate() permite evaluar con x/y.\nSobre plantillas: la idea es añadir helpers sin convertir el paquete en un “model zoo”.\nTransición: Terminamos con hoja de ruta y abrimos preguntas."
+    "text": "Ventajas y Limitaciones\nVentajas\n\nParidad: Usa recipes, workflows y tune igual que con glmnet.\nReproducibilidad: La topología es código. Control de versiones total.\nExtensibilidad: Envuelve cualquier capa Keras (Transformers, RNNs) en un bloque.\n\nLimitaciones\n\nBloques manuales: no hay bloques tipo “ResNet50” prehechos (hay que definirlos).\nFunciones de pérdida: una integración profunda de pérdidas personalizadas requiere algo de código repetitivo.\n\n\nDecir: - El trabajo esta en definir buenos bloques; despues, el flujo es familiar. - No hay bloques preconstruidos (ej. ResNet50), pero cualquier capa Keras se puede envolver.\nTransicion: Terminamos con hoja de ruta y abrimos preguntas."
   },
   {
     "objectID": "index.html#hoja-de-ruta",
