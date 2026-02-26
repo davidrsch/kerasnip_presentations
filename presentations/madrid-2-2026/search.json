@@ -4,237 +4,132 @@
     "href": "index.html#kerasnip-a-bridge-between-keras-and-tidymodels",
     "title": "",
     "section": "kerasnip: A Bridge Between ‘keras’ and ‘tidymodels’",
-    "text": "kerasnip: A Bridge Between ‘keras’ and ‘tidymodels’\nMadrid R Group | February 2026\nkerasnip v0.1.0.900\nDocs: davidrsch.github.io/kerasnip · Repo: github.com/davidrsch/kerasnip\n\nOpen with energy. Ask: “Who loves tidymodels?” then “Who fights with Keras architectures?”\nSay: - Keras and tidymodels are like oil and water — kerasnip is the emulsifier. - Today: solving the architectural tuning problem.\nIf stuck: “Keras builds freely; tidymodels tunes systematically. We bridge them.”"
+    "text": "kerasnip: A Bridge Between ‘keras’ and ‘tidymodels’\nMadrid R Group | February 2026\nkerasnip v0.1.0.900\nDocs: davidrsch.github.io/kerasnip · Repo: github.com/davidrsch/kerasnip\n\nOpen with energy. Ask: “Who loves tidymodels?” then “Who has fought with Keras architectures?”\nSay: - Keras and tidymodels are like oil and water — kerasnip is the emulsifier. - Today: solving the architectural tuning problem."
   },
   {
     "objectID": "index.html#today",
     "href": "index.html#today",
     "title": "",
     "section": "Today",
-    "text": "Today\n\nWhy tuning Keras inside tidymodels is hard\nWhat kerasnip generates (and why it matters)\nSequential workflow: structural tuning with num_{block}\nFunctional workflow: branch/merge graphs with inp_spec()\nDebugging + practical tips\n\n\nGoal: orient people so they don’t get lost later.\nSay: - Timing is flexible; clarity first. - First half: sequential workflow + structural tuning (num_{block}) + debugging. - Second half: functional graphs via inp_spec() with the same tuning workflow.\nAlso mention (fast): - Debug helpers: extract_valid_grid(), inform_errors(). - Keras object helpers: keras_optimizers, keras_losses, keras_metrics, optimizer_function(), loss_function_keras(). - Spec lifecycle: model_exists(), remove_keras_spec(), get_model_env().\nTransition: Let’s situate Keras vs tidymodels and name the gap."
+    "text": "Today\n\nWhy tuning Keras inside tidymodels is hard\nWhat kerasnip generates and why it matters\nSequential workflow: structural tuning with num_{block}\nFunctional workflow: branch/merge graphs with inp_spec()\n\n\nKeep this slide to 20 seconds. It is orientation, not content.\nSay: - We will go from problem to working code quickly. - First half: sequential API. Second half: functional graphs. - There is a debug helper at the end that is worth knowing about."
   },
   {
-    "objectID": "index.html#the-landscape",
-    "href": "index.html#the-landscape",
+    "objectID": "index.html#the-landscape-the-gap",
+    "href": "index.html#the-landscape-the-gap",
     "title": "",
-    "section": "The Landscape",
-    "text": "The Landscape\n\n\n🧱 Keras (via keras3)\n\nDeep Learning\nTensor-centric & Imperative\nBackend agnostic (TF, JAX, Torch)\nArbitrary graphs of layers\n\n\n🧹 Tidymodels\n\nMachine Learning\nDataframe-centric & Declarative\nUnified interface (fit, predict)\nStandardized tuning\n\n\nThe Gap: Using tune_grid() to optimize Neural Network topology (depth/width) is difficult because parsnip expects fixed arguments, while Keras models are arbitrary graphs.\n\nAnalogy: Keras = architect’s blank sheet; tidymodels = government form with fixed fields.\nSay: - kerasnip turns the building’s structure into form fields. - You define the blueprint (blocks), it exposes the knobs (depth, width) as standard arguments.\nIf stuck: “Keras draws freely; tidymodels fills forms. kerasnip makes the forms fit the drawings.”"
-  },
-  {
-    "objectID": "index.html#the-pain-point-in-one-sentence",
-    "href": "index.html#the-pain-point-in-one-sentence",
-    "title": "",
-    "section": "The Pain Point (in one sentence)",
-    "text": "The Pain Point (in one sentence)\nKeras models are arbitrary graphs, but parsnip specs are fixed argument sets.\nSo you can tune learning rate easily, but tuning model structure (depth / width / branches) is awkward.\n\nGoal: make the problem feel concrete and familiar.\nSay: - This is not “deep learning 101”. It’s: how to keep Keras inside the tidymodels workflow. - The friction is that architecture changes live in Keras code, but tidymodels tuning expects named arguments.\nTransition: So the question becomes: how do we turn topology decisions into tunable spec args?"
-  },
-  {
-    "objectID": "index.html#ecosystem-context",
-    "href": "index.html#ecosystem-context",
-    "title": "",
-    "section": "Ecosystem Context",
-    "text": "Ecosystem Context\n\n\n\n\n\n\n\n\nPackage\nRole\nLimitation\n\n\n\n\nparsnip::mlp()\nTidymodels MLP\nMostly fixed topology; little architecture/feature engineering\n\n\nreticulate\nPython Bridge\nLow-level, no ML workflow\n\n\nkeras3\nR Interface\nNo native tune() integration\n\n\nluz/brulee\nTorch + Tidymodels\nTorch-only backend\n\n\nkerasnip\nKeras + Tidymodels\nBridges Keras flexibility with Tidymodels workflows\n\n\n\n\nGoal: position kerasnip precisely (avoid confusion).\nSay: - Not replacing keras3. - Not a new engine. - It generates new parsnip model specs that still use the existing keras engine.\nAlso say explicitly: - parsnip::mlp() is great for standard MLPs, but limited for architecture search. - kerasnip focuses on tuning structure (depth/width/branches) without leaving tidymodels.\nTransition: Now: what “dynamic specs” means in practice."
-  },
-  {
-    "objectID": "index.html#the-solution-dynamic-specs",
-    "href": "index.html#the-solution-dynamic-specs",
-    "title": "",
-    "section": "The Solution: Dynamic Specs",
-    "text": "The Solution: Dynamic Specs\nkerasnip is a Model Builder, not a Model Zoo.\n\nDefine Blocks: Functions returning Keras layers.\nMeta-program Spec: create_keras_*_spec() generates a new parsnip model.\nTune Structure: Block arguments (and repetition count) can be tuned.\n\n\nGoal: explain the “dynamic spec” idea in one breath.\nSay: - This is a code-generation approach: you define blocks, then kerasnip generates a parsnip spec function. - Once it’s a parsnip spec, the rest is standard: recipes → workflows → tune_grid().\nTransition: Keep the mental model in mind; we’ll come back to it on every example."
+    "section": "The Landscape & The Gap",
+    "text": "The Landscape & The Gap\n\n\n🧱 Keras (via keras3)\n\nDeep Learning\nTensor-centric & imperative\nBackend agnostic (TF, JAX, Torch)\nArbitrary graphs of layers\n\n\n🧹 tidymodels\n\nMachine Learning\nDataframe-centric & declarative\nUnified interface (fit, predict)\nStandardized tuning\n\n\nThe gap: tune_grid() handles learning rate easily, but tuning model structure — depth, width, branches — is awkward. parsnip expects a fixed set of named arguments; Keras models are arbitrary graphs.\nkerasnip turns architecture decisions into standard tunable arguments.\n\nAnalogy: Keras = architect’s blank sheet; tidymodels = government form with fixed fields. kerasnip makes the forms fit the drawings.\nSay: - You can already tune learning rate with keras3 + tidymodels. The friction is topology — depth and width live in Keras code, not in named spec arguments. - kerasnip does not replace keras3. It generates new parsnip spec functions that use the existing keras engine. - One sentence on why not other packages: reticulate is too low-level, luz/brulee are Torch-only, parsnip::mlp() is too fixed for architecture search.\nTransition: Let us see how kerasnip solves this — one diagram."
   },
   {
     "objectID": "index.html#mental-model",
     "href": "index.html#mental-model",
     "title": "",
     "section": "Mental Model",
-    "text": "Mental Model\n  \n\n\n\n\n\nflowchart LR\n  classDef step fill:#f5f7fa,stroke:#5c6b7a,color:#1b3a57,stroke-width:2px;\n  classDef tune fill:#BF281B,stroke:#BF281B,color:#ffffff,stroke-width:2px;\n\n  A[\"Blocks&lt;br/&gt;(layer blocks)\"] --&gt; B[\"Spec function&lt;br/&gt;create_keras_*_spec()\"]\n  B --&gt; C[\"Workflow&lt;br/&gt;recipe() + workflow()\"]\n  C --&gt; D[\"Tuning&lt;br/&gt;tune_grid()\"]\n  A -. \"args → tunables&lt;br/&gt;num_{block} repeats\" .-&gt; B\n\n  class A,B,C step;\n  class D tune;\n\n\n\n\n\n\n\nGoal: anchor the whole talk to one repeatable mental model.\nSay: - If someone gets lost: blocks → spec → workflow → tuning.\nUnder the hood (if asked): - Specs are registered in an internal environment. - That’s why there are lifecycle helpers: model_exists(), get_model_env(), remove_keras_spec().\nTransition: Next: the minimal set of functions you’ll see in the examples."
+    "text": "Mental Model\n\n\n\n\n\n\nflowchart LR\n  classDef step fill:#f5f7fa,stroke:#5c6b7a,color:#1b3a57,stroke-width:2px;\n  classDef tune fill:#BF281B,stroke:#BF281B,color:#ffffff,stroke-width:2px;\n\n  A[\"Blocks&lt;br/&gt;(plain R functions)\"] --&gt; B[\"Spec function&lt;br/&gt;create_keras_*_spec()\"]\n  B --&gt; C[\"Workflow&lt;br/&gt;recipe() + workflow()\"]\n  C --&gt; D[\"Tuning&lt;br/&gt;tune_grid()\"]\n  A -. \"args → tunables&lt;br/&gt;num_{block} repeats\" .-&gt; B\n\n  class A,B,C step;\n  class D tune;\n\n\n\n\n\n\n\nOne rule: if you want to tune it, make it a function argument.\n\nSpend about 60 seconds here. This diagram is the whole talk in one image.\nSay: - You write plain R functions called blocks. Each block returns Keras layers. - create_keras_*spec() reads those functions and generates a new parsnip model. - From that point on it is standard tidymodels: recipe, workflow, tune_grid. - The dotted arrow is the key insight: block arguments automatically become tunable spec arguments, prefixed by block name. dense_block(units=128) becomes body_units. And num{block} controls how many times a block repeats — that is depth as a hyperparameter.\nIf someone gets lost: blocks → spec → workflow → tuning. Everything else is detail.\nTransition: Let us build one. Sequential API first — predicting diamond prices."
   },
   {
-    "objectID": "index.html#key-functions-youll-see",
-    "href": "index.html#key-functions-youll-see",
+    "objectID": "index.html#sequential-blocks",
+    "href": "index.html#sequential-blocks",
     "title": "",
-    "section": "Key Functions You’ll See",
-    "text": "Key Functions You’ll See\n\ncreate_keras_sequential_spec()\ncreate_keras_functional_spec()\ninp_spec() (functional wiring)\ncompile_keras_grid() (debug/inspect generated graphs)\nextract_parameter_set_dials() (what can be tuned?)\n\n\nSay: - No need to memorize — just know each function’s role. - Other helpers exist (debugging, evaluation, housekeeping) and are covered in the docs.\nTransition: Next: naming conventions, so the code reads naturally."
+    "section": "Sequential Blocks",
+    "text": "Sequential Blocks\ninput_block &lt;- function(model, input_shape) {\n  keras_model_sequential(input_shape = input_shape)\n}\n\ndense_block &lt;- function(model, units = 128, dropout = 0.0) {\n  model |&gt;\n    layer_dense(units = units, activation = \"relu\") |&gt;\n    layer_dropout(rate = dropout)\n}\n\noutput_block &lt;- function(model) {\n  model |&gt; layer_dense(units = 1)\n}\n\nSay: - These are plain R functions. Nothing from kerasnip here yet. - The function signature is everything: units and dropout become tunable because they are arguments with defaults. - dense_block is the repeatable one — num_body will control how many times it stacks. - input and output blocks have no tunable args by design: input shape is fixed by the data, output is fixed by the task.\nPoint at the code while saying: “body_units comes from units here, body_dropout from dropout. The prefix body comes from the block name we will assign in the list on the next slide.”\nTransition: Now pass these to create_keras_sequential_spec and we get a parsnip model."
   },
   {
-    "objectID": "index.html#naming-conventions-auto-generated-args",
-    "href": "index.html#naming-conventions-auto-generated-args",
+    "objectID": "index.html#generate-spec-structural-tuning",
+    "href": "index.html#generate-spec-structural-tuning",
     "title": "",
-    "section": "Naming Conventions (auto-generated args)",
-    "text": "Naming Conventions (auto-generated args)\n\nArguments get prefixed by block name (e.g. body_units)\nRepeatable blocks expose num_{block} (e.g. num_body)\nRepetitions share the same hyperparameters (by design)\n\nExample mapping:\ndense_block(model, units = 128, dropout = 0.1) → body_units, body_dropout\n\nGoal: remove naming confusion before we touch code.\nSay: - Block args become spec args with prefixes (e.g. body_units). - Repetition is controlled by num_{block}. - Repeated blocks share hyperparameters by design.\nTransition: With that mapping, the sequential example will look “normal”."
+    "section": "Generate Spec + Structural Tuning",
+    "text": "Generate Spec + Structural Tuning\n\n\nRegister the spec\ncreate_keras_sequential_spec(\n  model_name = \"diamond_mlp\",\n  layer_blocks = list(\n    input  = input_block,\n    body   = dense_block,  # repeatable\n    output = output_block\n  ),\n  mode = \"regression\"\n)\nThis creates diamond_mlp() — a standard parsnip model function.\n\nTreat topology as a hyperparameter\nspec &lt;- diamond_mlp(\n  num_body     = tune(),  # depth: 1, 2, 3…\n  body_units   = tune(),  # width: 32, 64, 128…\n  body_dropout = tune(),\n  fit_epochs   = 20\n) |&gt;\n  set_engine(\"keras\")\nnum_body and body_units are auto-generated from the block name and its arguments.\n\n\nSay: - Left: one call, one new parsnip model. That is all kerasnip does structurally. - Right: now depth is tune() just like any other hyperparameter. This is what was not possible before. - Point at num_body: this controls how many times dense_block stacks. Put tune() here and you are searching architecture space. - Point at body_units: the body_ prefix comes from naming the block “body” in the list on the left.\nTransition: Now drop it into a standard workflow."
   },
   {
-    "objectID": "index.html#sequential-vs-functional-rule-of-thumb",
-    "href": "index.html#sequential-vs-functional-rule-of-thumb",
+    "objectID": "index.html#diamonds-workflow",
+    "href": "index.html#diamonds-workflow",
     "title": "",
-    "section": "Sequential vs Functional (rule of thumb)",
-    "text": "Sequential vs Functional (rule of thumb)\n\nSequential: one stream of features, simple stacks\nFunctional: multi-input, branch/merge, skip connections, explicit graphs\n\n\nGoal: give a decision rule people can remember.\nSay: - Use sequential for “a chain of layers”. - Use functional when you need an explicit graph: branches/merges, skips, multi-input.\nTransition: We’ll start sequential (easier), then come back to functional."
-  },
-  {
-    "objectID": "index.html#common-gotchas",
-    "href": "index.html#common-gotchas",
-    "title": "",
-    "section": "Common Gotchas",
-    "text": "Common Gotchas\n\nEnsure the recipe outputs numeric matrices (dummy + normalize)\nStart with a small grid, confirm structure via compile_keras_grid()\nKeep tuning spaces reasonable (depth × width can explode)\n\n\nSay: - Recipes must output numeric matrices (dummy + normalize). - Start small: confirm structure with compile_keras_grid() before tuning. - Keep search spaces reasonable; depth x width can explode.\nIf stuck: “Numeric in, small grid first, check the build.”\nTransition: With those guardrails, let’s run a simple sequential example."
-  },
-  {
-    "objectID": "index.html#workflow-1-sequential-api-regression",
-    "href": "index.html#workflow-1-sequential-api-regression",
-    "title": "",
-    "section": "Workflow 1: Sequential API (Regression)",
-    "text": "Workflow 1: Sequential API (Regression)\nGoal: Predict diamond prices and tune depth + width.\nDataset: ggplot2::diamonds.\n\nGoal: set up a simple, credible demo.\nSay: - This is a tabular MLP on diamonds. Simple on purpose: the point is tuning depth/width, not feature engineering.\nTransition: First we define blocks (just functions), then generate the spec."
-  },
-  {
-    "objectID": "index.html#sequential-blocks-minimal",
-    "href": "index.html#sequential-blocks-minimal",
-    "title": "",
-    "section": "Sequential Blocks (minimal)",
-    "text": "Sequential Blocks (minimal)\ninput_block &lt;- function(model, input_shape) {\n  keras_model_sequential(input_shape = input_shape)\n}\n\ndense_block &lt;- function(model, units = 128, dropout = 0.0) {\n  model |&gt;\n    layer_dense(units = units, activation = \"relu\") |&gt;\n    layer_dropout(rate = dropout)\n}\n\noutput_block &lt;- function(model) {\n  model |&gt; layer_dense(units = 1)\n}\n\nSay: - Blocks are plain R functions — nothing magical. - The function signature (units, dropout) defines what becomes tunable later. - Repeated blocks (via num_body) share hyperparameters by design.\nIf stuck: “If you want to tune it, make it an argument.”"
-  },
-  {
-    "objectID": "index.html#generate-the-parsnip-spec",
-    "href": "index.html#generate-the-parsnip-spec",
-    "title": "",
-    "section": "Generate the parsnip spec",
-    "text": "Generate the parsnip spec\ncreate_keras_sequential_spec(\n  model_name = \"diamond_mlp\",\n  layer_blocks = list(\n    input = input_block,\n    body = dense_block,  # &lt;--- This block will be repeatable\n    output = output_block\n  ),\n  mode = \"regression\"\n)\n\nGoal: make the “spec generation” moment land.\nSay: - This creates a new parsnip spec function: diamond_mlp(). - From this point on, it behaves like any other tidymodels model: you can set engine, add to workflows, and tune args.\nTransition: Next we’ll tune topology via num_body."
-  },
-  {
-    "objectID": "index.html#structural-tuning",
-    "href": "index.html#structural-tuning",
-    "title": "",
-    "section": "Structural Tuning",
-    "text": "Structural Tuning\nWe treat topology as a hyperparameter.\nspec &lt;- diamond_mlp(\n  num_body = tune(),       # &lt;--- Depth (e.g., 1, 2, or 3 layers)\n  body_units = tune(),     # &lt;--- Width (e.g., 64 vs 128 units)\n  body_dropout = tune(),\n  fit_epochs = 20\n) |&gt;\n  set_engine(\"keras\")\nThe arguments num_{block} are automatically generated by kerasnip for any repeatable block.\n\nGoal: make “depth is tunable” feel obvious.\nSay: - num_body allows searching topology inside a standard tune_grid().\nWhat to emphasize: - Depth becomes a first-class parameter. - Keep training controls mostly fixed during architecture search.\nPractical tip: - Tune structure first (depth/width), then optionally tune optimizer/training hyperparameters.\nTransition: Next: put it into a normal workflow."
-  },
-  {
-    "objectID": "index.html#diamonds-tidymodels-workflow",
-    "href": "index.html#diamonds-tidymodels-workflow",
-    "title": "",
-    "section": "Diamonds + Tidymodels Workflow",
-    "text": "Diamonds + Tidymodels Workflow\nlibrary(tidymodels)\nlibrary(kerasnip)\n\ndata(diamonds, package = \"ggplot2\")\n\ndiamonds_split &lt;- initial_split(diamonds, strata = price)\ndiamonds_train &lt;- training(diamonds_split)\n\ndiamonds_rec &lt;- recipe(price ~ ., data = diamonds_train) |&gt;\n  step_dummy(all_nominal_predictors()) |&gt;\n  step_zv(all_predictors()) |&gt;\n  step_normalize(all_numeric_predictors())\n\nwf &lt;- workflow() |&gt;\n  add_recipe(diamonds_rec) |&gt;\n  add_model(spec)\n\nSay: - The workflow looks identical to any other tidymodels model. - Keras complexity is hidden behind the parsnip spec.\nTransition: Next: define the tuning ranges and run tune_grid()."
-  },
-  {
-    "objectID": "index.html#tuning-grid-including-depth",
-    "href": "index.html#tuning-grid-including-depth",
-    "title": "",
-    "section": "Tuning Grid (including depth)",
-    "text": "Tuning Grid (including depth)\nparams &lt;- extract_parameter_set_dials(wf) |&gt;\n  update(\n    num_body     = dials::num_terms(c(1, 4)),\n    body_units   = dials::hidden_units(c(32, 256)),\n    body_dropout = dials::dropout(c(0, 0.4))\n  )\n\ngrid  &lt;- grid_latin_hypercube(params, size = 20)\nfolds &lt;- vfold_cv(diamonds_train, v = 5, strata = price)\nres   &lt;- tune_grid(wf, resamples = folds, grid = grid)\n\nGoal: show this is just standard tidymodels tuning.\nSay: - extract_parameter_set_dials() discovers tunables, then we define ranges and build a grid. - The key is that num_body is now a first-class tuning parameter.\nTransition: Now let’s look at CV results and pick a candidate before touching the test set."
+    "section": "Diamonds Workflow",
+    "text": "Diamonds Workflow\nlibrary(tidymodels);  library(kerasnip)\ndata(diamonds, package = \"ggplot2\")\n\ndiamonds_split &lt;- initial_split(diamonds, strata = price)\ndiamonds_train &lt;- training(diamonds_split)\n\ndiamonds_rec &lt;- recipe(price ~ ., data = diamonds_train) |&gt;\n  step_dummy(all_nominal_predictors()) |&gt;\n  step_zv(all_predictors()) |&gt;\n  step_normalize(all_numeric_predictors())\n\nwf &lt;- workflow() |&gt; add_recipe(diamonds_rec) |&gt; add_model(spec)\n\nparams &lt;- extract_parameter_set_dials(wf) |&gt;\n  update(\n    num_body     = dials::num_terms(c(1, 4)),\n    body_units   = dials::hidden_units(c(32, 256)),\n    body_dropout = dials::dropout(c(0, 0.4))\n  )\n\ngrid  &lt;- grid_latin_hypercube(params, size = 20)\nfolds &lt;- vfold_cv(diamonds_train, v = 5, strata = price)\nres   &lt;- tune_grid(wf, resamples = folds, grid = grid)\n\nSay: - This is identical to any other tidymodels workflow. That is the point. - Recipe must output numeric matrices: step_dummy + step_normalize are required for Keras. - extract_parameter_set_dials discovers tunables automatically — you just update the ranges. - Practical tip: start with size = 8 when testing a new architecture. Scale up once you know it builds correctly.\nTransition: Let us look at what came out."
   },
   {
     "objectID": "index.html#results-diamonds-cv-table",
     "href": "index.html#results-diamonds-cv-table",
     "title": "",
     "section": "Results (Diamonds): CV — Table",
-    "text": "Results (Diamonds): CV — Table\n\n\n\n\nnum_body\n\n\nbody_units\n\n\nbody_dropout\n\n\nmean\n\n\nstd_err\n\n\n\n\n\n\n2\n\n\n49\n\n\n0.030\n\n\n778.690\n\n\n52.560\n\n\n\n\n2\n\n\n35\n\n\n0.180\n\n\n780.551\n\n\n46.298\n\n\n\n\n2\n\n\n98\n\n\n0.121\n\n\n782.132\n\n\n68.089\n\n\n\n\n2\n\n\n62\n\n\n0.060\n\n\n786.207\n\n\n67.648\n\n\n\n\n3\n\n\n69\n\n\n0.246\n\n\n827.485\n\n\n72.059\n\n\n\n\n\nGoal: pick 1–2 strong candidates (don’t read the whole table).\nSay: - These are cross-validation estimates (mean + std_err). We’re selecting on CV, not the test set. - I usually look for a “stable region”: low mean RMSE and not wildly sensitive to depth/dropout.\nTransition: Let’s look at the CV plot to see interactions."
+    "text": "Results (Diamonds): CV — Table\n\n\n\n\nnum_body\n\n\nbody_units\n\n\nbody_dropout\n\n\nmean\n\n\nstd_err\n\n\n\n\n\n\n2\n\n\n62\n\n\n0.060\n\n\n772.789\n\n\n56.305\n\n\n\n\n2\n\n\n98\n\n\n0.121\n\n\n777.076\n\n\n58.157\n\n\n\n\n2\n\n\n35\n\n\n0.180\n\n\n786.251\n\n\n37.655\n\n\n\n\n2\n\n\n49\n\n\n0.030\n\n\n794.592\n\n\n67.419\n\n\n\n\n3\n\n\n69\n\n\n0.246\n\n\n831.059\n\n\n63.567\n\n\n\n\n\nKeep this slide to 30 seconds then move to the plot.\nSay: - These are cross-validation estimates. We select on CV, never on the test set. - Look for a stable region: good mean RMSE and small std_err. That is the architecture to carry forward. - Pick the simplest within 1 std_err of the best, not necessarily the top row."
   },
   {
     "objectID": "index.html#results-diamonds-cv-plot",
     "href": "index.html#results-diamonds-cv-plot",
     "title": "",
     "section": "Results (Diamonds): CV — Plot",
-    "text": "Results (Diamonds): CV — Plot\n\n\nGoal: see interactions (depth × width × dropout) at a glance.\nSay: - If the trend flattens, deeper models aren’t buying much. - When differences are tiny relative to noise, pick simpler.\nTransition: Now we do a one-time test-set confirmation."
+    "text": "Results (Diamonds): CV — Plot\n\n\nSay: - If lines flatten as num_body increases, going deeper is not buying anything — pick the shallower model. - Each facet is a dropout value: look for a panel where the spread between width options is small. That is a robust region.\nTransition: One-time test confirmation."
   },
   {
     "objectID": "index.html#results-diamonds-test-table",
     "href": "index.html#results-diamonds-test-table",
     "title": "",
     "section": "Results (Diamonds): Test — Table",
-    "text": "Results (Diamonds): Test — Table\n\n\n\n\n.metric\n\n\n.estimate\n\n\n\n\n\n\nrmse\n\n\n727.2212\n\n\n\n\nmae\n\n\n360.1882\n\n\n\n\nrsq\n\n\n0.9667\n\n\n\n\n\nGoal: one-time confirmation.\nSay: - Test metrics are for final reporting; avoid using them to decide hyperparameters. - If test is worse than CV by a lot, it’s a sign of instability or leakage.\nTransition: I’ll show a quick visual sanity check on test predictions."
+    "text": "Results (Diamonds): Test — Table\n\n\n\n\n.metric\n\n\n.estimate\n\n\n\n\n\n\nrmse\n\n\n787.3259\n\n\n\n\nmae\n\n\n404.4368\n\n\n\n\nrsq\n\n\n0.9673\n\n\n\n\n\nSay: - Test is for reporting only. The architecture was chosen with CV — this is just confirmation. - If test is much worse than CV, suspect data leakage or an unstable architecture."
   },
   {
     "objectID": "index.html#results-diamonds-test-plot",
     "href": "index.html#results-diamonds-test-plot",
     "title": "",
     "section": "Results (Diamonds): Test — Plot",
-    "text": "Results (Diamonds): Test — Plot\n\n\nSay: - Points near the diagonal = good predictions; systematic deviations reveal bias. - High-price diamonds are typically harder to predict — check spread there.\nIf stuck: “Tight diagonal = strong fit; fan-out = heteroscedasticity.”\nTransition: Next: how to debug/inspect the generated architecture."
+    "text": "Results (Diamonds): Test — Plot\n\n\nSay: - Points near the diagonal are good predictions. Systematic deviation below at high prices means the model underestimates expensive diamonds — expected, as those are rare in training data.\nTransition: Before moving to functional — one slide on a tool that saves a lot of debugging pain."
   },
   {
-    "objectID": "index.html#debugging-what-model-did-we-just-create",
-    "href": "index.html#debugging-what-model-did-we-just-create",
+    "objectID": "index.html#debugging-compile_keras_grid",
+    "href": "index.html#debugging-compile_keras_grid",
     "title": "",
-    "section": "Debugging: “What model did we just create?”",
-    "text": "Debugging: “What model did we just create?”\n# compile_keras_grid(spec, grid, x, y)\n\n\n# A tibble: 1 × 4\n  num_body body_units body_dropout error\n     &lt;dbl&gt;      &lt;dbl&gt;        &lt;dbl&gt; &lt;chr&gt;\n1        3        128          0.2 &lt;NA&gt; \n\n\n# A tibble: 7 × 2\n  layer       class                                          \n  &lt;chr&gt;       &lt;chr&gt;                                          \n1 dense_150   keras.src.layers.core.dense.Dense              \n2 dropout_100 keras.src.layers.regularization.dropout.Dropout\n3 dense_151   keras.src.layers.core.dense.Dense              \n4 dropout_101 keras.src.layers.regularization.dropout.Dropout\n5 dense_152   keras.src.layers.core.dense.Dense              \n6 dropout_102 keras.src.layers.regularization.dropout.Dropout\n7 dense_153   keras.src.layers.core.dense.Dense              \n\n\n\nSay: - compile_keras_grid() confirms depth/width changes are actually happening. - extract_valid_grid() keeps only successful builds; inform_errors() summarizes failures.\nTransition: Next: switch to a functional (graph) example."
+    "section": "Debugging: compile_keras_grid()",
+    "text": "Debugging: compile_keras_grid()\ncompile_keras_grid(spec, grid, x, y)\n\n\n# A tibble: 1 × 4\n  num_body body_units body_dropout error\n     &lt;dbl&gt;      &lt;dbl&gt;        &lt;dbl&gt; &lt;chr&gt;\n1        3        128          0.2 &lt;NA&gt; \n\n\n# A tibble: 7 × 2\n  layer       class                                          \n  &lt;chr&gt;       &lt;chr&gt;                                          \n1 dense_150   keras.src.layers.core.dense.Dense              \n2 dropout_100 keras.src.layers.regularization.dropout.Dropout\n3 dense_151   keras.src.layers.core.dense.Dense              \n4 dropout_101 keras.src.layers.regularization.dropout.Dropout\n5 dense_152   keras.src.layers.core.dense.Dense              \n6 dropout_102 keras.src.layers.regularization.dropout.Dropout\n7 dense_153   keras.src.layers.core.dense.Dense              \n\n\n\nSay: - Before running tune_grid on 20 configurations, run this on one to confirm the model actually builds correctly. - The error column shows which grid rows failed and why — catch this before wasting compute. - extract_valid_grid() filters to successful builds; inform_errors() summarizes failures across the whole grid. - Rule: always compile before you tune.\nTransition: Same workflow pattern, now with a non-linear graph. Functional API."
   },
   {
-    "objectID": "index.html#workflow-2-functional-api-branchmerge",
-    "href": "index.html#workflow-2-functional-api-branchmerge",
+    "objectID": "index.html#functional-api-blocks-graph",
+    "href": "index.html#functional-api-blocks-graph",
     "title": "",
-    "section": "Workflow 2: Functional API (Branch/Merge)",
-    "text": "Workflow 2: Functional API (Branch/Merge)\nGoal: Employee Attrition (Classification).\nDataset: modeldata::attrition.\nWe’ll build a small branch/merge graph: - one input tensor - two parallel “towers” - concat + output\n\nGoal: motivate why functional Keras matters.\nSay: - Functional is the sweet spot when the architecture is not a straight line.\nImportant practical choice for a live talk: keep preprocessing simple. We use ONE input produced by a standard recipe, then create two parallel branches from the same input.\nTransition: inp_spec() is the wiring mechanism."
+    "section": "Functional API: Blocks + Graph",
+    "text": "Functional API: Blocks + Graph\n\n\nBlocks receive tensors, not models\ninput_block &lt;- function(input_shape) {\n  layer_input(shape = input_shape,\n              name = \"features\")\n}\n\ndense_block &lt;- function(tensor,\n                        units = 64,\n                        dropout = 0.0) {\n  tensor |&gt;\n    layer_dense(units = units,\n                activation = \"relu\") |&gt;\n    layer_dropout(rate = dropout)\n}\n\nconcat_block &lt;- function(input_a, input_b) {\n  layer_concatenate(list(input_a, input_b))\n}\n\noutput_block &lt;- function(tensor, num_classes) {\n  tensor |&gt;\n    layer_dense(units = num_classes,\n                activation = \"softmax\")\n}\n\ninp_spec() wires outputs to inputs by name\ncreate_keras_functional_spec(\n  model_name = \"attrition_towers\",\n  layer_blocks = list(\n    main_input = input_block,\n    tower_a    = inp_spec(\n                   dense_block,\n                   \"main_input\"),\n    tower_b    = inp_spec(\n                   dense_block,\n                   \"main_input\"),\n    joined     = inp_spec(\n                   concat_block,\n                   c(input_a = \"tower_a\",\n                     input_b = \"tower_b\")),\n    output     = inp_spec(\n                   output_block,\n                   \"joined\")\n  ),\n  mode = \"classification\"\n)\n\n\nSay: - Sequential: blocks receive a model and stack layers onto it. Functional: blocks receive tensors and return tensors. That is the only structural difference. - inp_spec(func, inputs) is just labeling which upstream output feeds which argument — like patch cables on a modular synth. - This graph: one input splits into two parallel towers, they concatenate, then output. Non-linear, but the workflow stays completely identical. - Use sequential for a straight chain. Use functional when you need branches, merges, or skip connections. - tower_a_units and tower_b_units are auto-generated by the same prefix convention as before.\nTransition: Now the workflow — you will recognize every line."
   },
   {
-    "objectID": "index.html#functional-wiring-with-inp_spec",
-    "href": "index.html#functional-wiring-with-inp_spec",
+    "objectID": "index.html#attrition-workflow",
+    "href": "index.html#attrition-workflow",
     "title": "",
-    "section": "Functional Wiring with inp_spec()",
-    "text": "Functional Wiring with inp_spec()\ninp_spec(func, inputs) explicitly maps upstream block outputs to function arguments.\nThat’s the key to: - multi-input models - skip connections - branch/merge architectures\n\nAnalogy: patch cables on a synthesizer. inp_spec() labels each cable.\nSay: - In Keras you assign variables (x = layer(input)). In kerasnip you declare connections by name. - inp_spec(block, \"name\") = “plug Tower A’s output into Concat’s input”.\nIf stuck: “It’s just labeling which output goes into which input.”"
-  },
-  {
-    "objectID": "index.html#functional-blocks-minimal",
-    "href": "index.html#functional-blocks-minimal",
-    "title": "",
-    "section": "Functional Blocks (minimal)",
-    "text": "Functional Blocks (minimal)\n# In functional Keras, tensors flow through your blocks.\ninput_block &lt;- function(input_shape) {\n  layer_input(shape = input_shape, name = \"features\")\n}\n\ndense_block &lt;- function(tensor, units = 64, dropout = 0.0) {\n  tensor |&gt;\n    layer_dense(units = units, activation = \"relu\") |&gt;\n    layer_dropout(rate = dropout)\n}\n\nconcat_block &lt;- function(input_a, input_b) {\n  layer_concatenate(list(input_a, input_b))\n}\n\noutput_block &lt;- function(tensor, num_classes) {\n  tensor |&gt; layer_dense(units = num_classes, activation = \"softmax\")\n}\n\nSay: - In functional Keras, blocks receive tensors (not models). Input block takes input_shape; downstream blocks take the upstream tensor. - inp_spec() wires outputs to inputs by name; names must match exactly.\nIf stuck: “Functional = tensors flowing through a graph; sequential = layers stacking on a model.”"
-  },
-  {
-    "objectID": "index.html#build-the-graph-spec",
-    "href": "index.html#build-the-graph-spec",
-    "title": "",
-    "section": "Build the graph (spec)",
-    "text": "Build the graph (spec)\ncreate_keras_functional_spec(\n  model_name = \"attrition_towers\",\n  layer_blocks = list(\n    main_input = input_block,\n    tower_a = inp_spec(dense_block, \"main_input\"),\n    tower_b = inp_spec(dense_block, \"main_input\"),\n    joined = inp_spec(concat_block, c(input_a = \"tower_a\", input_b = \"tower_b\")),\n    output = inp_spec(output_block, \"joined\")\n  ),\n  mode = \"classification\"\n)\n\nGoal: show functional graphs still fit a standard workflow.\nSay: - This gives us a non-linear graph while still using a standard tidymodels recipe.\nIf your architecture is a straight line, sequential is simpler. Functional is for “graphs”: branches, merges, skips.\nIf asked about multi-input: - Define multiple layer_input() blocks and wire them into downstream blocks by name using inp_spec().\nTransition: Next: build the workflow and tune."
-  },
-  {
-    "objectID": "index.html#attrition-workflow-high-level",
-    "href": "index.html#attrition-workflow-high-level",
-    "title": "",
-    "section": "Attrition Workflow (high level)",
-    "text": "Attrition Workflow (high level)\nlibrary(tidymodels)\nlibrary(modeldata)\n\ndata(attrition)\n\nattr_split &lt;- initial_split(attrition, strata = Attrition)\nattr_train &lt;- training(attr_split)\n\nattr_rec &lt;- recipe(Attrition ~ ., data = attr_train) |&gt;\n  step_zv(all_predictors()) |&gt;\n  step_dummy(all_nominal_predictors()) |&gt;\n  step_normalize(all_numeric_predictors())\n\nattr_spec &lt;- attrition_towers(\n  tower_a_units = tune(),\n  tower_b_units = tune(),\n  fit_epochs    = 20\n) |&gt;\n  set_engine(\"keras\")\n\nattr_wf &lt;- workflow() |&gt;\n  add_recipe(attr_rec) |&gt;\n  add_model(attr_spec)\n\nSay: - Same workflow pattern: recipe + spec + workflow + tune_grid(). - Ensure the outcome is a factor and levels are stable.\nTransition: Now: CV results and selection."
+    "section": "Attrition Workflow",
+    "text": "Attrition Workflow\nlibrary(tidymodels);  library(modeldata)\ndata(attrition)\n\nattr_split &lt;- initial_split(attrition, strata = Attrition)\nattr_train &lt;- training(attr_split)\n\nattr_rec &lt;- recipe(Attrition ~ ., data = attr_train) |&gt;\n  step_zv(all_predictors()) |&gt;\n  step_dummy(all_nominal_predictors()) |&gt;\n  step_normalize(all_numeric_predictors())\n\nattr_spec &lt;- attrition_towers(\n  tower_a_units = tune(),\n  tower_b_units = tune(),\n  fit_epochs    = 20\n) |&gt; set_engine(\"keras\")\n\nattr_wf &lt;- workflow() |&gt; add_recipe(attr_rec) |&gt; add_model(attr_spec)\n\nparams &lt;- extract_parameter_set_dials(attr_wf) |&gt;\n  update(tower_a_units = dials::hidden_units(c(16, 128)),\n         tower_b_units = dials::hidden_units(c(16, 128)))\n\nres &lt;- tune_grid(attr_wf,\n                 resamples = vfold_cv(attr_train, v = 3, strata = Attrition),\n                 grid      = grid_latin_hypercube(params, size = 12))\n\nSay: - Identical pattern to the sequential example. That is the whole point of kerasnip — the graph complexity is completely hidden. - Make sure the outcome is a factor with stable levels.\nTransition: Results."
   },
   {
     "objectID": "index.html#results-attrition-cv-table",
     "href": "index.html#results-attrition-cv-table",
     "title": "",
     "section": "Results (Attrition): CV — Table",
-    "text": "Results (Attrition): CV — Table\n\nSay: - These are cross-validation estimates (mean + std_err). Select on CV, not on test. - Look for a stable region: good AUC with low sensitivity to tower sizes.\nTransition: Let’s look at the CV plot to see interactions.\n\n\n\n\n\ntower_a_units\n\n\ntower_b_units\n\n\nmean\n\n\nstd_err\n\n\n\n\n\n\n89\n\n\n84\n\n\n0.8025\n\n\n0.0235\n\n\n\n\n41\n\n\n33\n\n\n0.7963\n\n\n0.0192\n\n\n\n\n70\n\n\n64\n\n\n0.7926\n\n\n0.0184\n\n\n\n\n120\n\n\n57\n\n\n0.7868\n\n\n0.0277\n\n\n\n\n47\n\n\n24\n\n\n0.7866\n\n\n0.0217\n\n\n\n\n\nSay: - Look at mean ROC AUC but also std_err. - Flat heatmap = robust architecture; pick the cheaper/smaller model. - Sharp peak = sensitive; might be a local optimum. - Rule of thumb: pick the simplest within 1 std_err of the best."
+    "text": "Results (Attrition): CV — Table\n\n\n\n\ntower_a_units\n\n\ntower_b_units\n\n\nmean\n\n\nstd_err\n\n\n\n\n\n\n120\n\n\n57\n\n\n0.8020\n\n\n0.0230\n\n\n\n\n21\n\n\n105\n\n\n0.7988\n\n\n0.0215\n\n\n\n\n80\n\n\n95\n\n\n0.7917\n\n\n0.0201\n\n\n\n\n41\n\n\n33\n\n\n0.7898\n\n\n0.0191\n\n\n\n\n47\n\n\n24\n\n\n0.7879\n\n\n0.0175\n\n\n\n\n\nKeep this slide to 30 seconds then move to the heatmap.\nSay: - Same reading as before: mean ROC AUC plus std_err. Select on CV. - Pick the simplest architecture within 1 std_err of the best."
   },
   {
     "objectID": "index.html#results-attrition-cv-plot",
     "href": "index.html#results-attrition-cv-plot",
     "title": "",
     "section": "Results (Attrition): CV — Plot",
-    "text": "Results (Attrition): CV — Plot\n\n\nGoal: see whether one tower matters more than the other.\nSay: - A flat heatmap means tuning isn’t very sensitive. - A sharp peak means you should narrow the search around that region.\nTransition: Now: one-time test reporting."
+    "text": "Results (Attrition): CV — Plot\n\n\nSay: - A flat heatmap means the architecture is robust — tower size does not matter much, pick the smallest. - A sharp peak means the model is sensitive to tower sizes — worth narrowing the search around that region in a second pass.\nTransition: Final test confirmation."
   },
   {
     "objectID": "index.html#results-attrition-test-table",
     "href": "index.html#results-attrition-test-table",
     "title": "",
     "section": "Results (Attrition): Test — Table",
-    "text": "Results (Attrition): Test — Table\n\n\n\n\n.metric\n\n\n.estimate\n\n\n\n\n\n\naccuracy\n\n\n0.8564\n\n\n\n\nroc_auc\n\n\n0.8080\n\n\n\n\n\nGoal: report final test performance once.\nSay: - CV chose the architecture; test is for final confirmation. - If the dataset is imbalanced, ROC AUC is often more informative than accuracy.\nTransition: Show ROC curve as a visual summary."
+    "text": "Results (Attrition): Test — Table\n\n\n\n\n.metric\n\n\n.estimate\n\n\n\n\n\n\naccuracy\n\n\n0.8455\n\n\n\n\nroc_auc\n\n\n0.7983\n\n\n\n\n\nSay: - On imbalanced datasets like attrition, ROC AUC is more informative than accuracy — accuracy can look fine just by predicting the majority class. - Again: test is for reporting, not for deciding."
   },
   {
     "objectID": "index.html#results-attrition-test-plot",
     "href": "index.html#results-attrition-test-plot",
     "title": "",
     "section": "Results (Attrition): Test — Plot",
-    "text": "Results (Attrition): Test — Plot\n\n\nSay: - The further the curve from the diagonal, the better the discrimination. - When results are close, pick the simplest architecture within uncertainty.\nTransition: Close with practical tips and failure modes."
+    "text": "Results (Attrition): Test — Plot\n\n\nSay: - Further from the diagonal = better discrimination. - When two architectures give similar curves, always pick the simpler one.\nTransition: Close with the practical summary."
   },
   {
-    "objectID": "index.html#practical-tips-so-you-dont-suffer",
-    "href": "index.html#practical-tips-so-you-dont-suffer",
+    "objectID": "index.html#practical-tips-trade-offs",
+    "href": "index.html#practical-tips-trade-offs",
     "title": "",
-    "section": "Practical Tips (so you don’t suffer)",
-    "text": "Practical Tips (so you don’t suffer)\n\nStart with compile_keras_grid() before tuning\nKeep blocks small and testable\nPrefer a few meaningful tunables over 30 tiny ones\n\n\nSay: - If something breaks in a functional graph, reduce to 2-3 blocks to isolate the error. - Keep blocks small and testable; prefer a few meaningful tunables over many tiny ones.\nTransition: I’ll close with trade-offs and the roadmap."
-  },
-  {
-    "objectID": "index.html#advantages-limitations",
-    "href": "index.html#advantages-limitations",
-    "title": "",
-    "section": "Advantages & Limitations",
-    "text": "Advantages & Limitations\nAdvantages\n\nWorkflow Parity: Use recipes, workflows, and tune exactly like glmnet.\nReproducibility: Topology is code. Version control your architecture.\nExtensibility: Wrap any Keras layer (Transformers, RNNs) into a block.\n\nLimitations\n\nManual Blocking: No pre-shipped “ResNet50” blocks yet (you must define them).\nCustom Losses: Integration requires some boilerplate for custom objects.\n\n\nSay: - The learning curve is writing good blocks; after that, the workflow is standard. - No pre-built blocks yet (e.g. ResNet50), but any Keras layer can be wrapped.\nTransition: Close with a short roadmap and invite questions."
-  },
-  {
-    "objectID": "index.html#roadmap",
-    "href": "index.html#roadmap",
-    "title": "",
-    "section": "Roadmap",
-    "text": "Roadmap\n\n📦 Templates: High-level helpers for common architectures.\n🔧 Fine-tuning: Workflows for adapting pre-trained models.\n\nResources\n\n📦 Package: github.com/davidrsch/kerasnip\n📑 Docs: davidrsch.github.io/kerasnip\n\n\nGoal: land the talk and create a clean Q&A opening.\nSay: - Recap: blocks → spec → workflow → tuning. - Invite feedback and contributions. - Leave time for Q&A.\nTransition: Stop sharing, take questions."
+    "section": "Practical Tips & Trade-offs",
+    "text": "Practical Tips & Trade-offs\n\n\nTo avoid pain\n\nAlways run compile_keras_grid() before tuning\nKeep blocks small and testable — isolate errors with 2–3 blocks\nTune structure (depth/width) first; training hyperparameters later\nKeep search spaces reasonable — depth × width explodes fast\n\nLimitations\n\nNo pre-built blocks (ResNet, LSTM…) — you define them\nCustom loss functions require some boilerplate\n\n\nWhy it is worth it\n\nWorkflow parity — recipes, workflows, tune work exactly like with glmnet\nReproducibility — topology is code; version-control your architecture\nExtensibility — wrap any Keras layer (Transformers, RNNs) into a block\n\n\nResources\n\n📦 github.com/davidrsch/kerasnip\n📑 davidrsch.github.io/kerasnip\n\n\n\nGoal: leave people with a clear answer to “should I try this?”\nSay: - The learning curve is writing good blocks. After that, everything is standard tidymodels. - If you already use tidymodels, the only new concept is defining blocks and calling create_keras_*_spec(). - Package is on GitHub — contributions and feedback welcome.\nStop sharing screen and open Q&A."
   }
 ]
