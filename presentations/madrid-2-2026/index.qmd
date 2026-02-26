@@ -1478,7 +1478,13 @@ Transición: Antes de pasar al API funcional, una herramienta que ahorra mucho t
 ## Depuración: `compile_keras_grid()` {.compact .table-compact}
 
 ```r
-compile_keras_grid(spec, grid, x, y)
+prep_rec <- prep(diamonds_rec, training = diamonds_train)
+juiced <- juice(prep_rec)
+x <- juiced |> select(-price)
+y <- juiced$price
+modified_grid <- tibble(num_body = 3, body_units = -10, body_dropout = 0.2)
+
+compile_keras_grid(spec, modified_grid, x, y)
 ```
 
 ```{r}
