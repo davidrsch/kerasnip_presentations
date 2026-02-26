@@ -1524,6 +1524,8 @@ juiced <- juice(prep_rec)
 x <- juiced |> select(-price)
 y <- juiced$price
 
+test_grid <- tibble(num_body = 3, body_units = -10, body_dropout = 0.2)
+
 dbg <- compile_keras_grid(
     spec = diamond_mlp(
         num_body = tune(),
@@ -1532,27 +1534,12 @@ dbg <- compile_keras_grid(
         fit_epochs = 5
     ) |>
         set_engine("keras"),
-    grid = tibble(num_body = 3, body_units = 128, body_dropout = 0.2),
+    grid = test_grid,
     x = x,
     y = y
 )
 
-dbg |> select(num_body, body_units, body_dropout, error)
-
-if (!is.null(dbg$compiled_model[[1]])) {
-    model <- dbg$compiled_model[[1]]
-    tibble(
-        n_features = ncol(x),
-        n_layers = length(model$layers),
-        n_params = model$count_params()
-    )
-    layer_tbl <- tibble(
-        layer = map_chr(model$layers, "name"),
-        class = map_chr(model$layers, ~ class(.x)[1])
-    ) |>
-        slice_head(n = 8)
-    layer_tbl
-}
+dbg
 ```
 
 ::: {.notes}
