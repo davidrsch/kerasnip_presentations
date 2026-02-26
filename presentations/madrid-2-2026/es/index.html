@@ -469,27 +469,10 @@ std_err
 0.180
 </td>
 <td style="text-align:right;">
-782.254
+778.277
 </td>
 <td style="text-align:right;">
-31.538
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-2
-</td>
-<td style="text-align:right;">
-49
-</td>
-<td style="text-align:right;">
-0.030
-</td>
-<td style="text-align:right;">
-784.730
-</td>
-<td style="text-align:right;">
-62.729
+44.325
 </td>
 </tr>
 <tr>
@@ -503,27 +486,27 @@ std_err
 0.060
 </td>
 <td style="text-align:right;">
-797.803
+778.810
 </td>
 <td style="text-align:right;">
-57.766
+62.104
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-3
+2
 </td>
 <td style="text-align:right;">
-87
+49
 </td>
 <td style="text-align:right;">
-0.076
+0.030
 </td>
 <td style="text-align:right;">
-817.511
+781.036
 </td>
 <td style="text-align:right;">
-75.946
+51.384
 </td>
 </tr>
 <tr>
@@ -537,10 +520,27 @@ std_err
 0.121
 </td>
 <td style="text-align:right;">
-827.687
+794.448
 </td>
 <td style="text-align:right;">
-53.586
+75.486
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+127
+</td>
+<td style="text-align:right;">
+0.276
+</td>
+<td style="text-align:right;">
+834.169
+</td>
+<td style="text-align:right;">
+52.409
 </td>
 </tr>
 </tbody>
@@ -597,7 +597,7 @@ std_err
 rmse
 </td>
 <td style="text-align:right;">
-801.9778
+835.1166
 </td>
 </tr>
 <tr>
@@ -605,7 +605,7 @@ rmse
 mae
 </td>
 <td style="text-align:right;">
-378.1314
+377.5873
 </td>
 </tr>
 <tr>
@@ -613,7 +613,7 @@ mae
 rsq
 </td>
 <td style="text-align:right;">
-0.9600
+0.9559
 </td>
 </tr>
 </tbody>
@@ -820,44 +820,16 @@ std_err
 <tbody>
 <tr>
 <td style="text-align:right;">
-47
+41
 </td>
 <td style="text-align:right;">
-24
+33
 </td>
 <td style="text-align:right;">
-0.7989
+0.8068
 </td>
 <td style="text-align:right;">
-0.0227
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-21
-</td>
-<td style="text-align:right;">
-105
-</td>
-<td style="text-align:right;">
-0.7963
-</td>
-<td style="text-align:right;">
-0.0283
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-120
-</td>
-<td style="text-align:right;">
-57
-</td>
-<td style="text-align:right;">
-0.7963
-</td>
-<td style="text-align:right;">
-0.0140
+0.0224
 </td>
 </tr>
 <tr>
@@ -868,24 +840,52 @@ std_err
 95
 </td>
 <td style="text-align:right;">
-0.7923
+0.8062
 </td>
 <td style="text-align:right;">
-0.0187
+0.0280
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-70
+47
 </td>
 <td style="text-align:right;">
-64
+24
 </td>
 <td style="text-align:right;">
-0.7907
+0.8062
 </td>
 <td style="text-align:right;">
-0.0178
+0.0253
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+21
+</td>
+<td style="text-align:right;">
+105
+</td>
+<td style="text-align:right;">
+0.8027
+</td>
+<td style="text-align:right;">
+0.0211
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+89
+</td>
+<td style="text-align:right;">
+84
+</td>
+<td style="text-align:right;">
+0.7953
+</td>
+<td style="text-align:right;">
+0.0179
 </td>
 </tr>
 </tbody>
@@ -942,7 +942,7 @@ std_err
 accuracy
 </td>
 <td style="text-align:right;">
-0.8672
+0.8618
 </td>
 </tr>
 <tr>
@@ -950,7 +950,7 @@ accuracy
 roc_auc
 </td>
 <td style="text-align:right;">
-0.8129
+0.8323
 </td>
 </tr>
 </tbody>
@@ -990,7 +990,7 @@ roc_auc
 <section id="consejos-prácticos-y-valoración" class="slide level2">
 <h2>Consejos Prácticos y Valoración</h2>
 <div class="columns">
-<div class="column" style="width:50%;">
+<div class="column" style="font-size: 0.8em;">
 <p><strong>Para evitar problemas</strong></p>
 <ul>
 <li>Ejecuta siempre <code>compile_keras_grid()</code> antes de ajustar</li>
@@ -998,7 +998,7 @@ roc_auc
 <li>Ajusta estructura (profundidad/ancho) primero; hiperparámetros de entrenamiento después</li>
 <li>Mantén el espacio de búsqueda razonable</li>
 </ul>
-</div><div class="column" style="width:50%;">
+</div><div class="column" style="font-size: 0.8em;">
 <p><strong>Por qué vale la pena</strong></p>
 <ol type="1">
 <li><strong>Paridad de workflow</strong> — <code>recipes</code>, <code>workflows</code>, <code>tune</code> funcionan igual que con <code>glmnet</code></li>
@@ -1028,7 +1028,7 @@ roc_auc
 <ul>
 <li>📦 <a href="https://github.com/davidrsch/kerasnip">github.com/davidrsch/kerasnip</a></li>
 <li>📑 <a href="https://davidrsch.github.io/kerasnip/">davidrsch.github.io/kerasnip</a></li>
-<li>📑 [https://davidrsch.github.io/kerasnip_presentations/presentations/madrid-2-2026/es/)</li>
+<li>📑 [Presentación]https://davidrsch.github.io/kerasnip_presentations/presentations/madrid-2-2026/es/)</li>
 </ul>
 
 
