@@ -1482,9 +1482,15 @@ prep_rec <- prep(diamonds_rec, training = diamonds_train)
 juiced <- juice(prep_rec)
 x <- juiced |> select(-price)
 y <- juiced$price
-modified_grid <- tibble(num_body = 3, body_units = -10, body_dropout = 0.2)
+modified_grid <- tibble(
+    num_body = c(3, 6),
+    body_units = c(-10, 128),
+    body_dropout = c(0.2, 0.2)
+)
 
-compile_keras_grid(spec, modified_grid, x, y)
+dbg <- compile_keras_grid(spec, modified_grid, x, y)
+dbg
+inform_errors(dbg)
 ```
 
 ```{r}
@@ -1530,7 +1536,11 @@ juiced <- juice(prep_rec)
 x <- juiced |> select(-price)
 y <- juiced$price
 
-test_grid <- tibble(num_body = 3, body_units = -10, body_dropout = 0.2)
+test_grid <- tibble(
+    num_body = c(3, 6),
+    body_units = c(-10, 128),
+    body_dropout = c(0.2, 0.2)
+)
 
 dbg <- compile_keras_grid(
     spec = diamond_mlp(
@@ -1546,6 +1556,7 @@ dbg <- compile_keras_grid(
 )
 
 dbg
+inform_errors(dbg)
 ```
 
 ::: {.notes}
