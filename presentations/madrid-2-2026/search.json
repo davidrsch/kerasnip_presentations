@@ -46,14 +46,14 @@
     "href": "index.html#diamonds-workflow",
     "title": "",
     "section": "Diamonds Workflow",
-    "text": "Diamonds Workflow\nlibrary(tidymodels);  library(kerasnip)\ndata(diamonds, package = \"ggplot2\")\n\ndiamonds_split &lt;- initial_split(diamonds, strata = price)\ndiamonds_train &lt;- training(diamonds_split)\n\ndiamonds_rec &lt;- recipe(price ~ ., data = diamonds_train) |&gt;\n  step_dummy(all_nominal_predictors()) |&gt;\n  step_zv(all_predictors()) |&gt;\n  step_normalize(all_numeric_predictors())\n\nwf &lt;- workflow() |&gt; add_recipe(diamonds_rec) |&gt; add_model(spec)\n\nparams &lt;- extract_parameter_set_dials(wf) |&gt;\n  update(\n    num_body     = dials::num_terms(c(1, 4)),\n    body_units   = dials::hidden_units(c(32, 256)),\n    body_dropout = dials::dropout(c(0, 0.4))\n  )\n\ngrid  &lt;- grid_latin_hypercube(params, size = 20)\nfolds &lt;- vfold_cv(diamonds_train, v = 5, strata = price)\nres   &lt;- tune_grid(wf, resamples = folds, grid = grid)\n\nSay: - This is identical to any other tidymodels workflow. That is the point. - Recipe must output numeric matrices: step_dummy + step_normalize are required for Keras. - extract_parameter_set_dials discovers tunables automatically, you just update the ranges. - Practical tip: start with size = 8 when testing a new architecture. Scale up once you know it builds correctly.\nTransition: Let us look at what came out."
+    "text": "Diamonds Workflow\nlibrary(tidymodels)\nlibrary(kerasnip)\ndata(diamonds, package = \"ggplot2\")\n\ndiamonds_split &lt;- initial_split(diamonds, strata = price)\ndiamonds_train &lt;- training(diamonds_split)\n\ndiamonds_rec &lt;- recipe(price ~ ., data = diamonds_train) |&gt;\n  step_dummy(all_nominal_predictors()) |&gt;\n  step_zv(all_predictors()) |&gt;\n  step_normalize(all_numeric_predictors())\n\nwf &lt;- workflow() |&gt; add_recipe(diamonds_rec) |&gt; add_model(spec)\n\nparams &lt;- extract_parameter_set_dials(wf) |&gt;\n  update(\n    num_body     = dials::num_terms(c(1, 4)),\n    body_units   = dials::hidden_units(c(32, 256)),\n    body_dropout = dials::dropout(c(0, 0.4))\n  )\n\ngrid  &lt;- grid_latin_hypercube(params, size = 20)\nfolds &lt;- vfold_cv(diamonds_train, v = 5, strata = price)\nres   &lt;- tune_grid(wf, resamples = folds, grid = grid)\n\nSay: - This is identical to any other tidymodels workflow. That is the point. - Recipe must output numeric matrices: step_dummy + step_normalize are required for Keras. - extract_parameter_set_dials discovers tunables automatically, you just update the ranges. - Practical tip: start with size = 8 when testing a new architecture. Scale up once you know it builds correctly.\nTransition: Let us look at what came out."
   },
   {
     "objectID": "index.html#results-diamonds-cv-table",
     "href": "index.html#results-diamonds-cv-table",
     "title": "",
     "section": "Results (Diamonds): CV — Table",
-    "text": "Results (Diamonds): CV — Table\n\n\n\n\nnum_body\n\n\nbody_units\n\n\nbody_dropout\n\n\nmean\n\n\nstd_err\n\n\n\n\n\n\n2\n\n\n49\n\n\n0.030\n\n\n778.516\n\n\n50.461\n\n\n\n\n2\n\n\n35\n\n\n0.180\n\n\n791.451\n\n\n36.928\n\n\n\n\n2\n\n\n98\n\n\n0.121\n\n\n804.852\n\n\n78.442\n\n\n\n\n2\n\n\n62\n\n\n0.060\n\n\n808.389\n\n\n49.614\n\n\n\n\n1\n\n\n127\n\n\n0.276\n\n\n842.558\n\n\n42.131\n\n\n\n\n\nKeep this slide to 30 seconds then move to the plot.\nSay: - These are cross-validation estimates. We select on CV, never on the test set. - Look for a stable region: good mean RMSE and small std_err. That is the architecture to carry forward. - Pick the simplest within 1 std_err of the best, not necessarily the top row."
+    "text": "Results (Diamonds): CV — Table\n\n\n\n\nnum_body\n\n\nbody_units\n\n\nbody_dropout\n\n\nmean\n\n\nstd_err\n\n\n\n\n\n\n2\n\n\n35\n\n\n0.180\n\n\n785.560\n\n\n35.972\n\n\n\n\n2\n\n\n62\n\n\n0.060\n\n\n791.039\n\n\n63.325\n\n\n\n\n2\n\n\n49\n\n\n0.030\n\n\n793.869\n\n\n46.691\n\n\n\n\n2\n\n\n98\n\n\n0.121\n\n\n804.676\n\n\n65.892\n\n\n\n\n1\n\n\n127\n\n\n0.276\n\n\n845.829\n\n\n45.672\n\n\n\n\n\nKeep this slide to 30 seconds then move to the plot.\nSay: - These are cross-validation estimates. We select on CV, never on the test set. - Look for a stable region: good mean RMSE and small std_err. That is the architecture to carry forward. - Pick the simplest within 1 std_err of the best, not necessarily the top row."
   },
   {
     "objectID": "index.html#results-diamonds-cv-plot",
@@ -67,7 +67,7 @@
     "href": "index.html#results-diamonds-test-table",
     "title": "",
     "section": "Results (Diamonds): Test — Table",
-    "text": "Results (Diamonds): Test — Table\n\n\n\n\n.metric\n\n\n.estimate\n\n\n\n\n\n\nrmse\n\n\n712.3617\n\n\n\n\nmae\n\n\n334.5304\n\n\n\n\nrsq\n\n\n0.9679\n\n\n\n\n\nSay: - Test is for reporting only. The architecture was chosen with CV, this is just confirmation. - If test is much worse than CV, suspect data leakage or an unstable architecture."
+    "text": "Results (Diamonds): Test — Table\n\n\n\n\n.metric\n\n\n.estimate\n\n\n\n\n\n\nrmse\n\n\n819.6923\n\n\n\n\nmae\n\n\n372.1733\n\n\n\n\nrsq\n\n\n0.9583\n\n\n\n\n\nSay: - Test is for reporting only. The architecture was chosen with CV, this is just confirmation. - If test is much worse than CV, suspect data leakage or an unstable architecture."
   },
   {
     "objectID": "index.html#results-diamonds-test-plot",
@@ -95,14 +95,14 @@
     "href": "index.html#attrition-workflow",
     "title": "",
     "section": "Attrition Workflow",
-    "text": "Attrition Workflow\nlibrary(tidymodels);  library(modeldata)\ndata(attrition)\n\nattr_split &lt;- initial_split(attrition, strata = Attrition)\nattr_train &lt;- training(attr_split)\n\nattr_rec &lt;- recipe(Attrition ~ ., data = attr_train) |&gt;\n  step_zv(all_predictors()) |&gt;\n  step_dummy(all_nominal_predictors()) |&gt;\n  step_normalize(all_numeric_predictors())\n\nattr_spec &lt;- attrition_towers(\n  tower_a_units = tune(),\n  tower_b_units = tune(),\n  fit_epochs    = 20\n) |&gt; set_engine(\"keras\")\n\nattr_wf &lt;- workflow() |&gt; add_recipe(attr_rec) |&gt; add_model(attr_spec)\n\nparams &lt;- extract_parameter_set_dials(attr_wf) |&gt;\n  update(tower_a_units = dials::hidden_units(c(16, 128)),\n         tower_b_units = dials::hidden_units(c(16, 128)))\n\nres &lt;- tune_grid(attr_wf,\n                 resamples = vfold_cv(attr_train, v = 3, strata = Attrition),\n                 grid      = grid_latin_hypercube(params, size = 12))\n\nSay: - Identical pattern to the sequential example. That is the whole point of kerasnip, the graph complexity is completely hidden. - Make sure the outcome is a factor with stable levels.\nTransition: Results."
+    "text": "Attrition Workflow\nlibrary(tidymodels)\nlibrary(modeldata)\ndata(attrition)\n\nattr_split &lt;- initial_split(attrition, strata = Attrition)\nattr_train &lt;- training(attr_split)\n\nattr_rec &lt;- recipe(Attrition ~ ., data = attr_train) |&gt;\n  step_zv(all_predictors()) |&gt;\n  step_dummy(all_nominal_predictors()) |&gt;\n  step_normalize(all_numeric_predictors())\n\nattr_spec &lt;- attrition_towers(\n  tower_a_units = tune(),\n  tower_b_units = tune(),\n  fit_epochs    = 20\n) |&gt; set_engine(\"keras\")\n\nattr_wf &lt;- workflow() |&gt; add_recipe(attr_rec) |&gt; add_model(attr_spec)\n\nparams &lt;- extract_parameter_set_dials(attr_wf) |&gt;\n  update(tower_a_units = dials::hidden_units(c(16, 128)),\n         tower_b_units = dials::hidden_units(c(16, 128)))\n\nres &lt;- tune_grid(attr_wf,\n                 resamples = vfold_cv(attr_train, v = 3, strata = Attrition),\n                 grid      = grid_latin_hypercube(params, size = 12))\n\nSay: - Identical pattern to the sequential example. That is the whole point of kerasnip, the graph complexity is completely hidden. - Make sure the outcome is a factor with stable levels.\nTransition: Results."
   },
   {
     "objectID": "index.html#results-attrition-cv-table",
     "href": "index.html#results-attrition-cv-table",
     "title": "",
     "section": "Results (Attrition): CV — Table",
-    "text": "Results (Attrition): CV — Table\n\n\n\n\ntower_a_units\n\n\ntower_b_units\n\n\nmean\n\n\nstd_err\n\n\n\n\n\n\n41\n\n\n33\n\n\n0.7997\n\n\n0.0212\n\n\n\n\n80\n\n\n95\n\n\n0.7956\n\n\n0.0151\n\n\n\n\n21\n\n\n105\n\n\n0.7950\n\n\n0.0300\n\n\n\n\n47\n\n\n24\n\n\n0.7929\n\n\n0.0227\n\n\n\n\n70\n\n\n64\n\n\n0.7902\n\n\n0.0311\n\n\n\n\n\nKeep this slide to 30 seconds then move to the heatmap.\nSay: - Same reading as before: mean ROC AUC plus std_err. Select on CV. - Pick the simplest architecture within 1 std_err of the best."
+    "text": "Results (Attrition): CV — Table\n\n\n\n\ntower_a_units\n\n\ntower_b_units\n\n\nmean\n\n\nstd_err\n\n\n\n\n\n\n89\n\n\n84\n\n\n0.8038\n\n\n0.0238\n\n\n\n\n41\n\n\n33\n\n\n0.7971\n\n\n0.0215\n\n\n\n\n109\n\n\n115\n\n\n0.7919\n\n\n0.0255\n\n\n\n\n47\n\n\n24\n\n\n0.7910\n\n\n0.0209\n\n\n\n\n21\n\n\n105\n\n\n0.7893\n\n\n0.0139\n\n\n\n\n\nKeep this slide to 30 seconds then move to the heatmap.\nSay: - Same reading as before: mean ROC AUC plus std_err. Select on CV. - Pick the simplest architecture within 1 std_err of the best."
   },
   {
     "objectID": "index.html#results-attrition-cv-plot",
@@ -116,7 +116,7 @@
     "href": "index.html#results-attrition-test-table",
     "title": "",
     "section": "Results (Attrition): Test — Table",
-    "text": "Results (Attrition): Test — Table\n\n\n\n\n.metric\n\n\n.estimate\n\n\n\n\n\n\naccuracy\n\n\n0.8537\n\n\n\n\nroc_auc\n\n\n0.8195\n\n\n\n\n\nSay: - On imbalanced datasets like attrition, ROC AUC is more informative than accuracy, accuracy can look fine just by predicting the majority class. - Again: test is for reporting, not for deciding."
+    "text": "Results (Attrition): Test — Table\n\n\n\n\n.metric\n\n\n.estimate\n\n\n\n\n\n\naccuracy\n\n\n0.8509\n\n\n\n\nroc_auc\n\n\n0.8068\n\n\n\n\n\nSay: - On imbalanced datasets like attrition, ROC AUC is more informative than accuracy, accuracy can look fine just by predicting the majority class. - Again: test is for reporting, not for deciding."
   },
   {
     "objectID": "index.html#results-attrition-test-plot",

@@ -397,29 +397,30 @@
 </section>
 <section id="workflow-con-diamantes" class="slide level2">
 <h2>Workflow con Diamantes</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a><span class="fu">library</span>(tidymodels);  <span class="fu">library</span>(kerasnip)</span>
-<span id="cb4-2"><a></a><span class="fu">data</span>(diamonds, <span class="at">package =</span> <span class="st">"ggplot2"</span>)</span>
-<span id="cb4-3"><a></a></span>
-<span id="cb4-4"><a></a>diamonds_split <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(diamonds, <span class="at">strata =</span> price)</span>
-<span id="cb4-5"><a></a>diamonds_train <span class="ot">&lt;-</span> <span class="fu">training</span>(diamonds_split)</span>
-<span id="cb4-6"><a></a></span>
-<span id="cb4-7"><a></a>diamonds_rec <span class="ot">&lt;-</span> <span class="fu">recipe</span>(price <span class="sc">~</span> ., <span class="at">data =</span> diamonds_train) <span class="sc">|&gt;</span></span>
-<span id="cb4-8"><a></a>  <span class="fu">step_dummy</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">|&gt;</span></span>
-<span id="cb4-9"><a></a>  <span class="fu">step_zv</span>(<span class="fu">all_predictors</span>()) <span class="sc">|&gt;</span></span>
-<span id="cb4-10"><a></a>  <span class="fu">step_normalize</span>(<span class="fu">all_numeric_predictors</span>())</span>
-<span id="cb4-11"><a></a></span>
-<span id="cb4-12"><a></a>wf <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">|&gt;</span> <span class="fu">add_recipe</span>(diamonds_rec) <span class="sc">|&gt;</span> <span class="fu">add_model</span>(spec)</span>
-<span id="cb4-13"><a></a></span>
-<span id="cb4-14"><a></a>params <span class="ot">&lt;-</span> <span class="fu">extract_parameter_set_dials</span>(wf) <span class="sc">|&gt;</span></span>
-<span id="cb4-15"><a></a>  <span class="fu">update</span>(</span>
-<span id="cb4-16"><a></a>    <span class="at">num_body     =</span> dials<span class="sc">::</span><span class="fu">num_terms</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">4</span>)),</span>
-<span id="cb4-17"><a></a>    <span class="at">body_units   =</span> dials<span class="sc">::</span><span class="fu">hidden_units</span>(<span class="fu">c</span>(<span class="dv">32</span>, <span class="dv">256</span>)),</span>
-<span id="cb4-18"><a></a>    <span class="at">body_dropout =</span> dials<span class="sc">::</span><span class="fu">dropout</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.4</span>))</span>
-<span id="cb4-19"><a></a>  )</span>
-<span id="cb4-20"><a></a></span>
-<span id="cb4-21"><a></a>grid  <span class="ot">&lt;-</span> <span class="fu">grid_latin_hypercube</span>(params, <span class="at">size =</span> <span class="dv">20</span>)</span>
-<span id="cb4-22"><a></a>folds <span class="ot">&lt;-</span> <span class="fu">vfold_cv</span>(diamonds_train, <span class="at">v =</span> <span class="dv">5</span>, <span class="at">strata =</span> price)</span>
-<span id="cb4-23"><a></a>res   <span class="ot">&lt;-</span> <span class="fu">tune_grid</span>(wf, <span class="at">resamples =</span> folds, <span class="at">grid =</span> grid)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a><span class="fu">library</span>(tidymodels)</span>
+<span id="cb4-2"><a></a><span class="fu">library</span>(kerasnip)</span>
+<span id="cb4-3"><a></a><span class="fu">data</span>(diamonds, <span class="at">package =</span> <span class="st">"ggplot2"</span>)</span>
+<span id="cb4-4"><a></a></span>
+<span id="cb4-5"><a></a>diamonds_split <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(diamonds, <span class="at">strata =</span> price)</span>
+<span id="cb4-6"><a></a>diamonds_train <span class="ot">&lt;-</span> <span class="fu">training</span>(diamonds_split)</span>
+<span id="cb4-7"><a></a></span>
+<span id="cb4-8"><a></a>diamonds_rec <span class="ot">&lt;-</span> <span class="fu">recipe</span>(price <span class="sc">~</span> ., <span class="at">data =</span> diamonds_train) <span class="sc">|&gt;</span></span>
+<span id="cb4-9"><a></a>  <span class="fu">step_dummy</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb4-10"><a></a>  <span class="fu">step_zv</span>(<span class="fu">all_predictors</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb4-11"><a></a>  <span class="fu">step_normalize</span>(<span class="fu">all_numeric_predictors</span>())</span>
+<span id="cb4-12"><a></a></span>
+<span id="cb4-13"><a></a>wf <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">|&gt;</span> <span class="fu">add_recipe</span>(diamonds_rec) <span class="sc">|&gt;</span> <span class="fu">add_model</span>(spec)</span>
+<span id="cb4-14"><a></a></span>
+<span id="cb4-15"><a></a>params <span class="ot">&lt;-</span> <span class="fu">extract_parameter_set_dials</span>(wf) <span class="sc">|&gt;</span></span>
+<span id="cb4-16"><a></a>  <span class="fu">update</span>(</span>
+<span id="cb4-17"><a></a>    <span class="at">num_body     =</span> dials<span class="sc">::</span><span class="fu">num_terms</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">4</span>)),</span>
+<span id="cb4-18"><a></a>    <span class="at">body_units   =</span> dials<span class="sc">::</span><span class="fu">hidden_units</span>(<span class="fu">c</span>(<span class="dv">32</span>, <span class="dv">256</span>)),</span>
+<span id="cb4-19"><a></a>    <span class="at">body_dropout =</span> dials<span class="sc">::</span><span class="fu">dropout</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.4</span>))</span>
+<span id="cb4-20"><a></a>  )</span>
+<span id="cb4-21"><a></a></span>
+<span id="cb4-22"><a></a>grid  <span class="ot">&lt;-</span> <span class="fu">grid_latin_hypercube</span>(params, <span class="at">size =</span> <span class="dv">20</span>)</span>
+<span id="cb4-23"><a></a>folds <span class="ot">&lt;-</span> <span class="fu">vfold_cv</span>(diamonds_train, <span class="at">v =</span> <span class="dv">5</span>, <span class="at">strata =</span> price)</span>
+<span id="cb4-24"><a></a>res   <span class="ot">&lt;-</span> <span class="fu">tune_grid</span>(wf, <span class="at">resamples =</span> folds, <span class="at">grid =</span> grid)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <aside class="notes">
 <p>Decir: - Esto es idéntico a cualquier otro workflow de tidymodels. Ese es el punto. - La receta debe producir matrices numéricas: step_dummy + step_normalize son obligatorios para Keras. - extract_parameter_set_dials detecta los ajustables automáticamente, solo actualizas los rangos. - Consejo práctico: empieza con size = 8 al probar una arquitectura nueva. Escala una vez que sabes que construye correctamente.</p>
 <p>Transición: Veamos qué salió.</p>
@@ -463,50 +464,16 @@ std_err
 2
 </td>
 <td style="text-align:right;">
-49
-</td>
-<td style="text-align:right;">
-0.030
-</td>
-<td style="text-align:right;">
-778.516
-</td>
-<td style="text-align:right;">
-50.461
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-2
-</td>
-<td style="text-align:right;">
 35
 </td>
 <td style="text-align:right;">
 0.180
 </td>
 <td style="text-align:right;">
-791.451
+785.560
 </td>
 <td style="text-align:right;">
-36.928
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-2
-</td>
-<td style="text-align:right;">
-98
-</td>
-<td style="text-align:right;">
-0.121
-</td>
-<td style="text-align:right;">
-804.852
-</td>
-<td style="text-align:right;">
-78.442
+35.972
 </td>
 </tr>
 <tr>
@@ -520,10 +487,44 @@ std_err
 0.060
 </td>
 <td style="text-align:right;">
-808.389
+791.039
 </td>
 <td style="text-align:right;">
-49.614
+63.325
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+49
+</td>
+<td style="text-align:right;">
+0.030
+</td>
+<td style="text-align:right;">
+793.869
+</td>
+<td style="text-align:right;">
+46.691
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+98
+</td>
+<td style="text-align:right;">
+0.121
+</td>
+<td style="text-align:right;">
+804.676
+</td>
+<td style="text-align:right;">
+65.892
 </td>
 </tr>
 <tr>
@@ -537,10 +538,10 @@ std_err
 0.276
 </td>
 <td style="text-align:right;">
-842.558
+845.829
 </td>
 <td style="text-align:right;">
-42.131
+45.672
 </td>
 </tr>
 </tbody>
@@ -597,7 +598,7 @@ std_err
 rmse
 </td>
 <td style="text-align:right;">
-712.3617
+819.6923
 </td>
 </tr>
 <tr>
@@ -605,7 +606,7 @@ rmse
 mae
 </td>
 <td style="text-align:right;">
-334.5304
+372.1733
 </td>
 </tr>
 <tr>
@@ -613,7 +614,7 @@ mae
 rsq
 </td>
 <td style="text-align:right;">
-0.9679
+0.9583
 </td>
 </tr>
 </tbody>
@@ -757,32 +758,33 @@ rsq
 </section>
 <section id="workflow-de-rotación" class="slide level2">
 <h2>Workflow de Rotación</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a><span class="fu">library</span>(tidymodels);  <span class="fu">library</span>(modeldata)</span>
-<span id="cb9-2"><a></a><span class="fu">data</span>(attrition)</span>
-<span id="cb9-3"><a></a></span>
-<span id="cb9-4"><a></a>attr_split <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(attrition, <span class="at">strata =</span> Attrition)</span>
-<span id="cb9-5"><a></a>attr_train <span class="ot">&lt;-</span> <span class="fu">training</span>(attr_split)</span>
-<span id="cb9-6"><a></a></span>
-<span id="cb9-7"><a></a>attr_rec <span class="ot">&lt;-</span> <span class="fu">recipe</span>(Attrition <span class="sc">~</span> ., <span class="at">data =</span> attr_train) <span class="sc">|&gt;</span></span>
-<span id="cb9-8"><a></a>  <span class="fu">step_zv</span>(<span class="fu">all_predictors</span>()) <span class="sc">|&gt;</span></span>
-<span id="cb9-9"><a></a>  <span class="fu">step_dummy</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">|&gt;</span></span>
-<span id="cb9-10"><a></a>  <span class="fu">step_normalize</span>(<span class="fu">all_numeric_predictors</span>())</span>
-<span id="cb9-11"><a></a></span>
-<span id="cb9-12"><a></a>attr_spec <span class="ot">&lt;-</span> <span class="fu">attrition_towers</span>(</span>
-<span id="cb9-13"><a></a>  <span class="at">tower_a_units =</span> <span class="fu">tune</span>(),</span>
-<span id="cb9-14"><a></a>  <span class="at">tower_b_units =</span> <span class="fu">tune</span>(),</span>
-<span id="cb9-15"><a></a>  <span class="at">fit_epochs    =</span> <span class="dv">20</span></span>
-<span id="cb9-16"><a></a>) <span class="sc">|&gt;</span> <span class="fu">set_engine</span>(<span class="st">"keras"</span>)</span>
-<span id="cb9-17"><a></a></span>
-<span id="cb9-18"><a></a>attr_wf <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">|&gt;</span> <span class="fu">add_recipe</span>(attr_rec) <span class="sc">|&gt;</span> <span class="fu">add_model</span>(attr_spec)</span>
-<span id="cb9-19"><a></a></span>
-<span id="cb9-20"><a></a>params <span class="ot">&lt;-</span> <span class="fu">extract_parameter_set_dials</span>(attr_wf) <span class="sc">|&gt;</span></span>
-<span id="cb9-21"><a></a>  <span class="fu">update</span>(<span class="at">tower_a_units =</span> dials<span class="sc">::</span><span class="fu">hidden_units</span>(<span class="fu">c</span>(<span class="dv">16</span>, <span class="dv">128</span>)),</span>
-<span id="cb9-22"><a></a>         <span class="at">tower_b_units =</span> dials<span class="sc">::</span><span class="fu">hidden_units</span>(<span class="fu">c</span>(<span class="dv">16</span>, <span class="dv">128</span>)))</span>
-<span id="cb9-23"><a></a></span>
-<span id="cb9-24"><a></a>res <span class="ot">&lt;-</span> <span class="fu">tune_grid</span>(attr_wf,</span>
-<span id="cb9-25"><a></a>                 <span class="at">resamples =</span> <span class="fu">vfold_cv</span>(attr_train, <span class="at">v =</span> <span class="dv">3</span>, <span class="at">strata =</span> Attrition),</span>
-<span id="cb9-26"><a></a>                 <span class="at">grid      =</span> <span class="fu">grid_latin_hypercube</span>(params, <span class="at">size =</span> <span class="dv">12</span>))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a><span class="fu">library</span>(tidymodels)</span>
+<span id="cb9-2"><a></a><span class="fu">library</span>(modeldata)</span>
+<span id="cb9-3"><a></a><span class="fu">data</span>(attrition)</span>
+<span id="cb9-4"><a></a></span>
+<span id="cb9-5"><a></a>attr_split <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(attrition, <span class="at">strata =</span> Attrition)</span>
+<span id="cb9-6"><a></a>attr_train <span class="ot">&lt;-</span> <span class="fu">training</span>(attr_split)</span>
+<span id="cb9-7"><a></a></span>
+<span id="cb9-8"><a></a>attr_rec <span class="ot">&lt;-</span> <span class="fu">recipe</span>(Attrition <span class="sc">~</span> ., <span class="at">data =</span> attr_train) <span class="sc">|&gt;</span></span>
+<span id="cb9-9"><a></a>  <span class="fu">step_zv</span>(<span class="fu">all_predictors</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb9-10"><a></a>  <span class="fu">step_dummy</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb9-11"><a></a>  <span class="fu">step_normalize</span>(<span class="fu">all_numeric_predictors</span>())</span>
+<span id="cb9-12"><a></a></span>
+<span id="cb9-13"><a></a>attr_spec <span class="ot">&lt;-</span> <span class="fu">attrition_towers</span>(</span>
+<span id="cb9-14"><a></a>  <span class="at">tower_a_units =</span> <span class="fu">tune</span>(),</span>
+<span id="cb9-15"><a></a>  <span class="at">tower_b_units =</span> <span class="fu">tune</span>(),</span>
+<span id="cb9-16"><a></a>  <span class="at">fit_epochs    =</span> <span class="dv">20</span></span>
+<span id="cb9-17"><a></a>) <span class="sc">|&gt;</span> <span class="fu">set_engine</span>(<span class="st">"keras"</span>)</span>
+<span id="cb9-18"><a></a></span>
+<span id="cb9-19"><a></a>attr_wf <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">|&gt;</span> <span class="fu">add_recipe</span>(attr_rec) <span class="sc">|&gt;</span> <span class="fu">add_model</span>(attr_spec)</span>
+<span id="cb9-20"><a></a></span>
+<span id="cb9-21"><a></a>params <span class="ot">&lt;-</span> <span class="fu">extract_parameter_set_dials</span>(attr_wf) <span class="sc">|&gt;</span></span>
+<span id="cb9-22"><a></a>  <span class="fu">update</span>(<span class="at">tower_a_units =</span> dials<span class="sc">::</span><span class="fu">hidden_units</span>(<span class="fu">c</span>(<span class="dv">16</span>, <span class="dv">128</span>)),</span>
+<span id="cb9-23"><a></a>         <span class="at">tower_b_units =</span> dials<span class="sc">::</span><span class="fu">hidden_units</span>(<span class="fu">c</span>(<span class="dv">16</span>, <span class="dv">128</span>)))</span>
+<span id="cb9-24"><a></a></span>
+<span id="cb9-25"><a></a>res <span class="ot">&lt;-</span> <span class="fu">tune_grid</span>(attr_wf,</span>
+<span id="cb9-26"><a></a>                 <span class="at">resamples =</span> <span class="fu">vfold_cv</span>(attr_train, <span class="at">v =</span> <span class="dv">3</span>, <span class="at">strata =</span> Attrition),</span>
+<span id="cb9-27"><a></a>                 <span class="at">grid      =</span> <span class="fu">grid_latin_hypercube</span>(params, <span class="at">size =</span> <span class="dv">12</span>))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <aside class="notes">
 <p>Decir: - Patrón idéntico al ejemplo secuencial. Ese es el punto de kerasnip, la complejidad del grafo queda completamente oculta. - Asegúrate de que el outcome sea factor con niveles estables.</p>
 <p>Transición: Resultados.</p>
@@ -820,44 +822,44 @@ std_err
 <tbody>
 <tr>
 <td style="text-align:right;">
+89
+</td>
+<td style="text-align:right;">
+84
+</td>
+<td style="text-align:right;">
+0.8038
+</td>
+<td style="text-align:right;">
+0.0238
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
 41
 </td>
 <td style="text-align:right;">
 33
 </td>
 <td style="text-align:right;">
-0.7997
+0.7971
 </td>
 <td style="text-align:right;">
-0.0212
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-80
-</td>
-<td style="text-align:right;">
-95
-</td>
-<td style="text-align:right;">
-0.7956
-</td>
-<td style="text-align:right;">
-0.0151
+0.0215
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-21
+109
 </td>
 <td style="text-align:right;">
-105
+115
 </td>
 <td style="text-align:right;">
-0.7950
+0.7919
 </td>
 <td style="text-align:right;">
-0.0300
+0.0255
 </td>
 </tr>
 <tr>
@@ -868,24 +870,24 @@ std_err
 24
 </td>
 <td style="text-align:right;">
-0.7929
+0.7910
 </td>
 <td style="text-align:right;">
-0.0227
+0.0209
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-70
+21
 </td>
 <td style="text-align:right;">
-64
+105
 </td>
 <td style="text-align:right;">
-0.7902
+0.7893
 </td>
 <td style="text-align:right;">
-0.0311
+0.0139
 </td>
 </tr>
 </tbody>
@@ -942,7 +944,7 @@ std_err
 accuracy
 </td>
 <td style="text-align:right;">
-0.8537
+0.8509
 </td>
 </tr>
 <tr>
@@ -950,7 +952,7 @@ accuracy
 roc_auc
 </td>
 <td style="text-align:right;">
-0.8195
+0.8068
 </td>
 </tr>
 </tbody>
