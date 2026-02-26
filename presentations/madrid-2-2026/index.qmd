@@ -1553,9 +1553,6 @@ dbg <- compile_keras_grid(
 
 dbg
 ```
-```{r}
-inform_errors(dbg)
-```
 
 ::: {.notes}
 Decir:
@@ -1566,6 +1563,12 @@ Decir:
 
 Transición: El mismo patrón de workflow, ahora con un grafo no lineal. API funcional.
 :::
+
+---
+
+```{r}
+inform_errors(dbg)
+```
 
 ---
 
