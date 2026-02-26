@@ -288,7 +288,7 @@ Docs: [davidrsch.github.io/kerasnip](https://davidrsch.github.io/kerasnip/) · R
 Open with energy. Ask: "Who loves tidymodels?" then "Who has fought with Keras architectures?"
 
 Say:
-- Keras and tidymodels are like oil and water — kerasnip is the emulsifier.
+- Keras and tidymodels are like oil and water, kerasnip is the emulsifier.
 - Today: solving the architectural tuning problem.
 :::
 
@@ -332,7 +332,7 @@ Say:
 :::
 :::
 
-**The gap**: `tune_grid()` handles learning rate easily, but tuning *model structure* — depth, width, branches — is awkward. `parsnip` expects a fixed set of named arguments; Keras models are arbitrary graphs.
+**The gap**: `tune_grid()` handles learning rate easily, but tuning *model structure*: depth, width, branches; is awkward. `parsnip` expects a fixed set of named arguments; Keras models are arbitrary graphs.
 
 **kerasnip** turns architecture decisions into standard tunable arguments.
 
@@ -340,11 +340,11 @@ Say:
 Analogy: Keras = architect's blank sheet; tidymodels = government form with fixed fields. kerasnip makes the forms fit the drawings.
 
 Say:
-- You can already tune learning rate with keras3 + tidymodels. The friction is topology — depth and width live in Keras code, not in named spec arguments.
+- You can already tune learning rate with keras3 + tidymodels. The friction is topology, which live in Keras code, not in named spec arguments.
 - kerasnip does not replace keras3. It generates new parsnip spec functions that use the existing keras engine.
 - One sentence on why not other packages: reticulate is too low-level, luz/brulee are Torch-only, parsnip::mlp() is too fixed for architecture search.
 
-Transition: Let us see how kerasnip solves this — one diagram.
+Transition: Let us see how kerasnip solves this, one diagram.
 :::
 
 ---
@@ -380,11 +380,11 @@ Say:
 - You write plain R functions called blocks. Each block returns Keras layers.
 - create_keras_*_spec() reads those functions and generates a new parsnip model.
 - From that point on it is standard tidymodels: recipe, workflow, tune_grid.
-- The dotted arrow is the key insight: block arguments automatically become tunable spec arguments, prefixed by block name. dense_block(units=128) becomes body_units. And num_{block} controls how many times a block repeats — that is depth as a hyperparameter.
+- The dotted arrow is the key insight: block arguments automatically become tunable spec arguments, prefixed by block name. dense_block(units=128) becomes body_units. And num_{block} controls how many times a block repeats, that is depth as a hyperparameter.
 
 If someone gets lost: blocks → spec → workflow → tuning. Everything else is detail.
 
-Transition: Let us build one. Sequential API first — predicting diamond prices.
+Transition: Let us build one. Sequential API first, predicting diamond prices.
 :::
 
 ---
@@ -411,7 +411,7 @@ output_block <- function(model) {
 Say:
 - These are plain R functions. Nothing from kerasnip here yet.
 - The function signature is everything: units and dropout become tunable because they are arguments with defaults.
-- dense_block is the repeatable one — num_body will control how many times it stacks.
+- dense_block is the repeatable one, num_body will control how many times it stacks.
 - input and output blocks have no tunable args by design: input shape is fixed by the data, output is fixed by the task.
 
 Point at the code while saying: "body_units comes from units here, body_dropout from dropout. The prefix body comes from the block name we will assign in the list on the next slide."
@@ -439,7 +439,7 @@ create_keras_sequential_spec(
 )
 ```
 
-This creates `diamond_mlp()` — a standard parsnip model function.
+This creates `diamond_mlp()`, a standard parsnip model function.
 :::
 
 ::: {.column width="50%"}
@@ -503,7 +503,7 @@ res   <- tune_grid(wf, resamples = folds, grid = grid)
 Say:
 - This is identical to any other tidymodels workflow. That is the point.
 - Recipe must output numeric matrices: step_dummy + step_normalize are required for Keras.
-- extract_parameter_set_dials discovers tunables automatically — you just update the ranges.
+- extract_parameter_set_dials discovers tunables automatically, you just update the ranges.
 - Practical tip: start with size = 8 when testing a new architecture. Scale up once you know it builds correctly.
 
 Transition: Let us look at what came out.
@@ -589,7 +589,7 @@ if (file.exists(diamonds_rds)) {
 
 ::: {.notes}
 Say:
-- If lines flatten as num_body increases, going deeper is not buying anything — pick the shallower model.
+- If lines flatten as num_body increases, going deeper is not buying anything, pick the shallower model.
 - Each facet is a dropout value: look for a panel where the spread between width options is small. That is a robust region.
 
 Transition: One-time test confirmation.
@@ -623,7 +623,7 @@ if (file.exists(diamonds_final_rds)) {
 
 ::: {.notes}
 Say:
-- Test is for reporting only. The architecture was chosen with CV — this is just confirmation.
+- Test is for reporting only. The architecture was chosen with CV, this is just confirmation.
 - If test is much worse than CV, suspect data leakage or an unstable architecture.
 :::
 
@@ -661,9 +661,9 @@ if (file.exists(diamonds_final_rds)) {
 
 ::: {.notes}
 Say:
-- Points near the diagonal are good predictions. Systematic deviation below at high prices means the model underestimates expensive diamonds — expected, as those are rare in training data.
+- Points near the diagonal are good predictions. Systematic deviation below at high prices means the model underestimates expensive diamonds, expected, as those are rare in training data.
 
-Transition: Before moving to functional — one slide on a tool that saves a lot of debugging pain.
+Transition: Before moving to functional, one slide on a tool that saves a lot of debugging pain.
 :::
 
 ---
@@ -751,7 +751,7 @@ if (!is.null(dbg$compiled_model[[1]])) {
 ::: {.notes}
 Say:
 - Before running tune_grid on 20 configurations, run this on one to confirm the model actually builds correctly.
-- The error column shows which grid rows failed and why — catch this before wasting compute.
+- The error column shows which grid rows failed and why, catch this before wasting compute.
 - extract_valid_grid() filters to successful builds; inform_errors() summarizes failures across the whole grid.
 - Rule: always compile before you tune.
 
@@ -824,12 +824,12 @@ create_keras_functional_spec(
 ::: {.notes}
 Say:
 - Sequential: blocks receive a model and stack layers onto it. Functional: blocks receive tensors and return tensors. That is the only structural difference.
-- inp_spec(func, inputs) is just labeling which upstream output feeds which argument — like patch cables on a modular synth.
+- inp_spec(func, inputs) is just labeling which upstream output feeds which argument, like patch cables on a modular synth.
 - This graph: one input splits into two parallel towers, they concatenate, then output. Non-linear, but the workflow stays completely identical.
 - Use sequential for a straight chain. Use functional when you need branches, merges, or skip connections.
 - tower_a_units and tower_b_units are auto-generated by the same prefix convention as before.
 
-Transition: Now the workflow — you will recognize every line.
+Transition: Now the workflow, you will recognize every line.
 :::
 
 ---
@@ -867,7 +867,7 @@ res <- tune_grid(attr_wf,
 
 ::: {.notes}
 Say:
-- Identical pattern to the sequential example. That is the whole point of kerasnip — the graph complexity is completely hidden.
+- Identical pattern to the sequential example. That is the whole point of kerasnip, the graph complexity is completely hidden.
 - Make sure the outcome is a factor with stable levels.
 
 Transition: Results.
@@ -950,8 +950,8 @@ if (file.exists(attrition_rds)) {
 
 ::: {.notes}
 Say:
-- A flat heatmap means the architecture is robust — tower size does not matter much, pick the smallest.
-- A sharp peak means the model is sensitive to tower sizes — worth narrowing the search around that region in a second pass.
+- A flat heatmap means the architecture is robust, tower size does not matter much, pick the smallest.
+- A sharp peak means the model is sensitive to tower sizes, worth narrowing the search around that region in a second pass.
 
 Transition: Final test confirmation.
 :::
@@ -984,7 +984,7 @@ if (file.exists(attrition_final_rds)) {
 
 ::: {.notes}
 Say:
-- On imbalanced datasets like attrition, ROC AUC is more informative than accuracy — accuracy can look fine just by predicting the majority class.
+- On imbalanced datasets like attrition, ROC AUC is more informative than accuracy, accuracy can look fine just by predicting the majority class.
 - Again: test is for reporting, not for deciding.
 :::
 
@@ -1040,13 +1040,12 @@ Transition: Close with the practical summary.
 **To avoid pain**
 
 - Always run `compile_keras_grid()` before tuning
-- Keep blocks small and testable — isolate errors with 2–3 blocks
+- Keep blocks small and testable, isolate errors with 2–3 blocks
 - Tune structure (depth/width) first; training hyperparameters later
-- Keep search spaces reasonable — depth × width explodes fast
+- Keep search spaces reasonable, depth × width explodes fast
 
 **Limitations**
 
-- No pre-built blocks (ResNet, LSTM...) — you define them
 - Custom loss functions require some boilerplate
 :::
 
@@ -1072,7 +1071,7 @@ Goal: leave people with a clear answer to "should I try this?"
 Say:
 - The learning curve is writing good blocks. After that, everything is standard tidymodels.
 - If you already use tidymodels, the only new concept is defining blocks and calling create_keras_*_spec().
-- Package is on GitHub — contributions and feedback welcome.
+- Package is on GitHub, contributions and feedback welcome.
 
 Stop sharing screen and open Q&A.
 :::
@@ -1136,7 +1135,7 @@ Decir:
 :::
 :::
 
-**La brecha**: `tune_grid()` maneja el learning rate sin problema, pero ajustar la *estructura* — profundidad, ancho, ramas — es incómodo. `parsnip` espera argumentos fijos; los modelos Keras son grafos arbitrarios.
+**La brecha**: `tune_grid()` maneja el learning rate sin problema, pero ajustar la *estructura* es imposible. `parsnip` espera argumentos fijos; los modelos Keras son grafos arbitrarios.
 
 **kerasnip** convierte las decisiones de arquitectura en argumentos ajustables estándar.
 
@@ -1144,11 +1143,11 @@ Decir:
 Analogia: Keras = mesa de arquitecto (papel en blanco); tidymodels = formulario con casillas fijas. kerasnip adapta los formularios a los dibujos.
 
 Decir:
-- Ya se puede ajustar el learning rate con keras3 + tidymodels. La fricción está en la topología — profundidad y ancho viven en código Keras, no en argumentos con nombre del spec.
+- Ya se puede ajustar el learning rate con keras3 + tidymodels. La fricción está en la topología, profundidad y ancho viven en código Keras, no en argumentos con nombre del spec.
 - kerasnip no reemplaza keras3. Genera nuevas funciones spec de parsnip que usan el engine keras existente.
 - Una frase sobre por qué no otros paquetes: reticulate es demasiado bajo nivel, luz/brulee son solo Torch, parsnip::mlp() es demasiado fijo para búsqueda arquitectónica.
 
-Transición: Veamos cómo lo resuelve kerasnip — un solo diagrama.
+Transición: Veamos cómo lo resuelve kerasnip, un solo diagrama.
 :::
 
 ---
@@ -1184,11 +1183,11 @@ Decir:
 - Escribes funciones R simples llamadas bloques. Cada bloque devuelve capas Keras.
 - create_keras_*_spec() lee esas funciones y genera un nuevo modelo parsnip.
 - A partir de ahí es tidymodels estándar: recipe, workflow, tune_grid.
-- La flecha punteada es la idea clave: los argumentos de los bloques se convierten automáticamente en argumentos ajustables del spec, prefijados con el nombre del bloque. dense_block(units=128) se convierte en body_units. Y num_{block} controla cuántas veces se repite un bloque — eso es la profundidad como hiperparámetro.
+- La flecha punteada es la idea clave: los argumentos de los bloques se convierten automáticamente en argumentos ajustables del spec, prefijados con el nombre del bloque. dense_block(units=128) se convierte en body_units. Y num_{block} controla cuántas veces se repite un bloque, eso es la profundidad como hiperparámetro.
 
 Si alguien se pierde: bloques → spec → workflow → ajuste. Todo lo demás es detalle.
 
-Transición: Construyamos uno. Primero el API secuencial — predecir precios de diamantes.
+Transición: Construyamos uno. Primero el API secuencial, predecir precios de diamantes.
 :::
 
 ---
@@ -1215,7 +1214,7 @@ output_block <- function(model) {
 Decir:
 - Estas son funciones R simples. Nada de kerasnip aquí todavía.
 - La firma de la función es todo: units y dropout se vuelven ajustables porque son argumentos con valores por defecto.
-- dense_block es el repetible — num_body controlará cuántas veces se apila.
+- dense_block es el repetible, num_body controlará cuántas veces se apila.
 - input y output no tienen argumentos ajustables a propósito: la forma de entrada la fija el dato, la salida la fija la tarea.
 
 Señalar el código mientras dices: "body_units viene de units aquí, body_dropout de dropout. El prefijo body viene del nombre que le daremos al bloque en la lista de la siguiente diapositiva."
@@ -1243,7 +1242,7 @@ create_keras_sequential_spec(
 )
 ```
 
-Esto crea `diamond_mlp()` — una función de modelo parsnip estándar.
+Esto crea `diamond_mlp()`, una función de modelo parsnip estándar.
 :::
 
 ::: {.column width="50%"}
@@ -1307,7 +1306,7 @@ res   <- tune_grid(wf, resamples = folds, grid = grid)
 Decir:
 - Esto es idéntico a cualquier otro workflow de tidymodels. Ese es el punto.
 - La receta debe producir matrices numéricas: step_dummy + step_normalize son obligatorios para Keras.
-- extract_parameter_set_dials detecta los ajustables automáticamente — solo actualizas los rangos.
+- extract_parameter_set_dials detecta los ajustables automáticamente, solo actualizas los rangos.
 - Consejo práctico: empieza con size = 8 al probar una arquitectura nueva. Escala una vez que sabes que construye correctamente.
 
 Transición: Veamos qué salió.
@@ -1397,7 +1396,7 @@ if (file.exists(diamonds_rds)) {
 
 ::: {.notes}
 Decir:
-- Si las líneas se aplanan al aumentar num_body, más profundidad no aporta — elige el modelo menos profundo.
+- Si las líneas se aplanan al aumentar num_body, más profundidad no aporta, elige el modelo menos profundo.
 - Cada faceta es un valor de dropout: busca un panel donde la diferencia entre opciones de ancho sea pequeña. Esa es una zona robusta.
 
 Transición: Confirmación final en test.
@@ -1431,7 +1430,7 @@ if (file.exists(diamonds_final_rds)) {
 
 ::: {.notes}
 Decir:
-- El test es solo para reportar. La arquitectura se eligió con CV — esto es confirmación.
+- El test es solo para reportar. La arquitectura se eligió con CV, esto es confirmación.
 - Si el test empeora mucho respecto a CV, sospecha data leakage o una arquitectura inestable.
 :::
 
@@ -1469,9 +1468,9 @@ if (file.exists(diamonds_final_rds)) {
 
 ::: {.notes}
 Decir:
-- Puntos cerca de la diagonal son buenas predicciones. Desviación sistemática hacia abajo en precios altos significa que el modelo subestima diamantes caros — esperable, ya que son raros en el entrenamiento.
+- Puntos cerca de la diagonal son buenas predicciones. Desviación sistemática hacia abajo en precios altos significa que el modelo subestima diamantes caros, esperable, ya que son raros en el entrenamiento.
 
-Transición: Antes de pasar al API funcional — una herramienta que ahorra mucho tiempo de depuración.
+Transición: Antes de pasar al API funcional, una herramienta que ahorra mucho tiempo de depuración.
 :::
 
 ---
@@ -1559,7 +1558,7 @@ if (!is.null(dbg$compiled_model[[1]])) {
 ::: {.notes}
 Decir:
 - Antes de lanzar tune_grid con 20 configuraciones, ejecuta esto con una para confirmar que el modelo construye correctamente.
-- La columna error indica qué filas del grid fallaron y por qué — detecta esto antes de gastar cómputo.
+- La columna error indica qué filas del grid fallaron y por qué, detecta esto antes de gastar cómputo.
 - extract_valid_grid() filtra los builds correctos; inform_errors() resume los fallos en todo el grid.
 - Regla: siempre compila antes de ajustar.
 
@@ -1632,12 +1631,12 @@ create_keras_functional_spec(
 ::: {.notes}
 Decir:
 - Secuencial: los bloques reciben un modelo y apilan capas. Funcional: los bloques reciben tensores y devuelven tensores. Esa es la única diferencia estructural.
-- inp_spec(func, inputs) solo etiqueta qué salida upstream alimenta qué argumento — como cables de parcheo en un sintetizador modular.
+- inp_spec(func, inputs) solo etiqueta qué salida upstream alimenta qué argumento, como cables de parcheo en un sintetizador modular.
 - Este grafo: una entrada se divide en dos torres en paralelo, se concatenan, luego la salida. No lineal, pero el workflow es completamente idéntico.
 - Usa secuencial para una cadena recta. Usa funcional cuando necesites ramas, uniones o skip connections.
 - tower_a_units y tower_b_units se generan automáticamente con la misma convención de prefijos que antes.
 
-Transición: El workflow — reconocerás cada línea.
+Transición: El workflow, reconocerás cada línea.
 :::
 
 ---
@@ -1675,7 +1674,7 @@ res <- tune_grid(attr_wf,
 
 ::: {.notes}
 Decir:
-- Patrón idéntico al ejemplo secuencial. Ese es el punto de kerasnip — la complejidad del grafo queda completamente oculta.
+- Patrón idéntico al ejemplo secuencial. Ese es el punto de kerasnip, la complejidad del grafo queda completamente oculta.
 - Asegúrate de que el outcome sea factor con niveles estables.
 
 Transición: Resultados.
@@ -1762,8 +1761,8 @@ if (file.exists(attrition_rds)) {
 
 ::: {.notes}
 Decir:
-- Un mapa plano significa que la arquitectura es robusta — el tamaño de las torres no importa mucho, elige el más pequeño.
-- Un pico claro significa que el modelo es sensible — vale la pena acotar la búsqueda alrededor de esa zona en una segunda pasada.
+- Un mapa plano significa que la arquitectura es robusta, el tamaño de las torres no importa mucho, elige el más pequeño.
+- Un pico claro significa que el modelo es sensible, vale la pena acotar la búsqueda alrededor de esa zona en una segunda pasada.
 
 Transición: Confirmación final en test.
 :::
@@ -1796,7 +1795,7 @@ if (file.exists(attrition_final_rds)) {
 
 ::: {.notes}
 Decir:
-- En conjuntos desbalanceados como attrition, el ROC AUC es más informativo que el accuracy — el accuracy puede verse bien simplemente prediciendo la clase mayoritaria.
+- En conjuntos desbalanceados como attrition, el ROC AUC es más informativo que el accuracy, el accuracy puede verse bien simplemente prediciendo la clase mayoritaria.
 - De nuevo: el test es para reportar, no para decidir.
 :::
 
@@ -1852,13 +1851,12 @@ Transición: Cerramos con el resumen práctico.
 **Para evitar problemas**
 
 - Ejecuta siempre `compile_keras_grid()` antes de ajustar
-- Bloques pequeños y testeables — aísla errores con 2–3 bloques
+- Bloques pequeños y testeables, aísla errores con 2–3 bloques
 - Ajusta estructura (profundidad/ancho) primero; hiperparámetros de entrenamiento después
-- Mantén el espacio de búsqueda razonable — profundidad × ancho explota rápido
+- Mantén el espacio de búsqueda razonable
 
 **Limitaciones**
 
-- No hay bloques predefinidos (ResNet, LSTM...) — los defines tú
 - Las funciones de pérdida personalizadas requieren algo de código repetitivo
 :::
 
@@ -1884,7 +1882,7 @@ Objetivo: que la gente salga con una respuesta clara a "¿debería probar esto?"
 Decir:
 - La curva de aprendizaje está en escribir buenos bloques. Después de eso, todo es tidymodels estándar.
 - Si ya usas tidymodels, lo único nuevo es definir bloques y llamar a create_keras_*_spec().
-- El paquete está en GitHub — contribuciones y feedback bienvenidos.
+- El paquete está en GitHub, contribuciones y feedback bienvenidos.
 
 Dejar de compartir pantalla y abrir turno de preguntas.
 :::
