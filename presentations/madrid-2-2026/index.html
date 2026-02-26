@@ -469,27 +469,10 @@ std_err
 0.180
 </td>
 <td style="text-align:right;">
-771.337
+782.254
 </td>
 <td style="text-align:right;">
-41.683
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-2
-</td>
-<td style="text-align:right;">
-98
-</td>
-<td style="text-align:right;">
-0.121
-</td>
-<td style="text-align:right;">
-777.355
-</td>
-<td style="text-align:right;">
-64.097
+31.538
 </td>
 </tr>
 <tr>
@@ -503,10 +486,10 @@ std_err
 0.030
 </td>
 <td style="text-align:right;">
-784.880
+784.730
 </td>
 <td style="text-align:right;">
-55.770
+62.729
 </td>
 </tr>
 <tr>
@@ -520,27 +503,44 @@ std_err
 0.060
 </td>
 <td style="text-align:right;">
-811.190
+797.803
 </td>
 <td style="text-align:right;">
-74.356
+57.766
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-1
+3
 </td>
 <td style="text-align:right;">
-127
+87
 </td>
 <td style="text-align:right;">
-0.276
+0.076
 </td>
 <td style="text-align:right;">
-835.714
+817.511
 </td>
 <td style="text-align:right;">
-51.906
+75.946
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+98
+</td>
+<td style="text-align:right;">
+0.121
+</td>
+<td style="text-align:right;">
+827.687
+</td>
+<td style="text-align:right;">
+53.586
 </td>
 </tr>
 </tbody>
@@ -597,7 +597,7 @@ std_err
 rmse
 </td>
 <td style="text-align:right;">
-842.1250
+801.9778
 </td>
 </tr>
 <tr>
@@ -605,7 +605,7 @@ rmse
 mae
 </td>
 <td style="text-align:right;">
-419.8387
+378.1314
 </td>
 </tr>
 <tr>
@@ -613,7 +613,7 @@ mae
 rsq
 </td>
 <td style="text-align:right;">
-0.9602
+0.9600
 </td>
 </tr>
 </tbody>
@@ -826,10 +826,10 @@ std_err
 24
 </td>
 <td style="text-align:right;">
-0.8036
+0.7989
 </td>
 <td style="text-align:right;">
-0.0248
+0.0227
 </td>
 </tr>
 <tr>
@@ -840,10 +840,38 @@ std_err
 105
 </td>
 <td style="text-align:right;">
-0.7973
+0.7963
 </td>
 <td style="text-align:right;">
-0.0264
+0.0283
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+120
+</td>
+<td style="text-align:right;">
+57
+</td>
+<td style="text-align:right;">
+0.7963
+</td>
+<td style="text-align:right;">
+0.0140
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+80
+</td>
+<td style="text-align:right;">
+95
+</td>
+<td style="text-align:right;">
+0.7923
+</td>
+<td style="text-align:right;">
+0.0187
 </td>
 </tr>
 <tr>
@@ -854,38 +882,10 @@ std_err
 64
 </td>
 <td style="text-align:right;">
-0.7945
+0.7907
 </td>
 <td style="text-align:right;">
-0.0260
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-41
-</td>
-<td style="text-align:right;">
-33
-</td>
-<td style="text-align:right;">
-0.7884
-</td>
-<td style="text-align:right;">
-0.0286
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-89
-</td>
-<td style="text-align:right;">
-84
-</td>
-<td style="text-align:right;">
-0.7875
-</td>
-<td style="text-align:right;">
-0.0236
+0.0178
 </td>
 </tr>
 </tbody>
@@ -942,7 +942,7 @@ std_err
 accuracy
 </td>
 <td style="text-align:right;">
-0.8618
+0.8672
 </td>
 </tr>
 <tr>
@@ -950,7 +950,7 @@ accuracy
 roc_auc
 </td>
 <td style="text-align:right;">
-0.8047
+0.8129
 </td>
 </tr>
 </tbody>
@@ -998,10 +998,6 @@ roc_auc
 <li>Tune structure (depth/width) first; training hyperparameters later</li>
 <li>Keep search spaces reasonable, depth × width explodes fast</li>
 </ul>
-<p><strong>Limitations</strong></p>
-<ul>
-<li>Custom loss functions require some boilerplate</li>
-</ul>
 </div><div class="column" style="width:50%;">
 <p><strong>Why it is worth it</strong></p>
 <ol type="1">
@@ -1010,11 +1006,6 @@ roc_auc
 <li><strong>Extensibility</strong> — wrap any Keras layer (Transformers, RNNs) into a block</li>
 </ol>
 <p><br></p>
-<p><strong>Resources</strong></p>
-<ul>
-<li>📦 <a href="https://github.com/davidrsch/kerasnip">github.com/davidrsch/kerasnip</a></li>
-<li>📑 <a href="https://davidrsch.github.io/kerasnip/">davidrsch.github.io/kerasnip</a></li>
-</ul>
 </div></div>
 <aside class="notes">
 <p>Goal: leave people with a clear answer to “should I try this?”</p>
@@ -1031,6 +1022,14 @@ roc_auc
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
+</section>
+<section id="resources" class="slide level2">
+<h2>Resources</h2>
+<ul>
+<li>📦 <a href="https://github.com/davidrsch/kerasnip">github.com/davidrsch/kerasnip</a></li>
+<li>📑 <a href="https://davidrsch.github.io/kerasnip/">davidrsch.github.io/kerasnip</a></li>
+<li>📑 [https://davidrsch.github.io/kerasnip_presentations/presentations/madrid-2-2026/)</li>
+</ul>
 
 
 </section>
