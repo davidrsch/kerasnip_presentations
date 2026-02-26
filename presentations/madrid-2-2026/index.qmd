@@ -1075,7 +1075,7 @@ Stop sharing screen and open Q&A.
 
 - 📦 [github.com/davidrsch/kerasnip](https://github.com/davidrsch/kerasnip)
 - 📑 [davidrsch.github.io/kerasnip](https://davidrsch.github.io/kerasnip/)
-- 📑 [https://davidrsch.github.io/kerasnip_presentations/presentations/madrid-2-2026/)
+- 📑 [Slides](https://davidrsch.github.io/kerasnip_presentations/presentations/madrid-2-2026/)
 
 
 :::
@@ -1849,7 +1849,7 @@ Transición: Cerramos con el resumen práctico.
 ## Consejos Prácticos y Valoración
 
 ::: {.columns}
-::: {.column width="50%"}
+::: {.column width="50%" style="font-size: 0.8em;"}
 **Para evitar problemas**
 
 - Ejecuta siempre `compile_keras_grid()` antes de ajustar
@@ -1859,7 +1859,7 @@ Transición: Cerramos con el resumen práctico.
 
 :::
 
-::: {.column width="50%"}
+::: {.column width="50%" style="font-size: 0.8em;"}
 **Por qué vale la pena**
 
 1. **Paridad de workflow** — `recipes`, `workflows`, `tune` funcionan igual que con `glmnet`
@@ -1887,6 +1887,6 @@ Dejar de compartir pantalla y abrir turno de preguntas.
 
 - 📦 [github.com/davidrsch/kerasnip](https://github.com/davidrsch/kerasnip)
 - 📑 [davidrsch.github.io/kerasnip](https://davidrsch.github.io/kerasnip/)
-- 📑 [https://davidrsch.github.io/kerasnip_presentations/presentations/madrid-2-2026/es/)
+- 📑 [Presentación]https://davidrsch.github.io/kerasnip_presentations/presentations/madrid-2-2026/es/)
 
 :::
