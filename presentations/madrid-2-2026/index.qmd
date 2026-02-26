@@ -669,11 +669,22 @@ Transition: Before moving to functional, one slide on a tool that saves a lot of
 ## Debugging: `compile_keras_grid()` {.compact .table-compact}
 
 ```r
-compile_keras_grid(spec, grid, x, y)
+prep_rec <- prep(diamonds_rec, training = diamonds_train)
+juiced <- juice(prep_rec)
+x <- juiced |> select(-price)
+y <- juiced$price
+modified_grid <- tibble(
+    num_body = c(3, 6),
+    body_units = c(-10, 128),
+    body_dropout = c(0.2, 0.2)
+)
+
+dbg <- compile_keras_grid(spec, modified_grid, x, y)
+dbg
 ```
 
 ```{r}
-#| label: diamonds-debug
+#| label: diamonds-debug-es
 #| echo: false
 #| message: false
 #| warning: false
@@ -715,6 +726,12 @@ juiced <- juice(prep_rec)
 x <- juiced |> select(-price)
 y <- juiced$price
 
+test_grid <- tibble(
+    num_body = c(3, 6),
+    body_units = c(-10, 128),
+    body_dropout = c(0.2, 0.2)
+)
+
 dbg <- compile_keras_grid(
     spec = diamond_mlp(
         num_body = tune(),
@@ -723,27 +740,12 @@ dbg <- compile_keras_grid(
         fit_epochs = 5
     ) |>
         set_engine("keras"),
-    grid = tibble(num_body = 3, body_units = 128, body_dropout = 0.2),
+    grid = test_grid,
     x = x,
     y = y
 )
 
-dbg |> select(num_body, body_units, body_dropout, error)
-
-if (!is.null(dbg$compiled_model[[1]])) {
-    model <- dbg$compiled_model[[1]]
-    tibble(
-        n_features = ncol(x),
-        n_layers = length(model$layers),
-        n_params = model$count_params()
-    )
-    layer_tbl <- tibble(
-        layer = map_chr(model$layers, "name"),
-        class = map_chr(model$layers, ~ class(.x)[1])
-    ) |>
-        slice_head(n = 8)
-    layer_tbl
-}
+dbg
 ```
 
 ::: {.notes}
@@ -1486,7 +1488,6 @@ modified_grid <- tibble(
 
 dbg <- compile_keras_grid(spec, modified_grid, x, y)
 dbg
-inform_errors(dbg)
 ```
 
 ```{r}
@@ -1563,12 +1564,6 @@ Decir:
 
 Transición: El mismo patrón de workflow, ahora con un grafo no lineal. API funcional.
 :::
-
----
-
-```{r}
-inform_errors(dbg)
-```
 
 ---
 
