@@ -464,33 +464,16 @@ std_err
 2
 </td>
 <td style="text-align:right;">
-62
+98
 </td>
 <td style="text-align:right;">
-0.060
+0.121
 </td>
 <td style="text-align:right;">
-775.415
+783.658
 </td>
 <td style="text-align:right;">
-55.715
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-2
-</td>
-<td style="text-align:right;">
-35
-</td>
-<td style="text-align:right;">
-0.180
-</td>
-<td style="text-align:right;">
-783.441
-</td>
-<td style="text-align:right;">
-44.193
+60.506
 </td>
 </tr>
 <tr>
@@ -504,10 +487,10 @@ std_err
 0.030
 </td>
 <td style="text-align:right;">
-791.123
+786.331
 </td>
 <td style="text-align:right;">
-65.859
+62.828
 </td>
 </tr>
 <tr>
@@ -515,33 +498,50 @@ std_err
 2
 </td>
 <td style="text-align:right;">
-98
+35
 </td>
 <td style="text-align:right;">
-0.121
+0.180
 </td>
 <td style="text-align:right;">
-796.906
+796.272
 </td>
 <td style="text-align:right;">
-72.946
+45.950
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-3
+2
 </td>
 <td style="text-align:right;">
-87
+62
 </td>
 <td style="text-align:right;">
-0.076
+0.060
 </td>
 <td style="text-align:right;">
-834.398
+814.087
 </td>
 <td style="text-align:right;">
-74.712
+34.082
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+127
+</td>
+<td style="text-align:right;">
+0.276
+</td>
+<td style="text-align:right;">
+838.317
+</td>
+<td style="text-align:right;">
+43.007
 </td>
 </tr>
 </tbody>
@@ -598,7 +598,7 @@ std_err
 rmse
 </td>
 <td style="text-align:right;">
-699.1874
+725.6581
 </td>
 </tr>
 <tr>
@@ -606,7 +606,7 @@ rmse
 mae
 </td>
 <td style="text-align:right;">
-339.3857
+366.7488
 </td>
 </tr>
 <tr>
@@ -614,7 +614,7 @@ mae
 rsq
 </td>
 <td style="text-align:right;">
-0.9691
+0.9682
 </td>
 </tr>
 </tbody>
@@ -653,25 +653,19 @@ rsq
 </section>
 <section id="depuración-compile_keras_grid" class="slide level2 compact table-compact">
 <h2>Depuración: <code>compile_keras_grid()</code></h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a><span class="fu">compile_keras_grid</span>(spec, grid, x, y)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a>prep_rec <span class="ot">&lt;-</span> <span class="fu">prep</span>(diamonds_rec, <span class="at">training =</span> diamonds_train)</span>
+<span id="cb5-2"><a></a>juiced <span class="ot">&lt;-</span> <span class="fu">juice</span>(prep_rec)</span>
+<span id="cb5-3"><a></a>x <span class="ot">&lt;-</span> juiced <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span>price)</span>
+<span id="cb5-4"><a></a>y <span class="ot">&lt;-</span> juiced<span class="sc">$</span>price</span>
+<span id="cb5-5"><a></a>modified_grid <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">num_body =</span> <span class="dv">3</span>, <span class="at">body_units =</span> <span class="sc">-</span><span class="dv">10</span>, <span class="at">body_dropout =</span> <span class="fl">0.2</span>)</span>
+<span id="cb5-6"><a></a></span>
+<span id="cb5-7"><a></a><span class="fu">compile_keras_grid</span>(spec, modified_grid, x, y)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 1 × 4
-  num_body body_units body_dropout error
-     &lt;dbl&gt;      &lt;dbl&gt;        &lt;dbl&gt; &lt;chr&gt;
-1        3        128          0.2 &lt;NA&gt; </code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 7 × 2
-  layer       class                                          
-  &lt;chr&gt;       &lt;chr&gt;                                          
-1 dense_154   keras.src.layers.core.dense.Dense              
-2 dropout_103 keras.src.layers.regularization.dropout.Dropout
-3 dense_155   keras.src.layers.core.dense.Dense              
-4 dropout_104 keras.src.layers.regularization.dropout.Dropout
-5 dense_156   keras.src.layers.core.dense.Dense              
-6 dropout_105 keras.src.layers.regularization.dropout.Dropout
-7 dense_157   keras.src.layers.core.dense.Dense              </code></pre>
+<pre><code># A tibble: 1 × 5
+  num_body body_units body_dropout compiled_model error                         
+     &lt;dbl&gt;      &lt;dbl&gt;        &lt;dbl&gt; &lt;list&gt;         &lt;chr&gt;                         
+1        3        -10          0.2 &lt;NULL&gt;         "ValueError: Received an inva…</code></pre>
 </div>
 </div>
 <aside class="notes">
@@ -694,51 +688,51 @@ rsq
 <div class="columns">
 <div class="column" style="width:50%;">
 <p><strong>Los bloques reciben tensores, no modelos</strong></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a>input_block <span class="ot">&lt;-</span> <span class="cf">function</span>(input_shape) {</span>
-<span id="cb8-2"><a></a>  <span class="fu">layer_input</span>(<span class="at">shape =</span> input_shape,</span>
-<span id="cb8-3"><a></a>              <span class="at">name =</span> <span class="st">"features"</span>)</span>
-<span id="cb8-4"><a></a>}</span>
-<span id="cb8-5"><a></a></span>
-<span id="cb8-6"><a></a>dense_block <span class="ot">&lt;-</span> <span class="cf">function</span>(tensor,</span>
-<span id="cb8-7"><a></a>                        <span class="at">units =</span> <span class="dv">64</span>,</span>
-<span id="cb8-8"><a></a>                        <span class="at">dropout =</span> <span class="fl">0.0</span>) {</span>
-<span id="cb8-9"><a></a>  tensor <span class="sc">|&gt;</span></span>
-<span id="cb8-10"><a></a>    <span class="fu">layer_dense</span>(<span class="at">units =</span> units,</span>
-<span id="cb8-11"><a></a>                <span class="at">activation =</span> <span class="st">"relu"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb8-12"><a></a>    <span class="fu">layer_dropout</span>(<span class="at">rate =</span> dropout)</span>
-<span id="cb8-13"><a></a>}</span>
-<span id="cb8-14"><a></a></span>
-<span id="cb8-15"><a></a>concat_block <span class="ot">&lt;-</span> <span class="cf">function</span>(input_a, input_b) {</span>
-<span id="cb8-16"><a></a>  <span class="fu">layer_concatenate</span>(<span class="fu">list</span>(input_a, input_b))</span>
-<span id="cb8-17"><a></a>}</span>
-<span id="cb8-18"><a></a></span>
-<span id="cb8-19"><a></a>output_block <span class="ot">&lt;-</span> <span class="cf">function</span>(tensor, num_classes) {</span>
-<span id="cb8-20"><a></a>  tensor <span class="sc">|&gt;</span></span>
-<span id="cb8-21"><a></a>    <span class="fu">layer_dense</span>(<span class="at">units =</span> num_classes,</span>
-<span id="cb8-22"><a></a>                <span class="at">activation =</span> <span class="st">"softmax"</span>)</span>
-<span id="cb8-23"><a></a>}</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a>input_block <span class="ot">&lt;-</span> <span class="cf">function</span>(input_shape) {</span>
+<span id="cb7-2"><a></a>  <span class="fu">layer_input</span>(<span class="at">shape =</span> input_shape,</span>
+<span id="cb7-3"><a></a>              <span class="at">name =</span> <span class="st">"features"</span>)</span>
+<span id="cb7-4"><a></a>}</span>
+<span id="cb7-5"><a></a></span>
+<span id="cb7-6"><a></a>dense_block <span class="ot">&lt;-</span> <span class="cf">function</span>(tensor,</span>
+<span id="cb7-7"><a></a>                        <span class="at">units =</span> <span class="dv">64</span>,</span>
+<span id="cb7-8"><a></a>                        <span class="at">dropout =</span> <span class="fl">0.0</span>) {</span>
+<span id="cb7-9"><a></a>  tensor <span class="sc">|&gt;</span></span>
+<span id="cb7-10"><a></a>    <span class="fu">layer_dense</span>(<span class="at">units =</span> units,</span>
+<span id="cb7-11"><a></a>                <span class="at">activation =</span> <span class="st">"relu"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb7-12"><a></a>    <span class="fu">layer_dropout</span>(<span class="at">rate =</span> dropout)</span>
+<span id="cb7-13"><a></a>}</span>
+<span id="cb7-14"><a></a></span>
+<span id="cb7-15"><a></a>concat_block <span class="ot">&lt;-</span> <span class="cf">function</span>(input_a, input_b) {</span>
+<span id="cb7-16"><a></a>  <span class="fu">layer_concatenate</span>(<span class="fu">list</span>(input_a, input_b))</span>
+<span id="cb7-17"><a></a>}</span>
+<span id="cb7-18"><a></a></span>
+<span id="cb7-19"><a></a>output_block <span class="ot">&lt;-</span> <span class="cf">function</span>(tensor, num_classes) {</span>
+<span id="cb7-20"><a></a>  tensor <span class="sc">|&gt;</span></span>
+<span id="cb7-21"><a></a>    <span class="fu">layer_dense</span>(<span class="at">units =</span> num_classes,</span>
+<span id="cb7-22"><a></a>                <span class="at">activation =</span> <span class="st">"softmax"</span>)</span>
+<span id="cb7-23"><a></a>}</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </div><div class="column" style="width:50%;">
 <p><strong><code>inp_spec()</code> conecta salidas con entradas por nombre</strong></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a><span class="fu">create_keras_functional_spec</span>(</span>
-<span id="cb9-2"><a></a>  <span class="at">model_name =</span> <span class="st">"attrition_towers"</span>,</span>
-<span id="cb9-3"><a></a>  <span class="at">layer_blocks =</span> <span class="fu">list</span>(</span>
-<span id="cb9-4"><a></a>    <span class="at">main_input =</span> input_block,</span>
-<span id="cb9-5"><a></a>    <span class="at">tower_a    =</span> <span class="fu">inp_spec</span>(</span>
-<span id="cb9-6"><a></a>                   dense_block,</span>
-<span id="cb9-7"><a></a>                   <span class="st">"main_input"</span>),</span>
-<span id="cb9-8"><a></a>    <span class="at">tower_b    =</span> <span class="fu">inp_spec</span>(</span>
-<span id="cb9-9"><a></a>                   dense_block,</span>
-<span id="cb9-10"><a></a>                   <span class="st">"main_input"</span>),</span>
-<span id="cb9-11"><a></a>    <span class="at">joined     =</span> <span class="fu">inp_spec</span>(</span>
-<span id="cb9-12"><a></a>                   concat_block,</span>
-<span id="cb9-13"><a></a>                   <span class="fu">c</span>(<span class="at">input_a =</span> <span class="st">"tower_a"</span>,</span>
-<span id="cb9-14"><a></a>                     <span class="at">input_b =</span> <span class="st">"tower_b"</span>)),</span>
-<span id="cb9-15"><a></a>    <span class="at">output     =</span> <span class="fu">inp_spec</span>(</span>
-<span id="cb9-16"><a></a>                   output_block,</span>
-<span id="cb9-17"><a></a>                   <span class="st">"joined"</span>)</span>
-<span id="cb9-18"><a></a>  ),</span>
-<span id="cb9-19"><a></a>  <span class="at">mode =</span> <span class="st">"classification"</span></span>
-<span id="cb9-20"><a></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a><span class="fu">create_keras_functional_spec</span>(</span>
+<span id="cb8-2"><a></a>  <span class="at">model_name =</span> <span class="st">"attrition_towers"</span>,</span>
+<span id="cb8-3"><a></a>  <span class="at">layer_blocks =</span> <span class="fu">list</span>(</span>
+<span id="cb8-4"><a></a>    <span class="at">main_input =</span> input_block,</span>
+<span id="cb8-5"><a></a>    <span class="at">tower_a    =</span> <span class="fu">inp_spec</span>(</span>
+<span id="cb8-6"><a></a>                   dense_block,</span>
+<span id="cb8-7"><a></a>                   <span class="st">"main_input"</span>),</span>
+<span id="cb8-8"><a></a>    <span class="at">tower_b    =</span> <span class="fu">inp_spec</span>(</span>
+<span id="cb8-9"><a></a>                   dense_block,</span>
+<span id="cb8-10"><a></a>                   <span class="st">"main_input"</span>),</span>
+<span id="cb8-11"><a></a>    <span class="at">joined     =</span> <span class="fu">inp_spec</span>(</span>
+<span id="cb8-12"><a></a>                   concat_block,</span>
+<span id="cb8-13"><a></a>                   <span class="fu">c</span>(<span class="at">input_a =</span> <span class="st">"tower_a"</span>,</span>
+<span id="cb8-14"><a></a>                     <span class="at">input_b =</span> <span class="st">"tower_b"</span>)),</span>
+<span id="cb8-15"><a></a>    <span class="at">output     =</span> <span class="fu">inp_spec</span>(</span>
+<span id="cb8-16"><a></a>                   output_block,</span>
+<span id="cb8-17"><a></a>                   <span class="st">"joined"</span>)</span>
+<span id="cb8-18"><a></a>  ),</span>
+<span id="cb8-19"><a></a>  <span class="at">mode =</span> <span class="st">"classification"</span></span>
+<span id="cb8-20"><a></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </div></div>
 <aside class="notes">
 <p>Decir: - Secuencial: los bloques reciben un modelo y apilan capas. Funcional: los bloques reciben tensores y devuelven tensores. Esa es la única diferencia estructural. - inp_spec(func, inputs) solo etiqueta qué salida upstream alimenta qué argumento, como cables de parcheo en un sintetizador modular. - Este grafo: una entrada se divide en dos torres en paralelo, se concatenan, luego la salida. No lineal, pero el workflow es completamente idéntico. - Usa secuencial para una cadena recta. Usa funcional cuando necesites ramas, uniones o skip connections. - tower_a_units y tower_b_units se generan automáticamente con la misma convención de prefijos que antes.</p>
@@ -757,32 +751,32 @@ rsq
 </section>
 <section id="workflow-de-rotación" class="slide level2">
 <h2>Workflow de Rotación</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a><span class="fu">library</span>(tidymodels);  <span class="fu">library</span>(modeldata)</span>
-<span id="cb10-2"><a></a><span class="fu">data</span>(attrition)</span>
-<span id="cb10-3"><a></a></span>
-<span id="cb10-4"><a></a>attr_split <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(attrition, <span class="at">strata =</span> Attrition)</span>
-<span id="cb10-5"><a></a>attr_train <span class="ot">&lt;-</span> <span class="fu">training</span>(attr_split)</span>
-<span id="cb10-6"><a></a></span>
-<span id="cb10-7"><a></a>attr_rec <span class="ot">&lt;-</span> <span class="fu">recipe</span>(Attrition <span class="sc">~</span> ., <span class="at">data =</span> attr_train) <span class="sc">|&gt;</span></span>
-<span id="cb10-8"><a></a>  <span class="fu">step_zv</span>(<span class="fu">all_predictors</span>()) <span class="sc">|&gt;</span></span>
-<span id="cb10-9"><a></a>  <span class="fu">step_dummy</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">|&gt;</span></span>
-<span id="cb10-10"><a></a>  <span class="fu">step_normalize</span>(<span class="fu">all_numeric_predictors</span>())</span>
-<span id="cb10-11"><a></a></span>
-<span id="cb10-12"><a></a>attr_spec <span class="ot">&lt;-</span> <span class="fu">attrition_towers</span>(</span>
-<span id="cb10-13"><a></a>  <span class="at">tower_a_units =</span> <span class="fu">tune</span>(),</span>
-<span id="cb10-14"><a></a>  <span class="at">tower_b_units =</span> <span class="fu">tune</span>(),</span>
-<span id="cb10-15"><a></a>  <span class="at">fit_epochs    =</span> <span class="dv">20</span></span>
-<span id="cb10-16"><a></a>) <span class="sc">|&gt;</span> <span class="fu">set_engine</span>(<span class="st">"keras"</span>)</span>
-<span id="cb10-17"><a></a></span>
-<span id="cb10-18"><a></a>attr_wf <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">|&gt;</span> <span class="fu">add_recipe</span>(attr_rec) <span class="sc">|&gt;</span> <span class="fu">add_model</span>(attr_spec)</span>
-<span id="cb10-19"><a></a></span>
-<span id="cb10-20"><a></a>params <span class="ot">&lt;-</span> <span class="fu">extract_parameter_set_dials</span>(attr_wf) <span class="sc">|&gt;</span></span>
-<span id="cb10-21"><a></a>  <span class="fu">update</span>(<span class="at">tower_a_units =</span> dials<span class="sc">::</span><span class="fu">hidden_units</span>(<span class="fu">c</span>(<span class="dv">16</span>, <span class="dv">128</span>)),</span>
-<span id="cb10-22"><a></a>         <span class="at">tower_b_units =</span> dials<span class="sc">::</span><span class="fu">hidden_units</span>(<span class="fu">c</span>(<span class="dv">16</span>, <span class="dv">128</span>)))</span>
-<span id="cb10-23"><a></a></span>
-<span id="cb10-24"><a></a>res <span class="ot">&lt;-</span> <span class="fu">tune_grid</span>(attr_wf,</span>
-<span id="cb10-25"><a></a>                 <span class="at">resamples =</span> <span class="fu">vfold_cv</span>(attr_train, <span class="at">v =</span> <span class="dv">3</span>, <span class="at">strata =</span> Attrition),</span>
-<span id="cb10-26"><a></a>                 <span class="at">grid      =</span> <span class="fu">grid_latin_hypercube</span>(params, <span class="at">size =</span> <span class="dv">12</span>))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a><span class="fu">library</span>(tidymodels);  <span class="fu">library</span>(modeldata)</span>
+<span id="cb9-2"><a></a><span class="fu">data</span>(attrition)</span>
+<span id="cb9-3"><a></a></span>
+<span id="cb9-4"><a></a>attr_split <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(attrition, <span class="at">strata =</span> Attrition)</span>
+<span id="cb9-5"><a></a>attr_train <span class="ot">&lt;-</span> <span class="fu">training</span>(attr_split)</span>
+<span id="cb9-6"><a></a></span>
+<span id="cb9-7"><a></a>attr_rec <span class="ot">&lt;-</span> <span class="fu">recipe</span>(Attrition <span class="sc">~</span> ., <span class="at">data =</span> attr_train) <span class="sc">|&gt;</span></span>
+<span id="cb9-8"><a></a>  <span class="fu">step_zv</span>(<span class="fu">all_predictors</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb9-9"><a></a>  <span class="fu">step_dummy</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb9-10"><a></a>  <span class="fu">step_normalize</span>(<span class="fu">all_numeric_predictors</span>())</span>
+<span id="cb9-11"><a></a></span>
+<span id="cb9-12"><a></a>attr_spec <span class="ot">&lt;-</span> <span class="fu">attrition_towers</span>(</span>
+<span id="cb9-13"><a></a>  <span class="at">tower_a_units =</span> <span class="fu">tune</span>(),</span>
+<span id="cb9-14"><a></a>  <span class="at">tower_b_units =</span> <span class="fu">tune</span>(),</span>
+<span id="cb9-15"><a></a>  <span class="at">fit_epochs    =</span> <span class="dv">20</span></span>
+<span id="cb9-16"><a></a>) <span class="sc">|&gt;</span> <span class="fu">set_engine</span>(<span class="st">"keras"</span>)</span>
+<span id="cb9-17"><a></a></span>
+<span id="cb9-18"><a></a>attr_wf <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">|&gt;</span> <span class="fu">add_recipe</span>(attr_rec) <span class="sc">|&gt;</span> <span class="fu">add_model</span>(attr_spec)</span>
+<span id="cb9-19"><a></a></span>
+<span id="cb9-20"><a></a>params <span class="ot">&lt;-</span> <span class="fu">extract_parameter_set_dials</span>(attr_wf) <span class="sc">|&gt;</span></span>
+<span id="cb9-21"><a></a>  <span class="fu">update</span>(<span class="at">tower_a_units =</span> dials<span class="sc">::</span><span class="fu">hidden_units</span>(<span class="fu">c</span>(<span class="dv">16</span>, <span class="dv">128</span>)),</span>
+<span id="cb9-22"><a></a>         <span class="at">tower_b_units =</span> dials<span class="sc">::</span><span class="fu">hidden_units</span>(<span class="fu">c</span>(<span class="dv">16</span>, <span class="dv">128</span>)))</span>
+<span id="cb9-23"><a></a></span>
+<span id="cb9-24"><a></a>res <span class="ot">&lt;-</span> <span class="fu">tune_grid</span>(attr_wf,</span>
+<span id="cb9-25"><a></a>                 <span class="at">resamples =</span> <span class="fu">vfold_cv</span>(attr_train, <span class="at">v =</span> <span class="dv">3</span>, <span class="at">strata =</span> Attrition),</span>
+<span id="cb9-26"><a></a>                 <span class="at">grid      =</span> <span class="fu">grid_latin_hypercube</span>(params, <span class="at">size =</span> <span class="dv">12</span>))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <aside class="notes">
 <p>Decir: - Patrón idéntico al ejemplo secuencial. Ese es el punto de kerasnip, la complejidad del grafo queda completamente oculta. - Asegúrate de que el outcome sea factor con niveles estables.</p>
 <p>Transición: Resultados.</p>
@@ -820,16 +814,16 @@ std_err
 <tbody>
 <tr>
 <td style="text-align:right;">
-21
+120
 </td>
 <td style="text-align:right;">
-105
+57
 </td>
 <td style="text-align:right;">
-0.8076
+0.7979
 </td>
 <td style="text-align:right;">
-0.0193
+0.0264
 </td>
 </tr>
 <tr>
@@ -840,10 +834,24 @@ std_err
 24
 </td>
 <td style="text-align:right;">
-0.7997
+0.7954
 </td>
 <td style="text-align:right;">
-0.0049
+0.0247
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+80
+</td>
+<td style="text-align:right;">
+95
+</td>
+<td style="text-align:right;">
+0.7953
+</td>
+<td style="text-align:right;">
+0.0266
 </td>
 </tr>
 <tr>
@@ -854,35 +862,21 @@ std_err
 64
 </td>
 <td style="text-align:right;">
-0.7955
-</td>
-<td style="text-align:right;">
-0.0138
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-120
-</td>
-<td style="text-align:right;">
-57
-</td>
-<td style="text-align:right;">
 0.7937
 </td>
 <td style="text-align:right;">
-0.0182
+0.0296
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-41
+89
 </td>
 <td style="text-align:right;">
-33
+84
 </td>
 <td style="text-align:right;">
-0.7915
+0.7916
 </td>
 <td style="text-align:right;">
 0.0140
@@ -942,7 +936,7 @@ std_err
 accuracy
 </td>
 <td style="text-align:right;">
-0.8591
+0.8428
 </td>
 </tr>
 <tr>
@@ -950,7 +944,7 @@ accuracy
 roc_auc
 </td>
 <td style="text-align:right;">
-0.8235
+0.7977
 </td>
 </tr>
 </tbody>

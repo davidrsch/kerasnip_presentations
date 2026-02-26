@@ -53,7 +53,7 @@
     "href": "index.html#resultados-diamantes-cv-tabla",
     "title": "",
     "section": "Resultados (Diamantes): CV — Tabla",
-    "text": "Resultados (Diamantes): CV — Tabla\n\n\n\n\nnum_body\n\n\nbody_units\n\n\nbody_dropout\n\n\nmean\n\n\nstd_err\n\n\n\n\n\n\n2\n\n\n62\n\n\n0.060\n\n\n775.415\n\n\n55.715\n\n\n\n\n2\n\n\n35\n\n\n0.180\n\n\n783.441\n\n\n44.193\n\n\n\n\n2\n\n\n49\n\n\n0.030\n\n\n791.123\n\n\n65.859\n\n\n\n\n2\n\n\n98\n\n\n0.121\n\n\n796.906\n\n\n72.946\n\n\n\n\n3\n\n\n87\n\n\n0.076\n\n\n834.398\n\n\n74.712\n\n\n\n\n\nMantener esta diapositiva en 30 segundos y pasar al gráfico.\nDecir: - Estas son estimaciones de validación cruzada. Seleccionamos con CV, nunca con el test. - Busca una zona estable: buen RMSE medio y std_err pequeño. Esa es la arquitectura a llevar adelante. - Elige la más simple dentro de 1 std_err del mejor, no necesariamente la primera fila."
+    "text": "Resultados (Diamantes): CV — Tabla\n\n\n\n\nnum_body\n\n\nbody_units\n\n\nbody_dropout\n\n\nmean\n\n\nstd_err\n\n\n\n\n\n\n2\n\n\n98\n\n\n0.121\n\n\n783.658\n\n\n60.506\n\n\n\n\n2\n\n\n49\n\n\n0.030\n\n\n786.331\n\n\n62.828\n\n\n\n\n2\n\n\n35\n\n\n0.180\n\n\n796.272\n\n\n45.950\n\n\n\n\n2\n\n\n62\n\n\n0.060\n\n\n814.087\n\n\n34.082\n\n\n\n\n1\n\n\n127\n\n\n0.276\n\n\n838.317\n\n\n43.007\n\n\n\n\n\nMantener esta diapositiva en 30 segundos y pasar al gráfico.\nDecir: - Estas son estimaciones de validación cruzada. Seleccionamos con CV, nunca con el test. - Busca una zona estable: buen RMSE medio y std_err pequeño. Esa es la arquitectura a llevar adelante. - Elige la más simple dentro de 1 std_err del mejor, no necesariamente la primera fila."
   },
   {
     "objectID": "index.html#resultados-diamantes-cv-gráfico",
@@ -67,7 +67,7 @@
     "href": "index.html#resultados-diamantes-test-tabla",
     "title": "",
     "section": "Resultados (Diamantes): Test — Tabla",
-    "text": "Resultados (Diamantes): Test — Tabla\n\n\n\n\n.metric\n\n\n.estimate\n\n\n\n\n\n\nrmse\n\n\n699.1874\n\n\n\n\nmae\n\n\n339.3857\n\n\n\n\nrsq\n\n\n0.9691\n\n\n\n\n\nDecir: - El test es solo para reportar. La arquitectura se eligió con CV, esto es confirmación. - Si el test empeora mucho respecto a CV, sospecha data leakage o una arquitectura inestable."
+    "text": "Resultados (Diamantes): Test — Tabla\n\n\n\n\n.metric\n\n\n.estimate\n\n\n\n\n\n\nrmse\n\n\n725.6581\n\n\n\n\nmae\n\n\n366.7488\n\n\n\n\nrsq\n\n\n0.9682\n\n\n\n\n\nDecir: - El test es solo para reportar. La arquitectura se eligió con CV, esto es confirmación. - Si el test empeora mucho respecto a CV, sospecha data leakage o una arquitectura inestable."
   },
   {
     "objectID": "index.html#resultados-diamantes-test-gráfico",
@@ -81,7 +81,7 @@
     "href": "index.html#depuración-compile_keras_grid",
     "title": "",
     "section": "Depuración: compile_keras_grid()",
-    "text": "Depuración: compile_keras_grid()\ncompile_keras_grid(spec, grid, x, y)\n\n\n# A tibble: 1 × 4\n  num_body body_units body_dropout error\n     &lt;dbl&gt;      &lt;dbl&gt;        &lt;dbl&gt; &lt;chr&gt;\n1        3        128          0.2 &lt;NA&gt; \n\n\n# A tibble: 7 × 2\n  layer       class                                          \n  &lt;chr&gt;       &lt;chr&gt;                                          \n1 dense_154   keras.src.layers.core.dense.Dense              \n2 dropout_103 keras.src.layers.regularization.dropout.Dropout\n3 dense_155   keras.src.layers.core.dense.Dense              \n4 dropout_104 keras.src.layers.regularization.dropout.Dropout\n5 dense_156   keras.src.layers.core.dense.Dense              \n6 dropout_105 keras.src.layers.regularization.dropout.Dropout\n7 dense_157   keras.src.layers.core.dense.Dense              \n\n\n\nDecir: - Antes de lanzar tune_grid con 20 configuraciones, ejecuta esto con una para confirmar que el modelo construye correctamente. - La columna error indica qué filas del grid fallaron y por qué, detecta esto antes de gastar cómputo. - extract_valid_grid() filtra los builds correctos; inform_errors() resume los fallos en todo el grid. - Regla: siempre compila antes de ajustar.\nTransición: El mismo patrón de workflow, ahora con un grafo no lineal. API funcional."
+    "text": "Depuración: compile_keras_grid()\nprep_rec &lt;- prep(diamonds_rec, training = diamonds_train)\njuiced &lt;- juice(prep_rec)\nx &lt;- juiced |&gt; select(-price)\ny &lt;- juiced$price\nmodified_grid &lt;- tibble(num_body = 3, body_units = -10, body_dropout = 0.2)\n\ncompile_keras_grid(spec, modified_grid, x, y)\n\n\n# A tibble: 1 × 5\n  num_body body_units body_dropout compiled_model error                         \n     &lt;dbl&gt;      &lt;dbl&gt;        &lt;dbl&gt; &lt;list&gt;         &lt;chr&gt;                         \n1        3        -10          0.2 &lt;NULL&gt;         \"ValueError: Received an inva…\n\n\n\nDecir: - Antes de lanzar tune_grid con 20 configuraciones, ejecuta esto con una para confirmar que el modelo construye correctamente. - La columna error indica qué filas del grid fallaron y por qué, detecta esto antes de gastar cómputo. - extract_valid_grid() filtra los builds correctos; inform_errors() resume los fallos en todo el grid. - Regla: siempre compila antes de ajustar.\nTransición: El mismo patrón de workflow, ahora con un grafo no lineal. API funcional."
   },
   {
     "objectID": "index.html#api-funcional-bloques-grafo",
@@ -102,7 +102,7 @@
     "href": "index.html#resultados-rotación-cv-tabla",
     "title": "",
     "section": "Resultados (Rotación): CV — Tabla",
-    "text": "Resultados (Rotación): CV — Tabla\n\n\n\n\ntower_a_units\n\n\ntower_b_units\n\n\nmean\n\n\nstd_err\n\n\n\n\n\n\n21\n\n\n105\n\n\n0.8076\n\n\n0.0193\n\n\n\n\n47\n\n\n24\n\n\n0.7997\n\n\n0.0049\n\n\n\n\n70\n\n\n64\n\n\n0.7955\n\n\n0.0138\n\n\n\n\n120\n\n\n57\n\n\n0.7937\n\n\n0.0182\n\n\n\n\n41\n\n\n33\n\n\n0.7915\n\n\n0.0140\n\n\n\n\n\nMantener en 30 segundos y pasar al mapa de calor.\nDecir: - Misma lectura que antes: ROC AUC medio más std_err. Seleccionamos con CV. - Elige la arquitectura más simple dentro de 1 std_err del mejor."
+    "text": "Resultados (Rotación): CV — Tabla\n\n\n\n\ntower_a_units\n\n\ntower_b_units\n\n\nmean\n\n\nstd_err\n\n\n\n\n\n\n120\n\n\n57\n\n\n0.7979\n\n\n0.0264\n\n\n\n\n47\n\n\n24\n\n\n0.7954\n\n\n0.0247\n\n\n\n\n80\n\n\n95\n\n\n0.7953\n\n\n0.0266\n\n\n\n\n70\n\n\n64\n\n\n0.7937\n\n\n0.0296\n\n\n\n\n89\n\n\n84\n\n\n0.7916\n\n\n0.0140\n\n\n\n\n\nMantener en 30 segundos y pasar al mapa de calor.\nDecir: - Misma lectura que antes: ROC AUC medio más std_err. Seleccionamos con CV. - Elige la arquitectura más simple dentro de 1 std_err del mejor."
   },
   {
     "objectID": "index.html#resultados-rotación-cv-gráfico",
@@ -116,7 +116,7 @@
     "href": "index.html#resultados-rotación-test-tabla",
     "title": "",
     "section": "Resultados (Rotación): Test — Tabla",
-    "text": "Resultados (Rotación): Test — Tabla\n\n\n\n\n.metric\n\n\n.estimate\n\n\n\n\n\n\naccuracy\n\n\n0.8591\n\n\n\n\nroc_auc\n\n\n0.8235\n\n\n\n\n\nDecir: - En conjuntos desbalanceados como attrition, el ROC AUC es más informativo que el accuracy, el accuracy puede verse bien simplemente prediciendo la clase mayoritaria. - De nuevo: el test es para reportar, no para decidir."
+    "text": "Resultados (Rotación): Test — Tabla\n\n\n\n\n.metric\n\n\n.estimate\n\n\n\n\n\n\naccuracy\n\n\n0.8428\n\n\n\n\nroc_auc\n\n\n0.7977\n\n\n\n\n\nDecir: - En conjuntos desbalanceados como attrition, el ROC AUC es más informativo que el accuracy, el accuracy puede verse bien simplemente prediciendo la clase mayoritaria. - De nuevo: el test es para reportar, no para decidir."
   },
   {
     "objectID": "index.html#resultados-rotación-test-gráfico",
