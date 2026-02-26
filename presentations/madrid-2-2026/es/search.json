@@ -18,7 +18,7 @@
     "href": "index.html#el-panorama-y-la-brecha",
     "title": "",
     "section": "El Panorama y la Brecha",
-    "text": "El Panorama y la Brecha\n\n\n🧱 Keras (vía keras3)\n\nAprendizaje profundo\nPensado para tensores, imperativo\nAgnóstico al backend (TF, JAX, Torch)\nGrafos arbitrarios de capas\n\n\n🧹 tidymodels\n\nAprendizaje automático\nPensado para data frames, declarativo\nInterfaz unificada (fit, predict)\nAjuste de hiperparámetros estandarizado\n\n\nLa brecha: tune_grid() maneja el learning rate sin problema, pero ajustar la estructura es imposible. parsnip espera argumentos fijos; los modelos Keras son grafos arbitrarios.\n\nAnalogia: Keras = mesa de arquitecto (papel en blanco); tidymodels = formulario con casillas fijas. kerasnip adapta los formularios a los dibujos.\nDecir: - Ya se puede ajustar el learning rate con keras3 + tidymodels. La fricción está en la topología, profundidad y ancho viven en código Keras, no en argumentos con nombre del spec. - kerasnip no reemplaza keras3. Genera nuevas funciones spec de parsnip que usan el engine keras existente. - Una frase sobre por qué no otros paquetes: reticulate es demasiado bajo nivel, luz/brulee son solo Torch, parsnip::mlp() es demasiado fijo para búsqueda arquitectónica.\nTransición: Veamos cómo lo resuelve kerasnip, un solo diagrama."
+    "text": "El Panorama y la Brecha\n\n\nKeras (vía keras3)\n\nAprendizaje profundo\nPensado para tensores, imperativo\nAgnóstico al backend (TF, JAX, Torch)\nGrafos arbitrarios de capas\n\n\ntidymodels\n\nAprendizaje automático\nPensado para data frames, declarativo\nInterfaz unificada (fit, predict)\nAjuste de hiperparámetros estandarizado\n\n\nLa brecha: tune_grid() maneja el learning rate sin problema, pero ajustar la estructura es imposible. parsnip espera argumentos fijos; los modelos Keras son grafos arbitrarios.\n\nAnalogia: Keras = mesa de arquitecto (papel en blanco); tidymodels = formulario con casillas fijas. kerasnip adapta los formularios a los dibujos.\nDecir: - Ya se puede ajustar el learning rate con keras3 + tidymodels. La fricción está en la topología, profundidad y ancho viven en código Keras, no en argumentos con nombre del spec. - kerasnip no reemplaza keras3. Genera nuevas funciones spec de parsnip que usan el engine keras existente. - Una frase sobre por qué no otros paquetes: reticulate es demasiado bajo nivel, luz/brulee son solo Torch, parsnip::mlp() es demasiado fijo para búsqueda arquitectónica.\nTransición: Veamos cómo lo resuelve kerasnip, un solo diagrama."
   },
   {
     "objectID": "index.html#modelo-mental",
@@ -53,7 +53,7 @@
     "href": "index.html#resultados-diamantes-cv-tabla",
     "title": "",
     "section": "Resultados (Diamantes): CV — Tabla",
-    "text": "Resultados (Diamantes): CV — Tabla\n\n\n\n\nnum_body\n\n\nbody_units\n\n\nbody_dropout\n\n\nmean\n\n\nstd_err\n\n\n\n\n\n\n2\n\n\n62\n\n\n0.060\n\n\n777.933\n\n\n61.887\n\n\n\n\n2\n\n\n98\n\n\n0.121\n\n\n784.346\n\n\n53.229\n\n\n\n\n2\n\n\n49\n\n\n0.030\n\n\n784.737\n\n\n56.013\n\n\n\n\n2\n\n\n35\n\n\n0.180\n\n\n821.521\n\n\n54.502\n\n\n\n\n1\n\n\n127\n\n\n0.276\n\n\n842.305\n\n\n50.618\n\n\n\n\n\nMantener esta diapositiva en 30 segundos y pasar al gráfico.\nDecir: - Estas son estimaciones de validación cruzada. Seleccionamos con CV, nunca con el test. - Busca una zona estable: buen RMSE medio y std_err pequeño. Esa es la arquitectura a llevar adelante. - Elige la más simple dentro de 1 std_err del mejor, no necesariamente la primera fila."
+    "text": "Resultados (Diamantes): CV — Tabla\n\n\n\n\nnum_body\n\n\nbody_units\n\n\nbody_dropout\n\n\nmean\n\n\nstd_err\n\n\n\n\n\n\n2\n\n\n35\n\n\n0.180\n\n\n771.337\n\n\n41.683\n\n\n\n\n2\n\n\n98\n\n\n0.121\n\n\n777.355\n\n\n64.097\n\n\n\n\n2\n\n\n49\n\n\n0.030\n\n\n784.880\n\n\n55.770\n\n\n\n\n2\n\n\n62\n\n\n0.060\n\n\n811.190\n\n\n74.356\n\n\n\n\n1\n\n\n127\n\n\n0.276\n\n\n835.714\n\n\n51.906\n\n\n\n\n\nMantener esta diapositiva en 30 segundos y pasar al gráfico.\nDecir: - Estas son estimaciones de validación cruzada. Seleccionamos con CV, nunca con el test. - Busca una zona estable: buen RMSE medio y std_err pequeño. Esa es la arquitectura a llevar adelante. - Elige la más simple dentro de 1 std_err del mejor, no necesariamente la primera fila."
   },
   {
     "objectID": "index.html#resultados-diamantes-cv-gráfico",
@@ -67,7 +67,7 @@
     "href": "index.html#resultados-diamantes-test-tabla",
     "title": "",
     "section": "Resultados (Diamantes): Test — Tabla",
-    "text": "Resultados (Diamantes): Test — Tabla\n\n\n\n\n.metric\n\n\n.estimate\n\n\n\n\n\n\nrmse\n\n\n776.2592\n\n\n\n\nmae\n\n\n351.8341\n\n\n\n\nrsq\n\n\n0.9655\n\n\n\n\n\nDecir: - El test es solo para reportar. La arquitectura se eligió con CV, esto es confirmación. - Si el test empeora mucho respecto a CV, sospecha data leakage o una arquitectura inestable."
+    "text": "Resultados (Diamantes): Test — Tabla\n\n\n\n\n.metric\n\n\n.estimate\n\n\n\n\n\n\nrmse\n\n\n842.1250\n\n\n\n\nmae\n\n\n419.8387\n\n\n\n\nrsq\n\n\n0.9602\n\n\n\n\n\nDecir: - El test es solo para reportar. La arquitectura se eligió con CV, esto es confirmación. - Si el test empeora mucho respecto a CV, sospecha data leakage o una arquitectura inestable."
   },
   {
     "objectID": "index.html#resultados-diamantes-test-gráfico",
@@ -102,7 +102,7 @@
     "href": "index.html#resultados-rotación-cv-tabla",
     "title": "",
     "section": "Resultados (Rotación): CV — Tabla",
-    "text": "Resultados (Rotación): CV — Tabla\n\n\n\n\ntower_a_units\n\n\ntower_b_units\n\n\nmean\n\n\nstd_err\n\n\n\n\n\n\n21\n\n\n105\n\n\n0.7980\n\n\n0.0130\n\n\n\n\n109\n\n\n115\n\n\n0.7939\n\n\n0.0277\n\n\n\n\n120\n\n\n57\n\n\n0.7924\n\n\n0.0144\n\n\n\n\n89\n\n\n84\n\n\n0.7917\n\n\n0.0253\n\n\n\n\n41\n\n\n33\n\n\n0.7900\n\n\n0.0222\n\n\n\n\n\nMantener en 30 segundos y pasar al mapa de calor.\nDecir: - Misma lectura que antes: ROC AUC medio más std_err. Seleccionamos con CV. - Elige la arquitectura más simple dentro de 1 std_err del mejor."
+    "text": "Resultados (Rotación): CV — Tabla\n\n\n\n\ntower_a_units\n\n\ntower_b_units\n\n\nmean\n\n\nstd_err\n\n\n\n\n\n\n47\n\n\n24\n\n\n0.8036\n\n\n0.0248\n\n\n\n\n21\n\n\n105\n\n\n0.7973\n\n\n0.0264\n\n\n\n\n70\n\n\n64\n\n\n0.7945\n\n\n0.0260\n\n\n\n\n41\n\n\n33\n\n\n0.7884\n\n\n0.0286\n\n\n\n\n89\n\n\n84\n\n\n0.7875\n\n\n0.0236\n\n\n\n\n\nMantener en 30 segundos y pasar al mapa de calor.\nDecir: - Misma lectura que antes: ROC AUC medio más std_err. Seleccionamos con CV. - Elige la arquitectura más simple dentro de 1 std_err del mejor."
   },
   {
     "objectID": "index.html#resultados-rotación-cv-gráfico",
@@ -116,7 +116,7 @@
     "href": "index.html#resultados-rotación-test-tabla",
     "title": "",
     "section": "Resultados (Rotación): Test — Tabla",
-    "text": "Resultados (Rotación): Test — Tabla\n\n\n\n\n.metric\n\n\n.estimate\n\n\n\n\n\n\naccuracy\n\n\n0.8618\n\n\n\n\nroc_auc\n\n\n0.8020\n\n\n\n\n\nDecir: - En conjuntos desbalanceados como attrition, el ROC AUC es más informativo que el accuracy, el accuracy puede verse bien simplemente prediciendo la clase mayoritaria. - De nuevo: el test es para reportar, no para decidir."
+    "text": "Resultados (Rotación): Test — Tabla\n\n\n\n\n.metric\n\n\n.estimate\n\n\n\n\n\n\naccuracy\n\n\n0.8618\n\n\n\n\nroc_auc\n\n\n0.8047\n\n\n\n\n\nDecir: - En conjuntos desbalanceados como attrition, el ROC AUC es más informativo que el accuracy, el accuracy puede verse bien simplemente prediciendo la clase mayoritaria. - De nuevo: el test es para reportar, no para decidir."
   },
   {
     "objectID": "index.html#resultados-rotación-test-gráfico",
