@@ -1,6 +1,7 @@
 ---
 format:
   revealjs:
+    chalkboard: true
     slide-level: 2
     slide-number: true
     preview-links: auto
