@@ -1887,6 +1887,6 @@ Dejar de compartir pantalla y abrir turno de preguntas.
 
 - 📦 [github.com/davidrsch/kerasnip](https://github.com/davidrsch/kerasnip)
 - 📑 [davidrsch.github.io/kerasnip](https://davidrsch.github.io/kerasnip/)
-- 📑 [Presentación]https://davidrsch.github.io/kerasnip_presentations/presentations/madrid-2-2026/es/)
+- 📑 [Presentación](https://davidrsch.github.io/kerasnip_presentations/presentations/madrid-2-2026/es/)
 
 :::
