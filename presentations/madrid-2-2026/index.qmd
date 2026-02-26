@@ -472,7 +472,8 @@ Transition: Now drop it into a standard workflow.
 ## Diamonds Workflow
 
 ```r
-library(tidymodels);  library(kerasnip)
+library(tidymodels)
+library(kerasnip)
 data(diamonds, package = "ggplot2")
 
 diamonds_split <- initial_split(diamonds, strata = price)
@@ -837,7 +838,8 @@ Transition: Now the workflow, you will recognize every line.
 ## Attrition Workflow
 
 ```r
-library(tidymodels);  library(modeldata)
+library(tidymodels)
+library(modeldata)
 data(attrition)
 
 attr_split <- initial_split(attrition, strata = Attrition)
@@ -1277,7 +1279,8 @@ Transición: Ahora lo metemos en un workflow estándar.
 ## Workflow con Diamantes
 
 ```r
-library(tidymodels);  library(kerasnip)
+library(tidymodels)
+library(kerasnip)
 data(diamonds, package = "ggplot2")
 
 diamonds_split <- initial_split(diamonds, strata = price)
@@ -1646,7 +1649,8 @@ Transición: El workflow, reconocerás cada línea.
 ## Workflow de Rotación
 
 ```r
-library(tidymodels);  library(modeldata)
+library(tidymodels)
+library(modeldata)
 data(attrition)
 
 attr_split <- initial_split(attrition, strata = Attrition)
