@@ -18,7 +18,7 @@
     "href": "index.html#the-landscape-the-gap",
     "title": "",
     "section": "The Landscape & The Gap",
-    "text": "The Landscape & The Gap\n\n\n🧱 Keras (via keras3)\n\nDeep Learning\nTensor-centric & imperative\nBackend agnostic (TF, JAX, Torch)\nArbitrary graphs of layers\n\n\n🧹 tidymodels\n\nMachine Learning\nDataframe-centric & declarative\nUnified interface (fit, predict)\nStandardized tuning\n\n\nThe gap: tune_grid() handles learning rate easily, but tuning model structure: depth, width, branches; is awkward. parsnip expects a fixed set of named arguments; Keras models are arbitrary graphs.\nkerasnip turns architecture decisions into standard tunable arguments.\n\nAnalogy: Keras = architect’s blank sheet; tidymodels = government form with fixed fields. kerasnip makes the forms fit the drawings.\nSay: - You can already tune learning rate with keras3 + tidymodels. The friction is topology, which live in Keras code, not in named spec arguments. - kerasnip does not replace keras3. It generates new parsnip spec functions that use the existing keras engine. - One sentence on why not other packages: reticulate is too low-level, luz/brulee are Torch-only, parsnip::mlp() is too fixed for architecture search.\nTransition: Let us see how kerasnip solves this, one diagram."
+    "text": "The Landscape & The Gap\n\n\n🧱 Keras (via keras3)\n\nDeep Learning\nTensor-centric & imperative\nBackend agnostic (TF, JAX, Torch)\nArbitrary graphs of layers\n\n\n🧹 tidymodels\n\nMachine Learning\nDataframe-centric & declarative\nUnified interface (fit, predict)\nStandardized tuning\n\n\nThe gap: tune_grid() handles learning rate easily, but tuning model structure: depth, width, branches; is awkward. parsnip expects a fixed set of named arguments; Keras models are arbitrary graphs.\n\nAnalogy: Keras = architect’s blank sheet; tidymodels = government form with fixed fields. kerasnip makes the forms fit the drawings.\nSay: - You can already tune learning rate with keras3 + tidymodels. The friction is topology, which live in Keras code, not in named spec arguments. - kerasnip does not replace keras3. It generates new parsnip spec functions that use the existing keras engine. - One sentence on why not other packages: reticulate is too low-level, luz/brulee are Torch-only, parsnip::mlp() is too fixed for architecture search.\nTransition: Let us see how kerasnip solves this, one diagram."
   },
   {
     "objectID": "index.html#mental-model",
@@ -53,7 +53,7 @@
     "href": "index.html#results-diamonds-cv-table",
     "title": "",
     "section": "Results (Diamonds): CV — Table",
-    "text": "Results (Diamonds): CV — Table\n\n\n\n\nnum_body\n\n\nbody_units\n\n\nbody_dropout\n\n\nmean\n\n\nstd_err\n\n\n\n\n\n\n2\n\n\n62\n\n\n0.060\n\n\n769.052\n\n\n60.935\n\n\n\n\n2\n\n\n98\n\n\n0.121\n\n\n782.151\n\n\n64.042\n\n\n\n\n2\n\n\n35\n\n\n0.180\n\n\n782.801\n\n\n47.939\n\n\n\n\n2\n\n\n49\n\n\n0.030\n\n\n784.131\n\n\n51.244\n\n\n\n\n3\n\n\n87\n\n\n0.076\n\n\n837.827\n\n\n70.660\n\n\n\n\n\nKeep this slide to 30 seconds then move to the plot.\nSay: - These are cross-validation estimates. We select on CV, never on the test set. - Look for a stable region: good mean RMSE and small std_err. That is the architecture to carry forward. - Pick the simplest within 1 std_err of the best, not necessarily the top row."
+    "text": "Results (Diamonds): CV — Table\n\n\n\n\nnum_body\n\n\nbody_units\n\n\nbody_dropout\n\n\nmean\n\n\nstd_err\n\n\n\n\n\n\n2\n\n\n62\n\n\n0.060\n\n\n774.360\n\n\n59.378\n\n\n\n\n2\n\n\n49\n\n\n0.030\n\n\n778.402\n\n\n64.429\n\n\n\n\n2\n\n\n35\n\n\n0.180\n\n\n787.082\n\n\n42.311\n\n\n\n\n2\n\n\n98\n\n\n0.121\n\n\n791.251\n\n\n63.024\n\n\n\n\n3\n\n\n69\n\n\n0.246\n\n\n821.557\n\n\n63.818\n\n\n\n\n\nKeep this slide to 30 seconds then move to the plot.\nSay: - These are cross-validation estimates. We select on CV, never on the test set. - Look for a stable region: good mean RMSE and small std_err. That is the architecture to carry forward. - Pick the simplest within 1 std_err of the best, not necessarily the top row."
   },
   {
     "objectID": "index.html#results-diamonds-cv-plot",
@@ -67,7 +67,7 @@
     "href": "index.html#results-diamonds-test-table",
     "title": "",
     "section": "Results (Diamonds): Test — Table",
-    "text": "Results (Diamonds): Test — Table\n\n\n\n\n.metric\n\n\n.estimate\n\n\n\n\n\n\nrmse\n\n\n739.5415\n\n\n\n\nmae\n\n\n361.4036\n\n\n\n\nrsq\n\n\n0.9670\n\n\n\n\n\nSay: - Test is for reporting only. The architecture was chosen with CV, this is just confirmation. - If test is much worse than CV, suspect data leakage or an unstable architecture."
+    "text": "Results (Diamonds): Test — Table\n\n\n\n\n.metric\n\n\n.estimate\n\n\n\n\n\n\nrmse\n\n\n758.0180\n\n\n\n\nmae\n\n\n358.1137\n\n\n\n\nrsq\n\n\n0.9647\n\n\n\n\n\nSay: - Test is for reporting only. The architecture was chosen with CV, this is just confirmation. - If test is much worse than CV, suspect data leakage or an unstable architecture."
   },
   {
     "objectID": "index.html#results-diamonds-test-plot",
@@ -102,7 +102,7 @@
     "href": "index.html#results-attrition-cv-table",
     "title": "",
     "section": "Results (Attrition): CV — Table",
-    "text": "Results (Attrition): CV — Table\n\n\n\n\ntower_a_units\n\n\ntower_b_units\n\n\nmean\n\n\nstd_err\n\n\n\n\n\n\n21\n\n\n105\n\n\n0.8015\n\n\n0.0239\n\n\n\n\n89\n\n\n84\n\n\n0.8007\n\n\n0.0191\n\n\n\n\n41\n\n\n33\n\n\n0.7977\n\n\n0.0250\n\n\n\n\n109\n\n\n115\n\n\n0.7914\n\n\n0.0171\n\n\n\n\n80\n\n\n95\n\n\n0.7883\n\n\n0.0362\n\n\n\n\n\nKeep this slide to 30 seconds then move to the heatmap.\nSay: - Same reading as before: mean ROC AUC plus std_err. Select on CV. - Pick the simplest architecture within 1 std_err of the best."
+    "text": "Results (Attrition): CV — Table\n\n\n\n\ntower_a_units\n\n\ntower_b_units\n\n\nmean\n\n\nstd_err\n\n\n\n\n\n\n70\n\n\n64\n\n\n0.7968\n\n\n0.0207\n\n\n\n\n47\n\n\n24\n\n\n0.7954\n\n\n0.0252\n\n\n\n\n41\n\n\n33\n\n\n0.7921\n\n\n0.0241\n\n\n\n\n89\n\n\n84\n\n\n0.7917\n\n\n0.0261\n\n\n\n\n21\n\n\n105\n\n\n0.7895\n\n\n0.0286\n\n\n\n\n\nKeep this slide to 30 seconds then move to the heatmap.\nSay: - Same reading as before: mean ROC AUC plus std_err. Select on CV. - Pick the simplest architecture within 1 std_err of the best."
   },
   {
     "objectID": "index.html#results-attrition-cv-plot",
@@ -116,7 +116,7 @@
     "href": "index.html#results-attrition-test-table",
     "title": "",
     "section": "Results (Attrition): Test — Table",
-    "text": "Results (Attrition): Test — Table\n\n\n\n\n.metric\n\n\n.estimate\n\n\n\n\n\n\naccuracy\n\n\n0.8509\n\n\n\n\nroc_auc\n\n\n0.8192\n\n\n\n\n\nSay: - On imbalanced datasets like attrition, ROC AUC is more informative than accuracy, accuracy can look fine just by predicting the majority class. - Again: test is for reporting, not for deciding."
+    "text": "Results (Attrition): Test — Table\n\n\n\n\n.metric\n\n\n.estimate\n\n\n\n\n\n\naccuracy\n\n\n0.8537\n\n\n\n\nroc_auc\n\n\n0.8001\n\n\n\n\n\nSay: - On imbalanced datasets like attrition, ROC AUC is more informative than accuracy, accuracy can look fine just by predicting the majority class. - Again: test is for reporting, not for deciding."
   },
   {
     "objectID": "index.html#results-attrition-test-plot",

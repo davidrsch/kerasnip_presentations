@@ -263,7 +263,6 @@
 </ul>
 </div></div>
 <p><strong>La brecha</strong>: <code>tune_grid()</code> maneja el learning rate sin problema, pero ajustar la <em>estructura</em> es imposible. <code>parsnip</code> espera argumentos fijos; los modelos Keras son grafos arbitrarios.</p>
-<p><strong>kerasnip</strong> convierte las decisiones de arquitectura en argumentos ajustables estándar.</p>
 <aside class="notes">
 <p>Analogia: Keras = mesa de arquitecto (papel en blanco); tidymodels = formulario con casillas fijas. kerasnip adapta los formularios a los dibujos.</p>
 <p>Decir: - Ya se puede ajustar el learning rate con keras3 + tidymodels. La fricción está en la topología, profundidad y ancho viven en código Keras, no en argumentos con nombre del spec. - kerasnip no reemplaza keras3. Genera nuevas funciones spec de parsnip que usan el engine keras existente. - Una frase sobre por qué no otros paquetes: reticulate es demasiado bajo nivel, luz/brulee son solo Torch, parsnip::mlp() es demasiado fijo para búsqueda arquitectónica.</p>
@@ -470,44 +469,10 @@ std_err
 0.060
 </td>
 <td style="text-align:right;">
-769.052
+774.360
 </td>
 <td style="text-align:right;">
-60.935
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-2
-</td>
-<td style="text-align:right;">
-98
-</td>
-<td style="text-align:right;">
-0.121
-</td>
-<td style="text-align:right;">
-782.151
-</td>
-<td style="text-align:right;">
-64.042
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-2
-</td>
-<td style="text-align:right;">
-35
-</td>
-<td style="text-align:right;">
-0.180
-</td>
-<td style="text-align:right;">
-782.801
-</td>
-<td style="text-align:right;">
-47.939
+59.378
 </td>
 </tr>
 <tr>
@@ -521,10 +486,44 @@ std_err
 0.030
 </td>
 <td style="text-align:right;">
-784.131
+778.402
 </td>
 <td style="text-align:right;">
-51.244
+64.429
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+35
+</td>
+<td style="text-align:right;">
+0.180
+</td>
+<td style="text-align:right;">
+787.082
+</td>
+<td style="text-align:right;">
+42.311
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+98
+</td>
+<td style="text-align:right;">
+0.121
+</td>
+<td style="text-align:right;">
+791.251
+</td>
+<td style="text-align:right;">
+63.024
 </td>
 </tr>
 <tr>
@@ -532,16 +531,16 @@ std_err
 3
 </td>
 <td style="text-align:right;">
-87
+69
 </td>
 <td style="text-align:right;">
-0.076
+0.246
 </td>
 <td style="text-align:right;">
-837.827
+821.557
 </td>
 <td style="text-align:right;">
-70.660
+63.818
 </td>
 </tr>
 </tbody>
@@ -598,7 +597,7 @@ std_err
 rmse
 </td>
 <td style="text-align:right;">
-739.5415
+758.0180
 </td>
 </tr>
 <tr>
@@ -606,7 +605,7 @@ rmse
 mae
 </td>
 <td style="text-align:right;">
-361.4036
+358.1137
 </td>
 </tr>
 <tr>
@@ -614,7 +613,7 @@ mae
 rsq
 </td>
 <td style="text-align:right;">
-0.9670
+0.9647
 </td>
 </tr>
 </tbody>
@@ -822,30 +821,30 @@ std_err
 <tbody>
 <tr>
 <td style="text-align:right;">
-21
+70
 </td>
 <td style="text-align:right;">
-105
+64
 </td>
 <td style="text-align:right;">
-0.8015
+0.7968
 </td>
 <td style="text-align:right;">
-0.0239
+0.0207
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-89
+47
 </td>
 <td style="text-align:right;">
-84
+24
 </td>
 <td style="text-align:right;">
-0.8007
+0.7954
 </td>
 <td style="text-align:right;">
-0.0191
+0.0252
 </td>
 </tr>
 <tr>
@@ -856,38 +855,38 @@ std_err
 33
 </td>
 <td style="text-align:right;">
-0.7977
+0.7921
 </td>
 <td style="text-align:right;">
-0.0250
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-109
-</td>
-<td style="text-align:right;">
-115
-</td>
-<td style="text-align:right;">
-0.7914
-</td>
-<td style="text-align:right;">
-0.0171
+0.0241
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-80
+89
 </td>
 <td style="text-align:right;">
-95
+84
 </td>
 <td style="text-align:right;">
-0.7883
+0.7917
 </td>
 <td style="text-align:right;">
-0.0362
+0.0261
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+21
+</td>
+<td style="text-align:right;">
+105
+</td>
+<td style="text-align:right;">
+0.7895
+</td>
+<td style="text-align:right;">
+0.0286
 </td>
 </tr>
 </tbody>
@@ -944,7 +943,7 @@ std_err
 accuracy
 </td>
 <td style="text-align:right;">
-0.8509
+0.8537
 </td>
 </tr>
 <tr>
@@ -952,7 +951,7 @@ accuracy
 roc_auc
 </td>
 <td style="text-align:right;">
-0.8192
+0.8001
 </td>
 </tr>
 </tbody>
