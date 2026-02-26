@@ -100,6 +100,8 @@
   <link href="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
   <link href="site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
   <style type="text/css">
     .reveal div.sourceCode {
@@ -464,16 +466,16 @@ std_err
 2
 </td>
 <td style="text-align:right;">
-35
+62
 </td>
 <td style="text-align:right;">
-0.180
+0.060
 </td>
 <td style="text-align:right;">
-785.560
+767.101
 </td>
 <td style="text-align:right;">
-35.972
+57.202
 </td>
 </tr>
 <tr>
@@ -481,16 +483,16 @@ std_err
 2
 </td>
 <td style="text-align:right;">
-62
+35
 </td>
 <td style="text-align:right;">
-0.060
+0.180
 </td>
 <td style="text-align:right;">
-791.039
+775.932
 </td>
 <td style="text-align:right;">
-63.325
+45.765
 </td>
 </tr>
 <tr>
@@ -504,10 +506,10 @@ std_err
 0.030
 </td>
 <td style="text-align:right;">
-793.869
+782.881
 </td>
 <td style="text-align:right;">
-46.691
+51.891
 </td>
 </tr>
 <tr>
@@ -521,10 +523,10 @@ std_err
 0.121
 </td>
 <td style="text-align:right;">
-804.676
+783.726
 </td>
 <td style="text-align:right;">
-65.892
+54.377
 </td>
 </tr>
 <tr>
@@ -538,10 +540,10 @@ std_err
 0.276
 </td>
 <td style="text-align:right;">
-845.829
+842.246
 </td>
 <td style="text-align:right;">
-45.672
+45.535
 </td>
 </tr>
 </tbody>
@@ -598,7 +600,7 @@ std_err
 rmse
 </td>
 <td style="text-align:right;">
-819.6923
+736.1172
 </td>
 </tr>
 <tr>
@@ -606,7 +608,7 @@ rmse
 mae
 </td>
 <td style="text-align:right;">
-372.1733
+349.0455
 </td>
 </tr>
 <tr>
@@ -614,7 +616,7 @@ mae
 rsq
 </td>
 <td style="text-align:right;">
-0.9583
+0.9660
 </td>
 </tr>
 </tbody>
@@ -822,16 +824,16 @@ std_err
 <tbody>
 <tr>
 <td style="text-align:right;">
-89
+70
 </td>
 <td style="text-align:right;">
-84
+64
 </td>
 <td style="text-align:right;">
-0.8038
+0.8048
 </td>
 <td style="text-align:right;">
-0.0238
+0.0218
 </td>
 </tr>
 <tr>
@@ -842,24 +844,10 @@ std_err
 33
 </td>
 <td style="text-align:right;">
-0.7971
+0.8017
 </td>
 <td style="text-align:right;">
-0.0215
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-109
-</td>
-<td style="text-align:right;">
-115
-</td>
-<td style="text-align:right;">
-0.7919
-</td>
-<td style="text-align:right;">
-0.0255
+0.0239
 </td>
 </tr>
 <tr>
@@ -870,10 +858,10 @@ std_err
 24
 </td>
 <td style="text-align:right;">
-0.7910
+0.7974
 </td>
 <td style="text-align:right;">
-0.0209
+0.0185
 </td>
 </tr>
 <tr>
@@ -884,10 +872,24 @@ std_err
 105
 </td>
 <td style="text-align:right;">
-0.7893
+0.7955
 </td>
 <td style="text-align:right;">
-0.0139
+0.0278
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+80
+</td>
+<td style="text-align:right;">
+95
+</td>
+<td style="text-align:right;">
+0.7926
+</td>
+<td style="text-align:right;">
+0.0219
 </td>
 </tr>
 </tbody>
@@ -944,7 +946,7 @@ std_err
 accuracy
 </td>
 <td style="text-align:right;">
-0.8509
+0.8699
 </td>
 </tr>
 <tr>
@@ -952,7 +954,7 @@ accuracy
 roc_auc
 </td>
 <td style="text-align:right;">
-0.8068
+0.8232
 </td>
 </tr>
 </tbody>
@@ -1050,6 +1052,7 @@ roc_auc
   <script src="site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
   <script src="site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
   <script src="site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="site_libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
   <script src="site_libs/revealjs/plugin/quarto-support/support.js"></script>
   
 
@@ -1071,7 +1074,8 @@ roc_auc
 'autoAnimateDuration': 1,
 'autoAnimateUnmatched': true,
 'jumpToSlide': true,
-'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"},{"title":"Language","icon":"<i class=\"fa fa-language\"></i>","content":"<ul class=\"reveal-menu-custom\">\n  <br>\n  <li><a href=\"index.html\"><b>English</b></a></li>\n  <br>\n  <li><a href=\"es/index.html\">Español</a></li>\n</ul>\n"}],"openButton":true},
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"8\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"},{"title":"Language","icon":"<i class=\"fa fa-language\"></i>","content":"<ul class=\"reveal-menu-custom\">\n  <br>\n  <li><a href=\"index.html\"><b>English</b></a></li>\n  <br>\n  <li><a href=\"es/index.html\">Español</a></li>\n</ul>\n"}],"openButton":true},
+'chalkboard': {"buttons":true},
 'smaller': false,
  
         // Display controls in the bottom right corner
@@ -1247,7 +1251,7 @@ roc_auc
         },
 
         // reveal.js plugins
-        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, RevealChalkboard, QuartoSupport,
 
           RevealMath,
           RevealNotes,
