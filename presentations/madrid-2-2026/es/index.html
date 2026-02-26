@@ -464,16 +464,16 @@ std_err
 2
 </td>
 <td style="text-align:right;">
-98
+62
 </td>
 <td style="text-align:right;">
-0.121
+0.060
 </td>
 <td style="text-align:right;">
-783.658
+769.052
 </td>
 <td style="text-align:right;">
-60.506
+60.935
 </td>
 </tr>
 <tr>
@@ -481,16 +481,16 @@ std_err
 2
 </td>
 <td style="text-align:right;">
-49
+98
 </td>
 <td style="text-align:right;">
-0.030
+0.121
 </td>
 <td style="text-align:right;">
-786.331
+782.151
 </td>
 <td style="text-align:right;">
-62.828
+64.042
 </td>
 </tr>
 <tr>
@@ -504,10 +504,10 @@ std_err
 0.180
 </td>
 <td style="text-align:right;">
-796.272
+782.801
 </td>
 <td style="text-align:right;">
-45.950
+47.939
 </td>
 </tr>
 <tr>
@@ -515,33 +515,33 @@ std_err
 2
 </td>
 <td style="text-align:right;">
-62
+49
 </td>
 <td style="text-align:right;">
-0.060
+0.030
 </td>
 <td style="text-align:right;">
-814.087
+784.131
 </td>
 <td style="text-align:right;">
-34.082
+51.244
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-1
+3
 </td>
 <td style="text-align:right;">
-127
+87
 </td>
 <td style="text-align:right;">
-0.276
+0.076
 </td>
 <td style="text-align:right;">
-838.317
+837.827
 </td>
 <td style="text-align:right;">
-43.007
+70.660
 </td>
 </tr>
 </tbody>
@@ -598,7 +598,7 @@ std_err
 rmse
 </td>
 <td style="text-align:right;">
-725.6581
+739.5415
 </td>
 </tr>
 <tr>
@@ -606,7 +606,7 @@ rmse
 mae
 </td>
 <td style="text-align:right;">
-366.7488
+361.4036
 </td>
 </tr>
 <tr>
@@ -614,7 +614,7 @@ mae
 rsq
 </td>
 <td style="text-align:right;">
-0.9682
+0.9670
 </td>
 </tr>
 </tbody>
@@ -657,15 +657,23 @@ rsq
 <span id="cb5-2"><a></a>juiced <span class="ot">&lt;-</span> <span class="fu">juice</span>(prep_rec)</span>
 <span id="cb5-3"><a></a>x <span class="ot">&lt;-</span> juiced <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span>price)</span>
 <span id="cb5-4"><a></a>y <span class="ot">&lt;-</span> juiced<span class="sc">$</span>price</span>
-<span id="cb5-5"><a></a>modified_grid <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">num_body =</span> <span class="dv">3</span>, <span class="at">body_units =</span> <span class="sc">-</span><span class="dv">10</span>, <span class="at">body_dropout =</span> <span class="fl">0.2</span>)</span>
-<span id="cb5-6"><a></a></span>
-<span id="cb5-7"><a></a><span class="fu">compile_keras_grid</span>(spec, modified_grid, x, y)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb5-5"><a></a>modified_grid <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb5-6"><a></a>    <span class="at">num_body =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">6</span>),</span>
+<span id="cb5-7"><a></a>    <span class="at">body_units =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">10</span>, <span class="dv">128</span>),</span>
+<span id="cb5-8"><a></a>    <span class="at">body_dropout =</span> <span class="fu">c</span>(<span class="fl">0.2</span>, <span class="fl">0.2</span>)</span>
+<span id="cb5-9"><a></a>)</span>
+<span id="cb5-10"><a></a></span>
+<span id="cb5-11"><a></a>dbg <span class="ot">&lt;-</span> <span class="fu">compile_keras_grid</span>(spec, modified_grid, x, y)</span>
+<span id="cb5-12"><a></a>dbg</span>
+<span id="cb5-13"><a></a><span class="fu">inform_errors</span>(dbg)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 1 × 5
-  num_body body_units body_dropout compiled_model error                         
-     &lt;dbl&gt;      &lt;dbl&gt;        &lt;dbl&gt; &lt;list&gt;         &lt;chr&gt;                         
-1        3        -10          0.2 &lt;NULL&gt;         "ValueError: Received an inva…</code></pre>
+<pre><code># A tibble: 2 × 5
+  num_body body_units body_dropout compiled_model                          
+     &lt;dbl&gt;      &lt;dbl&gt;        &lt;dbl&gt; &lt;list&gt;                                  
+1        3        -10          0.2 &lt;NULL&gt;                                  
+2        6        128          0.2 &lt;keras.src.models.sequential.Sequential&gt;
+# ℹ 1 more variable: error &lt;chr&gt;</code></pre>
 </div>
 </div>
 <aside class="notes">
@@ -814,58 +822,16 @@ std_err
 <tbody>
 <tr>
 <td style="text-align:right;">
-120
+21
 </td>
 <td style="text-align:right;">
-57
+105
 </td>
 <td style="text-align:right;">
-0.7979
+0.8015
 </td>
 <td style="text-align:right;">
-0.0264
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-47
-</td>
-<td style="text-align:right;">
-24
-</td>
-<td style="text-align:right;">
-0.7954
-</td>
-<td style="text-align:right;">
-0.0247
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-80
-</td>
-<td style="text-align:right;">
-95
-</td>
-<td style="text-align:right;">
-0.7953
-</td>
-<td style="text-align:right;">
-0.0266
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-70
-</td>
-<td style="text-align:right;">
-64
-</td>
-<td style="text-align:right;">
-0.7937
-</td>
-<td style="text-align:right;">
-0.0296
+0.0239
 </td>
 </tr>
 <tr>
@@ -876,10 +842,52 @@ std_err
 84
 </td>
 <td style="text-align:right;">
-0.7916
+0.8007
 </td>
 <td style="text-align:right;">
-0.0140
+0.0191
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+41
+</td>
+<td style="text-align:right;">
+33
+</td>
+<td style="text-align:right;">
+0.7977
+</td>
+<td style="text-align:right;">
+0.0250
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+109
+</td>
+<td style="text-align:right;">
+115
+</td>
+<td style="text-align:right;">
+0.7914
+</td>
+<td style="text-align:right;">
+0.0171
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+80
+</td>
+<td style="text-align:right;">
+95
+</td>
+<td style="text-align:right;">
+0.7883
+</td>
+<td style="text-align:right;">
+0.0362
 </td>
 </tr>
 </tbody>
@@ -936,7 +944,7 @@ std_err
 accuracy
 </td>
 <td style="text-align:right;">
-0.8428
+0.8509
 </td>
 </tr>
 <tr>
@@ -944,7 +952,7 @@ accuracy
 roc_auc
 </td>
 <td style="text-align:right;">
-0.7977
+0.8192
 </td>
 </tr>
 </tbody>
