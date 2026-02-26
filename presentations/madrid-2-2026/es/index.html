@@ -262,12 +262,12 @@
 <li>Ajuste de hiperparámetros estandarizado</li>
 </ul>
 </div></div>
-<p><strong>La brecha</strong>: <code>tune_grid()</code> maneja el learning rate sin problema, pero ajustar la <em>estructura</em> — profundidad, ancho, ramas — es incómodo. <code>parsnip</code> espera argumentos fijos; los modelos Keras son grafos arbitrarios.</p>
+<p><strong>La brecha</strong>: <code>tune_grid()</code> maneja el learning rate sin problema, pero ajustar la <em>estructura</em> es imposible. <code>parsnip</code> espera argumentos fijos; los modelos Keras son grafos arbitrarios.</p>
 <p><strong>kerasnip</strong> convierte las decisiones de arquitectura en argumentos ajustables estándar.</p>
 <aside class="notes">
 <p>Analogia: Keras = mesa de arquitecto (papel en blanco); tidymodels = formulario con casillas fijas. kerasnip adapta los formularios a los dibujos.</p>
-<p>Decir: - Ya se puede ajustar el learning rate con keras3 + tidymodels. La fricción está en la topología — profundidad y ancho viven en código Keras, no en argumentos con nombre del spec. - kerasnip no reemplaza keras3. Genera nuevas funciones spec de parsnip que usan el engine keras existente. - Una frase sobre por qué no otros paquetes: reticulate es demasiado bajo nivel, luz/brulee son solo Torch, parsnip::mlp() es demasiado fijo para búsqueda arquitectónica.</p>
-<p>Transición: Veamos cómo lo resuelve kerasnip — un solo diagrama.</p>
+<p>Decir: - Ya se puede ajustar el learning rate con keras3 + tidymodels. La fricción está en la topología, profundidad y ancho viven en código Keras, no en argumentos con nombre del spec. - kerasnip no reemplaza keras3. Genera nuevas funciones spec de parsnip que usan el engine keras existente. - Una frase sobre por qué no otros paquetes: reticulate es demasiado bajo nivel, luz/brulee son solo Torch, parsnip::mlp() es demasiado fijo para búsqueda arquitectónica.</p>
+<p>Transición: Veamos cómo lo resuelve kerasnip, un solo diagrama.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -309,9 +309,9 @@
 <p><strong>Una regla</strong>: si quieres ajustarlo, hazlo argumento de la función.</p>
 <aside class="notes">
 <p>Dedicar unos 60 segundos aquí. Este diagrama es toda la charla en una imagen.</p>
-<p>Decir: - Escribes funciones R simples llamadas bloques. Cada bloque devuelve capas Keras. - create_keras_*<em>spec() lee esas funciones y genera un nuevo modelo parsnip. - A partir de ahí es tidymodels estándar: recipe, workflow, tune_grid. - La flecha punteada es la idea clave: los argumentos de los bloques se convierten automáticamente en argumentos ajustables del spec, prefijados con el nombre del bloque. dense_block(units=128) se convierte en body_units. Y num</em>{block} controla cuántas veces se repite un bloque — eso es la profundidad como hiperparámetro.</p>
+<p>Decir: - Escribes funciones R simples llamadas bloques. Cada bloque devuelve capas Keras. - create_keras_*<em>spec() lee esas funciones y genera un nuevo modelo parsnip. - A partir de ahí es tidymodels estándar: recipe, workflow, tune_grid. - La flecha punteada es la idea clave: los argumentos de los bloques se convierten automáticamente en argumentos ajustables del spec, prefijados con el nombre del bloque. dense_block(units=128) se convierte en body_units. Y num</em>{block} controla cuántas veces se repite un bloque, eso es la profundidad como hiperparámetro.</p>
 <p>Si alguien se pierde: bloques → spec → workflow → ajuste. Todo lo demás es detalle.</p>
-<p>Transición: Construyamos uno. Primero el API secuencial — predecir precios de diamantes.</p>
+<p>Transición: Construyamos uno. Primero el API secuencial, predecir precios de diamantes.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -340,7 +340,7 @@
 <span id="cb1-12"><a></a>  model <span class="sc">|&gt;</span> <span class="fu">layer_dense</span>(<span class="at">units =</span> <span class="dv">1</span>)</span>
 <span id="cb1-13"><a></a>}</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <aside class="notes">
-<p>Decir: - Estas son funciones R simples. Nada de kerasnip aquí todavía. - La firma de la función es todo: units y dropout se vuelven ajustables porque son argumentos con valores por defecto. - dense_block es el repetible — num_body controlará cuántas veces se apila. - input y output no tienen argumentos ajustables a propósito: la forma de entrada la fija el dato, la salida la fija la tarea.</p>
+<p>Decir: - Estas son funciones R simples. Nada de kerasnip aquí todavía. - La firma de la función es todo: units y dropout se vuelven ajustables porque son argumentos con valores por defecto. - dense_block es el repetible, num_body controlará cuántas veces se apila. - input y output no tienen argumentos ajustables a propósito: la forma de entrada la fija el dato, la salida la fija la tarea.</p>
 <p>Señalar el código mientras dices: “body_units viene de units aquí, body_dropout de dropout. El prefijo body viene del nombre que le daremos al bloque en la lista de la siguiente diapositiva.”</p>
 <p>Transición: Ahora pasamos estos bloques a create_keras_sequential_spec y obtenemos un modelo parsnip.</p>
 <style type="text/css">
@@ -369,7 +369,7 @@
 <span id="cb2-7"><a></a>  ),</span>
 <span id="cb2-8"><a></a>  <span class="at">mode =</span> <span class="st">"regression"</span></span>
 <span id="cb2-9"><a></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Esto crea <code>diamond_mlp()</code> — una función de modelo parsnip estándar.</p>
+<p>Esto crea <code>diamond_mlp()</code>, una función de modelo parsnip estándar.</p>
 </div><div class="column" style="width:50%;">
 <p><strong>Tratar la topología como hiperparámetro</strong></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>spec <span class="ot">&lt;-</span> <span class="fu">diamond_mlp</span>(</span>
@@ -422,7 +422,7 @@
 <span id="cb4-22"><a></a>folds <span class="ot">&lt;-</span> <span class="fu">vfold_cv</span>(diamonds_train, <span class="at">v =</span> <span class="dv">5</span>, <span class="at">strata =</span> price)</span>
 <span id="cb4-23"><a></a>res   <span class="ot">&lt;-</span> <span class="fu">tune_grid</span>(wf, <span class="at">resamples =</span> folds, <span class="at">grid =</span> grid)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <aside class="notes">
-<p>Decir: - Esto es idéntico a cualquier otro workflow de tidymodels. Ese es el punto. - La receta debe producir matrices numéricas: step_dummy + step_normalize son obligatorios para Keras. - extract_parameter_set_dials detecta los ajustables automáticamente — solo actualizas los rangos. - Consejo práctico: empieza con size = 8 al probar una arquitectura nueva. Escala una vez que sabes que construye correctamente.</p>
+<p>Decir: - Esto es idéntico a cualquier otro workflow de tidymodels. Ese es el punto. - La receta debe producir matrices numéricas: step_dummy + step_normalize son obligatorios para Keras. - extract_parameter_set_dials detecta los ajustables automáticamente, solo actualizas los rangos. - Consejo práctico: empieza con size = 8 al probar una arquitectura nueva. Escala una vez que sabes que construye correctamente.</p>
 <p>Transición: Veamos qué salió.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -470,27 +470,10 @@ std_err
 0.060
 </td>
 <td style="text-align:right;">
-772.789
+775.415
 </td>
 <td style="text-align:right;">
-56.305
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-2
-</td>
-<td style="text-align:right;">
-98
-</td>
-<td style="text-align:right;">
-0.121
-</td>
-<td style="text-align:right;">
-777.076
-</td>
-<td style="text-align:right;">
-58.157
+55.715
 </td>
 </tr>
 <tr>
@@ -504,10 +487,10 @@ std_err
 0.180
 </td>
 <td style="text-align:right;">
-786.251
+783.441
 </td>
 <td style="text-align:right;">
-37.655
+44.193
 </td>
 </tr>
 <tr>
@@ -521,10 +504,27 @@ std_err
 0.030
 </td>
 <td style="text-align:right;">
-794.592
+791.123
 </td>
 <td style="text-align:right;">
-67.419
+65.859
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+98
+</td>
+<td style="text-align:right;">
+0.121
+</td>
+<td style="text-align:right;">
+796.906
+</td>
+<td style="text-align:right;">
+72.946
 </td>
 </tr>
 <tr>
@@ -532,16 +532,16 @@ std_err
 3
 </td>
 <td style="text-align:right;">
-69
+87
 </td>
 <td style="text-align:right;">
-0.246
+0.076
 </td>
 <td style="text-align:right;">
-831.059
+834.398
 </td>
 <td style="text-align:right;">
-63.567
+74.712
 </td>
 </tr>
 </tbody>
@@ -565,7 +565,7 @@ std_err
 <h2>Resultados (Diamantes): CV — Gráfico</h2>
 
 <img data-src="index_files/figure-revealjs/diamonds-results-cv-plot-es-1.png" width="960" class="r-stretch"><aside class="notes">
-<p>Decir: - Si las líneas se aplanan al aumentar num_body, más profundidad no aporta — elige el modelo menos profundo. - Cada faceta es un valor de dropout: busca un panel donde la diferencia entre opciones de ancho sea pequeña. Esa es una zona robusta.</p>
+<p>Decir: - Si las líneas se aplanan al aumentar num_body, más profundidad no aporta, elige el modelo menos profundo. - Cada faceta es un valor de dropout: busca un panel donde la diferencia entre opciones de ancho sea pequeña. Esa es una zona robusta.</p>
 <p>Transición: Confirmación final en test.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -598,7 +598,7 @@ std_err
 rmse
 </td>
 <td style="text-align:right;">
-787.3259
+699.1874
 </td>
 </tr>
 <tr>
@@ -606,7 +606,7 @@ rmse
 mae
 </td>
 <td style="text-align:right;">
-404.4368
+339.3857
 </td>
 </tr>
 <tr>
@@ -614,13 +614,13 @@ mae
 rsq
 </td>
 <td style="text-align:right;">
-0.9673
+0.9691
 </td>
 </tr>
 </tbody>
 </table>
 <aside class="notes">
-<p>Decir: - El test es solo para reportar. La arquitectura se eligió con CV — esto es confirmación. - Si el test empeora mucho respecto a CV, sospecha data leakage o una arquitectura inestable.</p>
+<p>Decir: - El test es solo para reportar. La arquitectura se eligió con CV, esto es confirmación. - Si el test empeora mucho respecto a CV, sospecha data leakage o una arquitectura inestable.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -637,8 +637,8 @@ rsq
 <h2>Resultados (Diamantes): Test — Gráfico</h2>
 
 <img data-src="index_files/figure-revealjs/diamonds-results-test-plot-es-1.png" width="960" class="r-stretch"><aside class="notes">
-<p>Decir: - Puntos cerca de la diagonal son buenas predicciones. Desviación sistemática hacia abajo en precios altos significa que el modelo subestima diamantes caros — esperable, ya que son raros en el entrenamiento.</p>
-<p>Transición: Antes de pasar al API funcional — una herramienta que ahorra mucho tiempo de depuración.</p>
+<p>Decir: - Puntos cerca de la diagonal son buenas predicciones. Desviación sistemática hacia abajo en precios altos significa que el modelo subestima diamantes caros, esperable, ya que son raros en el entrenamiento.</p>
+<p>Transición: Antes de pasar al API funcional, una herramienta que ahorra mucho tiempo de depuración.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -675,7 +675,7 @@ rsq
 </div>
 </div>
 <aside class="notes">
-<p>Decir: - Antes de lanzar tune_grid con 20 configuraciones, ejecuta esto con una para confirmar que el modelo construye correctamente. - La columna error indica qué filas del grid fallaron y por qué — detecta esto antes de gastar cómputo. - extract_valid_grid() filtra los builds correctos; inform_errors() resume los fallos en todo el grid. - Regla: siempre compila antes de ajustar.</p>
+<p>Decir: - Antes de lanzar tune_grid con 20 configuraciones, ejecuta esto con una para confirmar que el modelo construye correctamente. - La columna error indica qué filas del grid fallaron y por qué, detecta esto antes de gastar cómputo. - extract_valid_grid() filtra los builds correctos; inform_errors() resume los fallos en todo el grid. - Regla: siempre compila antes de ajustar.</p>
 <p>Transición: El mismo patrón de workflow, ahora con un grafo no lineal. API funcional.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -741,8 +741,8 @@ rsq
 <span id="cb9-20"><a></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </div></div>
 <aside class="notes">
-<p>Decir: - Secuencial: los bloques reciben un modelo y apilan capas. Funcional: los bloques reciben tensores y devuelven tensores. Esa es la única diferencia estructural. - inp_spec(func, inputs) solo etiqueta qué salida upstream alimenta qué argumento — como cables de parcheo en un sintetizador modular. - Este grafo: una entrada se divide en dos torres en paralelo, se concatenan, luego la salida. No lineal, pero el workflow es completamente idéntico. - Usa secuencial para una cadena recta. Usa funcional cuando necesites ramas, uniones o skip connections. - tower_a_units y tower_b_units se generan automáticamente con la misma convención de prefijos que antes.</p>
-<p>Transición: El workflow — reconocerás cada línea.</p>
+<p>Decir: - Secuencial: los bloques reciben un modelo y apilan capas. Funcional: los bloques reciben tensores y devuelven tensores. Esa es la única diferencia estructural. - inp_spec(func, inputs) solo etiqueta qué salida upstream alimenta qué argumento, como cables de parcheo en un sintetizador modular. - Este grafo: una entrada se divide en dos torres en paralelo, se concatenan, luego la salida. No lineal, pero el workflow es completamente idéntico. - Usa secuencial para una cadena recta. Usa funcional cuando necesites ramas, uniones o skip connections. - tower_a_units y tower_b_units se generan automáticamente con la misma convención de prefijos que antes.</p>
+<p>Transición: El workflow, reconocerás cada línea.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -784,7 +784,7 @@ rsq
 <span id="cb10-25"><a></a>                 <span class="at">resamples =</span> <span class="fu">vfold_cv</span>(attr_train, <span class="at">v =</span> <span class="dv">3</span>, <span class="at">strata =</span> Attrition),</span>
 <span id="cb10-26"><a></a>                 <span class="at">grid      =</span> <span class="fu">grid_latin_hypercube</span>(params, <span class="at">size =</span> <span class="dv">12</span>))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <aside class="notes">
-<p>Decir: - Patrón idéntico al ejemplo secuencial. Ese es el punto de kerasnip — la complejidad del grafo queda completamente oculta. - Asegúrate de que el outcome sea factor con niveles estables.</p>
+<p>Decir: - Patrón idéntico al ejemplo secuencial. Ese es el punto de kerasnip, la complejidad del grafo queda completamente oculta. - Asegúrate de que el outcome sea factor con niveles estables.</p>
 <p>Transición: Resultados.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -820,58 +820,16 @@ std_err
 <tbody>
 <tr>
 <td style="text-align:right;">
-120
-</td>
-<td style="text-align:right;">
-57
-</td>
-<td style="text-align:right;">
-0.8020
-</td>
-<td style="text-align:right;">
-0.0230
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
 21
 </td>
 <td style="text-align:right;">
 105
 </td>
 <td style="text-align:right;">
-0.7988
+0.8076
 </td>
 <td style="text-align:right;">
-0.0215
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-80
-</td>
-<td style="text-align:right;">
-95
-</td>
-<td style="text-align:right;">
-0.7917
-</td>
-<td style="text-align:right;">
-0.0201
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-41
-</td>
-<td style="text-align:right;">
-33
-</td>
-<td style="text-align:right;">
-0.7898
-</td>
-<td style="text-align:right;">
-0.0191
+0.0193
 </td>
 </tr>
 <tr>
@@ -882,10 +840,52 @@ std_err
 24
 </td>
 <td style="text-align:right;">
-0.7879
+0.7997
 </td>
 <td style="text-align:right;">
-0.0175
+0.0049
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+70
+</td>
+<td style="text-align:right;">
+64
+</td>
+<td style="text-align:right;">
+0.7955
+</td>
+<td style="text-align:right;">
+0.0138
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+120
+</td>
+<td style="text-align:right;">
+57
+</td>
+<td style="text-align:right;">
+0.7937
+</td>
+<td style="text-align:right;">
+0.0182
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+41
+</td>
+<td style="text-align:right;">
+33
+</td>
+<td style="text-align:right;">
+0.7915
+</td>
+<td style="text-align:right;">
+0.0140
 </td>
 </tr>
 </tbody>
@@ -909,7 +909,7 @@ std_err
 <h2>Resultados (Rotación): CV — Gráfico</h2>
 
 <img data-src="index_files/figure-revealjs/attrition-results-cv-plot-es-1.png" width="960" class="r-stretch"><aside class="notes">
-<p>Decir: - Un mapa plano significa que la arquitectura es robusta — el tamaño de las torres no importa mucho, elige el más pequeño. - Un pico claro significa que el modelo es sensible — vale la pena acotar la búsqueda alrededor de esa zona en una segunda pasada.</p>
+<p>Decir: - Un mapa plano significa que la arquitectura es robusta, el tamaño de las torres no importa mucho, elige el más pequeño. - Un pico claro significa que el modelo es sensible, vale la pena acotar la búsqueda alrededor de esa zona en una segunda pasada.</p>
 <p>Transición: Confirmación final en test.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -942,7 +942,7 @@ std_err
 accuracy
 </td>
 <td style="text-align:right;">
-0.8455
+0.8591
 </td>
 </tr>
 <tr>
@@ -950,13 +950,13 @@ accuracy
 roc_auc
 </td>
 <td style="text-align:right;">
-0.7983
+0.8235
 </td>
 </tr>
 </tbody>
 </table>
 <aside class="notes">
-<p>Decir: - En conjuntos desbalanceados como attrition, el ROC AUC es más informativo que el accuracy — el accuracy puede verse bien simplemente prediciendo la clase mayoritaria. - De nuevo: el test es para reportar, no para decidir.</p>
+<p>Decir: - En conjuntos desbalanceados como attrition, el ROC AUC es más informativo que el accuracy, el accuracy puede verse bien simplemente prediciendo la clase mayoritaria. - De nuevo: el test es para reportar, no para decidir.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -994,13 +994,12 @@ roc_auc
 <p><strong>Para evitar problemas</strong></p>
 <ul>
 <li>Ejecuta siempre <code>compile_keras_grid()</code> antes de ajustar</li>
-<li>Bloques pequeños y testeables — aísla errores con 2–3 bloques</li>
+<li>Bloques pequeños y testeables, aísla errores con 2–3 bloques</li>
 <li>Ajusta estructura (profundidad/ancho) primero; hiperparámetros de entrenamiento después</li>
-<li>Mantén el espacio de búsqueda razonable — profundidad × ancho explota rápido</li>
+<li>Mantén el espacio de búsqueda razonable</li>
 </ul>
 <p><strong>Limitaciones</strong></p>
 <ul>
-<li>No hay bloques predefinidos (ResNet, LSTM…) — los defines tú</li>
 <li>Las funciones de pérdida personalizadas requieren algo de código repetitivo</li>
 </ul>
 </div><div class="column" style="width:50%;">
@@ -1019,7 +1018,7 @@ roc_auc
 </div></div>
 <aside class="notes">
 <p>Objetivo: que la gente salga con una respuesta clara a “¿debería probar esto?”</p>
-<p>Decir: - La curva de aprendizaje está en escribir buenos bloques. Después de eso, todo es tidymodels estándar. - Si ya usas tidymodels, lo único nuevo es definir bloques y llamar a create_keras_*_spec(). - El paquete está en GitHub — contribuciones y feedback bienvenidos.</p>
+<p>Decir: - La curva de aprendizaje está en escribir buenos bloques. Después de eso, todo es tidymodels estándar. - Si ya usas tidymodels, lo único nuevo es definir bloques y llamar a create_keras_*_spec(). - El paquete está en GitHub, contribuciones y feedback bienvenidos.</p>
 <p>Dejar de compartir pantalla y abrir turno de preguntas.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
