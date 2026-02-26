@@ -684,7 +684,7 @@ dbg
 ```
 
 ```{r}
-#| label: diamonds-debug-es
+#| label: diamonds-debug
 #| echo: false
 #| message: false
 #| warning: false
