@@ -334,8 +334,6 @@ Say:
 
 **The gap**: `tune_grid()` handles learning rate easily, but tuning *model structure*: depth, width, branches; is awkward. `parsnip` expects a fixed set of named arguments; Keras models are arbitrary graphs.
 
-**kerasnip** turns architecture decisions into standard tunable arguments.
-
 ::: {.notes}
 Analogy: Keras = architect's blank sheet; tidymodels = government form with fixed fields. kerasnip makes the forms fit the drawings.
 
@@ -1136,8 +1134,6 @@ Decir:
 :::
 
 **La brecha**: `tune_grid()` maneja el learning rate sin problema, pero ajustar la *estructura* es imposible. `parsnip` espera argumentos fijos; los modelos Keras son grafos arbitrarios.
-
-**kerasnip** convierte las decisiones de arquitectura en argumentos ajustables estándar.
 
 ::: {.notes}
 Analogia: Keras = mesa de arquitecto (papel en blanco); tidymodels = formulario con casillas fijas. kerasnip adapta los formularios a los dibujos.
