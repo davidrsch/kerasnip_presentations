@@ -316,7 +316,7 @@ Say:
 
 ::: {.columns}
 ::: {.column width="50%"}
-### 🧱 Keras (via `keras3`)
+### Keras (via `keras3`)
 - **Deep Learning**
 - Tensor-centric & imperative
 - Backend agnostic (TF, JAX, Torch)
@@ -324,7 +324,7 @@ Say:
 :::
 
 ::: {.column width="50%"}
-### 🧹 tidymodels
+### tidymodels
 - **Machine Learning**
 - Dataframe-centric & declarative
 - Unified interface (`fit`, `predict`)
@@ -1119,7 +1119,7 @@ Decir:
 
 ::: {.columns}
 ::: {.column width="50%"}
-### 🧱 Keras (vía `keras3`)
+### Keras (vía `keras3`)
 - **Aprendizaje profundo**
 - Pensado para tensores, imperativo
 - Agnóstico al backend (TF, JAX, Torch)
@@ -1127,7 +1127,7 @@ Decir:
 :::
 
 ::: {.column width="50%"}
-### 🧹 tidymodels
+### tidymodels
 - **Aprendizaje automático**
 - Pensado para data frames, declarativo
 - Interfaz unificada (`fit`, `predict`)
