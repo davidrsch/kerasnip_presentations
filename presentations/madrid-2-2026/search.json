@@ -53,7 +53,7 @@
     "href": "index.html#results-diamonds-cv-table",
     "title": "",
     "section": "Results (Diamonds): CV — Table",
-    "text": "Results (Diamonds): CV — Table\n\n\n\n\nnum_body\n\n\nbody_units\n\n\nbody_dropout\n\n\nmean\n\n\nstd_err\n\n\n\n\n\n\n2\n\n\n35\n\n\n0.180\n\n\n778.277\n\n\n44.325\n\n\n\n\n2\n\n\n62\n\n\n0.060\n\n\n778.810\n\n\n62.104\n\n\n\n\n2\n\n\n49\n\n\n0.030\n\n\n781.036\n\n\n51.384\n\n\n\n\n2\n\n\n98\n\n\n0.121\n\n\n794.448\n\n\n75.486\n\n\n\n\n1\n\n\n127\n\n\n0.276\n\n\n834.169\n\n\n52.409\n\n\n\n\n\nKeep this slide to 30 seconds then move to the plot.\nSay: - These are cross-validation estimates. We select on CV, never on the test set. - Look for a stable region: good mean RMSE and small std_err. That is the architecture to carry forward. - Pick the simplest within 1 std_err of the best, not necessarily the top row."
+    "text": "Results (Diamonds): CV — Table\n\n\n\n\nnum_body\n\n\nbody_units\n\n\nbody_dropout\n\n\nmean\n\n\nstd_err\n\n\n\n\n\n\n2\n\n\n49\n\n\n0.030\n\n\n778.516\n\n\n50.461\n\n\n\n\n2\n\n\n35\n\n\n0.180\n\n\n791.451\n\n\n36.928\n\n\n\n\n2\n\n\n98\n\n\n0.121\n\n\n804.852\n\n\n78.442\n\n\n\n\n2\n\n\n62\n\n\n0.060\n\n\n808.389\n\n\n49.614\n\n\n\n\n1\n\n\n127\n\n\n0.276\n\n\n842.558\n\n\n42.131\n\n\n\n\n\nKeep this slide to 30 seconds then move to the plot.\nSay: - These are cross-validation estimates. We select on CV, never on the test set. - Look for a stable region: good mean RMSE and small std_err. That is the architecture to carry forward. - Pick the simplest within 1 std_err of the best, not necessarily the top row."
   },
   {
     "objectID": "index.html#results-diamonds-cv-plot",
@@ -67,7 +67,7 @@
     "href": "index.html#results-diamonds-test-table",
     "title": "",
     "section": "Results (Diamonds): Test — Table",
-    "text": "Results (Diamonds): Test — Table\n\n\n\n\n.metric\n\n\n.estimate\n\n\n\n\n\n\nrmse\n\n\n835.1166\n\n\n\n\nmae\n\n\n377.5873\n\n\n\n\nrsq\n\n\n0.9559\n\n\n\n\n\nSay: - Test is for reporting only. The architecture was chosen with CV, this is just confirmation. - If test is much worse than CV, suspect data leakage or an unstable architecture."
+    "text": "Results (Diamonds): Test — Table\n\n\n\n\n.metric\n\n\n.estimate\n\n\n\n\n\n\nrmse\n\n\n712.3617\n\n\n\n\nmae\n\n\n334.5304\n\n\n\n\nrsq\n\n\n0.9679\n\n\n\n\n\nSay: - Test is for reporting only. The architecture was chosen with CV, this is just confirmation. - If test is much worse than CV, suspect data leakage or an unstable architecture."
   },
   {
     "objectID": "index.html#results-diamonds-test-plot",
@@ -102,7 +102,7 @@
     "href": "index.html#results-attrition-cv-table",
     "title": "",
     "section": "Results (Attrition): CV — Table",
-    "text": "Results (Attrition): CV — Table\n\n\n\n\ntower_a_units\n\n\ntower_b_units\n\n\nmean\n\n\nstd_err\n\n\n\n\n\n\n41\n\n\n33\n\n\n0.8068\n\n\n0.0224\n\n\n\n\n80\n\n\n95\n\n\n0.8062\n\n\n0.0280\n\n\n\n\n47\n\n\n24\n\n\n0.8062\n\n\n0.0253\n\n\n\n\n21\n\n\n105\n\n\n0.8027\n\n\n0.0211\n\n\n\n\n89\n\n\n84\n\n\n0.7953\n\n\n0.0179\n\n\n\n\n\nKeep this slide to 30 seconds then move to the heatmap.\nSay: - Same reading as before: mean ROC AUC plus std_err. Select on CV. - Pick the simplest architecture within 1 std_err of the best."
+    "text": "Results (Attrition): CV — Table\n\n\n\n\ntower_a_units\n\n\ntower_b_units\n\n\nmean\n\n\nstd_err\n\n\n\n\n\n\n41\n\n\n33\n\n\n0.7997\n\n\n0.0212\n\n\n\n\n80\n\n\n95\n\n\n0.7956\n\n\n0.0151\n\n\n\n\n21\n\n\n105\n\n\n0.7950\n\n\n0.0300\n\n\n\n\n47\n\n\n24\n\n\n0.7929\n\n\n0.0227\n\n\n\n\n70\n\n\n64\n\n\n0.7902\n\n\n0.0311\n\n\n\n\n\nKeep this slide to 30 seconds then move to the heatmap.\nSay: - Same reading as before: mean ROC AUC plus std_err. Select on CV. - Pick the simplest architecture within 1 std_err of the best."
   },
   {
     "objectID": "index.html#results-attrition-cv-plot",
@@ -116,7 +116,7 @@
     "href": "index.html#results-attrition-test-table",
     "title": "",
     "section": "Results (Attrition): Test — Table",
-    "text": "Results (Attrition): Test — Table\n\n\n\n\n.metric\n\n\n.estimate\n\n\n\n\n\n\naccuracy\n\n\n0.8618\n\n\n\n\nroc_auc\n\n\n0.8323\n\n\n\n\n\nSay: - On imbalanced datasets like attrition, ROC AUC is more informative than accuracy, accuracy can look fine just by predicting the majority class. - Again: test is for reporting, not for deciding."
+    "text": "Results (Attrition): Test — Table\n\n\n\n\n.metric\n\n\n.estimate\n\n\n\n\n\n\naccuracy\n\n\n0.8537\n\n\n\n\nroc_auc\n\n\n0.8195\n\n\n\n\n\nSay: - On imbalanced datasets like attrition, ROC AUC is more informative than accuracy, accuracy can look fine just by predicting the majority class. - Again: test is for reporting, not for deciding."
   },
   {
     "objectID": "index.html#results-attrition-test-plot",
