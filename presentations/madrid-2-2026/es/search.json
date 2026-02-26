@@ -53,7 +53,7 @@
     "href": "index.html#resultados-diamantes-cv-tabla",
     "title": "",
     "section": "Resultados (Diamantes): CV — Tabla",
-    "text": "Resultados (Diamantes): CV — Tabla\n\n\n\n\nnum_body\n\n\nbody_units\n\n\nbody_dropout\n\n\nmean\n\n\nstd_err\n\n\n\n\n\n\n2\n\n\n62\n\n\n0.060\n\n\n774.360\n\n\n59.378\n\n\n\n\n2\n\n\n49\n\n\n0.030\n\n\n778.402\n\n\n64.429\n\n\n\n\n2\n\n\n35\n\n\n0.180\n\n\n787.082\n\n\n42.311\n\n\n\n\n2\n\n\n98\n\n\n0.121\n\n\n791.251\n\n\n63.024\n\n\n\n\n3\n\n\n69\n\n\n0.246\n\n\n821.557\n\n\n63.818\n\n\n\n\n\nMantener esta diapositiva en 30 segundos y pasar al gráfico.\nDecir: - Estas son estimaciones de validación cruzada. Seleccionamos con CV, nunca con el test. - Busca una zona estable: buen RMSE medio y std_err pequeño. Esa es la arquitectura a llevar adelante. - Elige la más simple dentro de 1 std_err del mejor, no necesariamente la primera fila."
+    "text": "Resultados (Diamantes): CV — Tabla\n\n\n\n\nnum_body\n\n\nbody_units\n\n\nbody_dropout\n\n\nmean\n\n\nstd_err\n\n\n\n\n\n\n2\n\n\n62\n\n\n0.060\n\n\n778.747\n\n\n67.235\n\n\n\n\n2\n\n\n98\n\n\n0.121\n\n\n782.405\n\n\n54.577\n\n\n\n\n2\n\n\n35\n\n\n0.180\n\n\n791.191\n\n\n45.965\n\n\n\n\n2\n\n\n49\n\n\n0.030\n\n\n802.628\n\n\n67.307\n\n\n\n\n1\n\n\n127\n\n\n0.276\n\n\n833.067\n\n\n48.082\n\n\n\n\n\nMantener esta diapositiva en 30 segundos y pasar al gráfico.\nDecir: - Estas son estimaciones de validación cruzada. Seleccionamos con CV, nunca con el test. - Busca una zona estable: buen RMSE medio y std_err pequeño. Esa es la arquitectura a llevar adelante. - Elige la más simple dentro de 1 std_err del mejor, no necesariamente la primera fila."
   },
   {
     "objectID": "index.html#resultados-diamantes-cv-gráfico",
@@ -67,7 +67,7 @@
     "href": "index.html#resultados-diamantes-test-tabla",
     "title": "",
     "section": "Resultados (Diamantes): Test — Tabla",
-    "text": "Resultados (Diamantes): Test — Tabla\n\n\n\n\n.metric\n\n\n.estimate\n\n\n\n\n\n\nrmse\n\n\n758.0180\n\n\n\n\nmae\n\n\n358.1137\n\n\n\n\nrsq\n\n\n0.9647\n\n\n\n\n\nDecir: - El test es solo para reportar. La arquitectura se eligió con CV, esto es confirmación. - Si el test empeora mucho respecto a CV, sospecha data leakage o una arquitectura inestable."
+    "text": "Resultados (Diamantes): Test — Tabla\n\n\n\n\n.metric\n\n\n.estimate\n\n\n\n\n\n\nrmse\n\n\n716.7953\n\n\n\n\nmae\n\n\n352.6075\n\n\n\n\nrsq\n\n\n0.9675\n\n\n\n\n\nDecir: - El test es solo para reportar. La arquitectura se eligió con CV, esto es confirmación. - Si el test empeora mucho respecto a CV, sospecha data leakage o una arquitectura inestable."
   },
   {
     "objectID": "index.html#resultados-diamantes-test-gráfico",
@@ -102,7 +102,7 @@
     "href": "index.html#resultados-rotación-cv-tabla",
     "title": "",
     "section": "Resultados (Rotación): CV — Tabla",
-    "text": "Resultados (Rotación): CV — Tabla\n\n\n\n\ntower_a_units\n\n\ntower_b_units\n\n\nmean\n\n\nstd_err\n\n\n\n\n\n\n70\n\n\n64\n\n\n0.7968\n\n\n0.0207\n\n\n\n\n47\n\n\n24\n\n\n0.7954\n\n\n0.0252\n\n\n\n\n41\n\n\n33\n\n\n0.7921\n\n\n0.0241\n\n\n\n\n89\n\n\n84\n\n\n0.7917\n\n\n0.0261\n\n\n\n\n21\n\n\n105\n\n\n0.7895\n\n\n0.0286\n\n\n\n\n\nMantener en 30 segundos y pasar al mapa de calor.\nDecir: - Misma lectura que antes: ROC AUC medio más std_err. Seleccionamos con CV. - Elige la arquitectura más simple dentro de 1 std_err del mejor."
+    "text": "Resultados (Rotación): CV — Tabla\n\n\n\n\ntower_a_units\n\n\ntower_b_units\n\n\nmean\n\n\nstd_err\n\n\n\n\n\n\n41\n\n\n33\n\n\n0.8043\n\n\n0.0234\n\n\n\n\n47\n\n\n24\n\n\n0.8041\n\n\n0.0242\n\n\n\n\n80\n\n\n95\n\n\n0.8014\n\n\n0.0228\n\n\n\n\n70\n\n\n64\n\n\n0.7950\n\n\n0.0304\n\n\n\n\n89\n\n\n84\n\n\n0.7901\n\n\n0.0202\n\n\n\n\n\nMantener en 30 segundos y pasar al mapa de calor.\nDecir: - Misma lectura que antes: ROC AUC medio más std_err. Seleccionamos con CV. - Elige la arquitectura más simple dentro de 1 std_err del mejor."
   },
   {
     "objectID": "index.html#resultados-rotación-cv-gráfico",
@@ -116,7 +116,7 @@
     "href": "index.html#resultados-rotación-test-tabla",
     "title": "",
     "section": "Resultados (Rotación): Test — Tabla",
-    "text": "Resultados (Rotación): Test — Tabla\n\n\n\n\n.metric\n\n\n.estimate\n\n\n\n\n\n\naccuracy\n\n\n0.8537\n\n\n\n\nroc_auc\n\n\n0.8001\n\n\n\n\n\nDecir: - En conjuntos desbalanceados como attrition, el ROC AUC es más informativo que el accuracy, el accuracy puede verse bien simplemente prediciendo la clase mayoritaria. - De nuevo: el test es para reportar, no para decidir."
+    "text": "Resultados (Rotación): Test — Tabla\n\n\n\n\n.metric\n\n\n.estimate\n\n\n\n\n\n\naccuracy\n\n\n0.8699\n\n\n\n\nroc_auc\n\n\n0.8217\n\n\n\n\n\nDecir: - En conjuntos desbalanceados como attrition, el ROC AUC es más informativo que el accuracy, el accuracy puede verse bien simplemente prediciendo la clase mayoritaria. - De nuevo: el test es para reportar, no para decidir."
   },
   {
     "objectID": "index.html#resultados-rotación-test-gráfico",
