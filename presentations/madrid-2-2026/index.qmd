@@ -1044,9 +1044,6 @@ Transition: Close with the practical summary.
 - Tune structure (depth/width) first; training hyperparameters later
 - Keep search spaces reasonable, depth × width explodes fast
 
-**Limitations**
-
-- Custom loss functions require some boilerplate
 :::
 
 ::: {.column width="50%"}
@@ -1058,10 +1055,6 @@ Transition: Close with the practical summary.
 
 <br/>
 
-**Resources**
-
-- 📦 [github.com/davidrsch/kerasnip](https://github.com/davidrsch/kerasnip)
-- 📑 [davidrsch.github.io/kerasnip](https://davidrsch.github.io/kerasnip/)
 :::
 :::
 
@@ -1075,6 +1068,15 @@ Say:
 
 Stop sharing screen and open Q&A.
 :::
+
+---
+
+## Resources
+
+- 📦 [github.com/davidrsch/kerasnip](https://github.com/davidrsch/kerasnip)
+- 📑 [davidrsch.github.io/kerasnip](https://davidrsch.github.io/kerasnip/)
+- 📑 [https://davidrsch.github.io/kerasnip_presentations/presentations/madrid-2-2026/)
+
 
 :::
 
@@ -1855,9 +1857,6 @@ Transición: Cerramos con el resumen práctico.
 - Ajusta estructura (profundidad/ancho) primero; hiperparámetros de entrenamiento después
 - Mantén el espacio de búsqueda razonable
 
-**Limitaciones**
-
-- Las funciones de pérdida personalizadas requieren algo de código repetitivo
 :::
 
 ::: {.column width="50%"}
@@ -1869,10 +1868,6 @@ Transición: Cerramos con el resumen práctico.
 
 <br/>
 
-**Recursos**
-
-- 📦 [github.com/davidrsch/kerasnip](https://github.com/davidrsch/kerasnip)
-- 📑 [davidrsch.github.io/kerasnip](https://davidrsch.github.io/kerasnip/)
 :::
 :::
 
@@ -1886,5 +1881,12 @@ Decir:
 
 Dejar de compartir pantalla y abrir turno de preguntas.
 :::
+---
+
+## Recursos
+
+- 📦 [github.com/davidrsch/kerasnip](https://github.com/davidrsch/kerasnip)
+- 📑 [davidrsch.github.io/kerasnip](https://davidrsch.github.io/kerasnip/)
+- 📑 [https://davidrsch.github.io/kerasnip_presentations/presentations/madrid-2-2026/es/)
 
 :::
